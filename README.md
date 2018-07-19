@@ -1,6 +1,6 @@
 # @atomist/lifecycle-automation
 
-![atomist sdm goals](https://badge.atomist.com/T29E48P34/atomist/lifecycle-automation/840020ab-5822-4e4b-865f-51fe70e84eb1) [![npm version](https://badge.fury.io/js/%40atomist%2Flifecycle-automation.svg)](https://badge.fury.io/js/%40atomist%2Flifecycle-automation)
+![atomist sdm goals](https://badge.atomist.com/T29E48P34/atomist/lifecycle-automation/840020ab-5822-4e4b-865f-51fe70e84eb1.svg) [![npm version](https://badge.fury.io/js/%40atomist%2Flifecycle-automation.svg)](https://badge.fury.io/js/%40atomist%2Flifecycle-automation)
 
 This project contains lifecycle automations that create beautiful,
 correlated, and actionable [Slack][slack] messages for issues,
