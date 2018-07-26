@@ -23,7 +23,7 @@
     "travis-ci"
   ],
   "dependencies": {
-    "@atomist/automation-client": "0.18.0-20180719235547",
+    "@atomist/automation-client": "0.18.0-20180725183614",
     "@atomist/automation-client-ext-dashboard": "0.1.0-20180705210657",
     "@atomist/automation-client-ext-eventlog": "0.1.0-20180726050711",
     "@atomist/automation-client-ext-logzio": "0.1.0-20180628224529",
