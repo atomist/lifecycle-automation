@@ -377,7 +377,12 @@ export const configuration: any = {
     ],
     postProcessors: [
         configureDashboardNotifications,
-        configureEventLog(),
+        async config => {
+            if (config.environment !== "gke-int-production_production") {
+                return await configureEventLog()(config);
+            }
+            return config;
+        },
         configureRaven,
         configureLogzio,
     ],
