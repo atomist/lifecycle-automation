@@ -237,7 +237,7 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
 
             // "planned" | "requested" | "in_process" | "waiting_for_approval" | "success" | "failure" | "skipped";
             const pending = statuses.filter(s =>
-                ["planned", "requested", "in_process", "waiting_for_approval"].includes(s.state)).length;
+                ["planned", "requested", "in_process", "waiting_for_approval", "approved"].includes(s.state)).length;
             const success = statuses.filter(s =>
                 ["success", "skipped"].includes(s.state)).length;
             const error = statuses.length - pending - success;
