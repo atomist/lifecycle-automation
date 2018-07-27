@@ -565,6 +565,8 @@ export interface _ChatChannelFilter {
   isDefault_not?: boolean | null /* isDefault_not */;
   botInvitedSelf?: boolean | null /* botInvitedSelf */;
   botInvitedSelf_not?: boolean | null /* botInvitedSelf_not */;
+  archived?: boolean | null /* archived */;
+  archived_not?: boolean | null /* archived_not */;
   createdBy?: _ChatIdFilter | null /* createdBy */;
   createdBy_not?: _ChatIdFilter | null /* createdBy_not */;
   createdBy_in?: _ChatIdFilter | null /* createdBy_in */;
@@ -892,6 +894,20 @@ export interface _SCMIdFilter {
   name_not_starts_with?: string | null /* name_not_starts_with */;
   name_ends_with?: string | null /* name_ends_with */;
   name_not_ends_with?: string | null /* name_not_ends_with */;
+  avatar?: string | null /* avatar */;
+  avatar_not?: string | null /* avatar_not */;
+  avatar_in?: string[] | null /* avatar_in */;
+  avatar_not_in?: string[] | null /* avatar_not_in */;
+  avatar_lt?: string | null /* avatar_lt */;
+  avatar_lte?: string | null /* avatar_lte */;
+  avatar_gt?: string | null /* avatar_gt */;
+  avatar_gte?: string | null /* avatar_gte */;
+  avatar_contains?: string | null /* avatar_contains */;
+  avatar_not_contains?: string | null /* avatar_not_contains */;
+  avatar_starts_with?: string | null /* avatar_starts_with */;
+  avatar_not_starts_with?: string | null /* avatar_not_starts_with */;
+  avatar_ends_with?: string | null /* avatar_ends_with */;
+  avatar_not_ends_with?: string | null /* avatar_not_ends_with */;
   provider?: _GitHubProviderFilter | null /* provider */;
   provider_not?: _GitHubProviderFilter | null /* provider_not */;
   provider_in?: _GitHubProviderFilter | null /* provider_in */;
@@ -2019,6 +2035,10 @@ export interface _PullRequestFilter {
   mergedAt_not_starts_with?: string | null /* mergedAt_not_starts_with */;
   mergedAt_ends_with?: string | null /* mergedAt_ends_with */;
   mergedAt_not_ends_with?: string | null /* mergedAt_not_ends_with */;
+  mergeStatus?: MergeStatus | null /* mergeStatus */;
+  mergeStatus_not?: MergeStatus | null /* mergeStatus_not */;
+  mergeStatus_in?: MergeStatus[] | null /* mergeStatus_in */;
+  mergeStatus_not_in?: MergeStatus[] | null /* mergeStatus_not_in */;
   repo?: _RepoFilter | null /* repo */;
   repo_not?: _RepoFilter | null /* repo_not */;
   repo_in?: _RepoFilter | null /* repo_in */;
@@ -4573,6 +4593,13 @@ export enum WebhookType {
   repository = "repository"
 }
 
+/* Enum for MergeStatus */
+export enum MergeStatus {
+  can_be_merged = "can_be_merged",
+  unchecked = "unchecked",
+  cannot_be_merged = "cannot_be_merged"
+}
+
 /* Enum for BuildStatus */
 export enum BuildStatus {
   passed = "passed",
@@ -4670,7 +4697,9 @@ export enum _ChatChannelOrdering {
   isDefault_asc = "isDefault_asc",
   isDefault_desc = "isDefault_desc",
   botInvitedSelf_asc = "botInvitedSelf_asc",
-  botInvitedSelf_desc = "botInvitedSelf_desc"
+  botInvitedSelf_desc = "botInvitedSelf_desc",
+  archived_asc = "archived_asc",
+  archived_desc = "archived_desc"
 }
 
 /* Ordering Enum for ChatId */
@@ -4714,7 +4743,9 @@ export enum _SCMIdOrdering {
   login_asc = "login_asc",
   login_desc = "login_desc",
   name_asc = "name_asc",
-  name_desc = "name_desc"
+  name_desc = "name_desc",
+  avatar_asc = "avatar_asc",
+  avatar_desc = "avatar_desc"
 }
 
 /* Ordering Enum for GitHubProvider */
@@ -4888,7 +4919,9 @@ export enum _PullRequestOrdering {
   closedAt_asc = "closedAt_asc",
   closedAt_desc = "closedAt_desc",
   mergedAt_asc = "mergedAt_asc",
-  mergedAt_desc = "mergedAt_desc"
+  mergedAt_desc = "mergedAt_desc",
+  mergeStatus_asc = "mergeStatus_asc",
+  mergeStatus_desc = "mergeStatus_desc"
 }
 
 /* Ordering Enum for Commit */
@@ -4956,6 +4989,7 @@ export enum _PushOrdering {
 export enum SdmGoalState {
   success = "success",
   requested = "requested",
+  approved = "approved",
   waiting_for_approval = "waiting_for_approval",
   failure = "failure",
   planned = "planned",

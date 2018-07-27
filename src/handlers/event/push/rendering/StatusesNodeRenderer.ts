@@ -253,7 +253,11 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                     details = ` | ${url(s.externalUrl, "Link")}`;
                 }
                 if (s.approval && s.approval.userId) {
-                    details += ` | approved by @${s.approval.userId}`;
+                    if (s.state === SdmGoalState.approved) {
+                        details += ` | approval requested by @${s.approval.userId}`;
+                    } else {
+                        details += ` | approved by @${s.approval.userId}`;
+                    }
                 }
                 if (s.url != null && s.url.length > 0) {
                     return `${this.emoji(s.state)} ${url(s.url, s.description)}${details}`;
@@ -318,6 +322,7 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                 return EMOJI_SCHEME[this.emojiStyle].build.requested;
             case "in_process":
                 return EMOJI_SCHEME[this.emojiStyle].build.started;
+            case "approved":
             case "waiting_for_approval":
                 return EMOJI_SCHEME[this.emojiStyle].build.waiting;
             case "success":
@@ -365,7 +370,11 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                     details += ` | ${s.phase}`;
                 }
                 if (s.approval && s.approval.userId) {
-                    details += ` | approved by @${s.approval.userId}`;
+                    if (s.state === SdmGoalState.approved) {
+                        details += ` | approval requested by @${s.approval.userId}`;
+                    } else {
+                        details += ` | approved by @${s.approval.userId}`;
+                    }
                 }
                 gs.push({
                     name: s.name,
@@ -392,6 +401,8 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
             if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
                 state = SdmGoalState.failure;
             } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+                state = SdmGoalState.waiting_for_approval;
+            } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
                 state = SdmGoalState.waiting_for_approval;
             } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
                 state = SdmGoalState.in_process;

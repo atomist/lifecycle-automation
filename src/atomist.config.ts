@@ -206,7 +206,6 @@ export const configuration: any = {
 
         // github
         () => new ApproveGitHubCommit(),
-        secured.githubTeam(() => new UpdateSdmGoalState(), AdminTeam),
         () => new AssignGitHubPullRequestReviewer(),
         () => new AssignToMeGitHubIssue(),
         () => new CloseGitHubIssue(),
@@ -246,6 +245,9 @@ export const configuration: any = {
         () => new ConfigureLifecyclePreferences(),
         () => new SetTeamPreference(),
         () => new SetUserPreference(),
+
+        // sdm
+        () => new UpdateSdmGoalState(),
 
         // slack
         () => new AddBotToChannel(),
