@@ -72,9 +72,9 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
         const goalConditions = _.flatten(env.goals.map(g => {
             const preConditions = (g.preConditions || []).filter(p => p.environment === env.environment);
             if (preConditions.length > 0) {
-                return preConditions.map(p => [g.name, p.name]);
+                return preConditions.map(p => [g.name, p.name]) as any;
             } else {
-                return [g.name, env.environment];
+                return [g.name, env.environment] as any;
             }
         }));
         const sortedGoals = toposort(goalConditions).reverse();
