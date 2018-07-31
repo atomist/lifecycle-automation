@@ -158,21 +158,18 @@ export function userUrl(repo: any, login: string): string {
     }
 }
 
-export function avatarUrl(repo: any, login: string): string {
+export function avatarUrl(repo: any, login: string, url?: string): string {
     if (isGitHubCom(repo)) {
         return `https://avatars.githubusercontent.com/${login}`;
     } else if (isGitHub(repo)) {
         return `${htmlUrl(repo)}/avatars/${login}`;
-    } else if (isGitlab(repo)) {
-        // not sure the best thing to do here - they seem to use gravatar. They
-        // do pass them on the webhook events so we might be able to get them
-        // into the graph. I don't think we can determine them though. Maybe
-        // the alternative would be to query gravatar by email or something.
-        return "https://www.gravatar.com/avatar/8c306e13e0afacb17204b8d5fd87226b?s=800&d=identicon";
+    } else if (isGitlab(repo) && url) {
+        return url;
     } else if (isBitBucket(repo)) {
         // https://bitbucket.org/account/cdupuis/avatar/64/?ts=1523010025
         return `${htmlUrl(repo)}/account/${login}/avatar/16`;
     }
+    return `https://github.com/identicons/${login}.png`
 }
 export function commitUrl(repo: any, commit: any): string {
     if (isGitHub(repo)) {

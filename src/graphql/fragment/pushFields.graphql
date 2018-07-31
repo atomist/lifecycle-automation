@@ -37,6 +37,7 @@ fragment PushFields on Push {
     }
     author {
       login
+      avatar
       person {
         chatId {
           screenName
@@ -174,6 +175,7 @@ fragment PushFields on Push {
     }
     author {
       login
+      avatar
       person {
         chatId {
           screenName

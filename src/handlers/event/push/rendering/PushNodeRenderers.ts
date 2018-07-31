@@ -150,11 +150,12 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         let commitsByAuthor: any = {};
         for (const commit of commits) {
             const ca = (commit.author != null && commit.author.login && commit.author.login !== ""
-                ? commit.author.login : commit.email.address);
+                ? commit.author.login : (commit.email ? commit.email.address : "(unknown)"));
 
             if (author == null || author !== ca) {
                 commitsByAuthor = {
                     author: ca,
+                    avatar: commit.author ? commit.author.avatar : undefined,
                     commits: [],
                 };
                 author = ca;
@@ -183,7 +184,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                 const attachment: Attachment = {
                     author_name: `@${a}`,
                     author_link: userUrl(repo, a),
-                    author_icon: avatarUrl(repo, a),
+                    author_icon: avatarUrl(repo, a, cgba.avatar),
                     text: message,
                     mrkdwn_in: ["text"],
                     color: "#00a5ff",
