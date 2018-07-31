@@ -11456,6 +11456,7 @@ export namespace PushFields {
   export type Author = {
     __typename?: "SCMId";
     login?: string | null;
+    avatar?: string | null;
     person?: Person | null;
   };
 
@@ -11678,6 +11679,7 @@ export namespace PushFields {
   export type _Author = {
     __typename?: "SCMId";
     login?: string | null;
+    avatar?: string | null;
     person?: _Person | null;
   };
 

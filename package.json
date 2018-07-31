@@ -23,7 +23,7 @@
     "travis-ci"
   ],
   "dependencies": {
-    "@atomist/automation-client": "0.18.0-20180725183614",
+    "@atomist/automation-client": "0.19.0-api-keys.20180731081614",
     "@atomist/automation-client-ext-dashboard": "0.1.0-20180705210657",
     "@atomist/automation-client-ext-eventlog": "0.1.0-20180726072953",
     "@atomist/automation-client-ext-logzio": "0.1.0-20180628224529",
@@ -44,6 +44,7 @@
     "toposort": "^1.0.6"
   },
   "devDependencies": {
+    "@atomist/cli": "0.2.0-20180731084258",
     "@types/lodash": "^4.14.80",
     "@types/mocha": "^2.2.41",
     "@types/node": "^9.3.0",

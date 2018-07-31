@@ -141,7 +141,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                 timestamp: Date.now().toString(),
                 channels: [{
                     name: "atomist:dashboard",
-                    teamId: ctx.teamId,
+                    teamId: ctx.workspaceId,
                 }],
                 extract: (type: string) => {
                     if (type === "repo") {

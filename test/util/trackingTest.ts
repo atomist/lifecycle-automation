@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as base64 from "base64-js";
 import "mocha";
 import * as assert from "power-assert";
 
@@ -22,7 +21,7 @@ import * as namespace from "@atomist/automation-client/internal/util/cls";
 import { wrapLinksInText } from "../../src/util/tracking";
 
 const event = "RemEvent";
-const teamId = "TREM1980";
+const workspaceId = "TREM1980";
 const messageId = "lifes-rich-pageant";
 const operation = "BeginTheBegin";
 
@@ -32,8 +31,8 @@ describe("tracking", () => {
         namespace.init();
         namespace.set({
             correlationId: "xxx",
-            teamId,
-            teamName: "TestTeam",
+            workspaceId,
+            workspaceName: "TestTeam",
             operation,
             name: "test",
             version: "0.1.0",

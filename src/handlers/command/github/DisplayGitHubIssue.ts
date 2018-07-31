@@ -68,7 +68,7 @@ export class DisplayGitHubIssue implements HandleCommand {
         return ctx.graphClient.query<graphql.Issue.Query, graphql.Issue.Variables>({
                 name: "issue",
                 variables: {
-                    teamId: ctx.teamId,
+                    teamId: ctx.workspaceId,
                     repoName: this.repo,
                     issueName: this.issue.toString(),
                     orgOwner: this.owner,

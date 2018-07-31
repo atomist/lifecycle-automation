@@ -110,7 +110,7 @@ export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
             timestamp,
             channels: [{
                 name: "atomist:dashboard",
-                teamId: ctx.teamId,
+                teamId: ctx.workspaceId,
             }],
             extract: (type: string) => {
                 if (type === "repo") {

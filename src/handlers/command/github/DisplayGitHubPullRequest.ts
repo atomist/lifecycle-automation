@@ -62,7 +62,7 @@ export class DisplayGitHubPullRequest implements HandleCommand {
         return ctx.graphClient.query<graphql.PullRequest.Query, graphql.PullRequest.Variables>({
                 name: "pullRequest",
                 variables: {
-                    teamId: ctx.teamId,
+                    teamId: ctx.workspaceId,
                     repoName: this.repo,
                     prName: this.issue,
                     orgOwner: this.owner,

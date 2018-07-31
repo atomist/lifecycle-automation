@@ -62,8 +62,8 @@ export function shortenUrls(message: SlackMessage | CardMessage,
     }
 
     return axios.put("https://r.atomist.com/v2/shorten", {
-            teamId: ctx.context.teamId,
-            teamName: ctx.context.teamName,
+            teamId: ctx.context.workspaceId,
+            teamName: ctx.context.workspaceName,
             group: "atomist",
             artifact: ctx.context.name,
             version: ctx.context.version,

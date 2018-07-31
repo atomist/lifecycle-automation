@@ -114576,6 +114576,11 @@
                 "kind": "SCALAR",
                 "name": "Int"
               },
+              "directives": [
+                {
+                  "name": "searchable"
+                }
+              ],
               "args": []
             },
             {
@@ -115073,6 +115078,6 @@
     }
   },
   "extensions": {
-    "correlation_id": "dee20bcf-4265-452e-b5e6-207656dac33a"
+    "correlation_id": "90e814cf-fc78-47f6-9e36-431fd2e5412e"
   }
 }

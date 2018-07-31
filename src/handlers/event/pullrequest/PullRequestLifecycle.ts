@@ -117,7 +117,7 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
             post: updateOnly ? "update_only" : undefined,
             channels: [{
                 name: "atomist:dashboard",
-                teamId: ctx.teamId,
+                teamId: ctx.workspaceId,
             }],
             extract: (type: string) => {
                 if (type === "repo") {

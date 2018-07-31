@@ -56,8 +56,8 @@ export class PullRequestToBranchLifecycle implements HandleEvent<graphql.PullReq
                         extensions: {
                             type: "READ_ONLY",
                             operationName: "PullRequestToBranchLifecycle",
-                            team_id: ctx.teamId,
-                            team_name: (ctx as any as AutomationContextAware).context.teamName,
+                            team_id: ctx.workspaceId,
+                            team_name: (ctx as any as AutomationContextAware).context.workspaceName,
                             correlation_id: ctx.correlationId,
                         },
                     };
