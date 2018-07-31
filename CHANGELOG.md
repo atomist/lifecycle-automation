@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.9.3...HEAD)
 
+### Added
+
+-   Gitlab avatar rendering needs to use scmId.avatar. [#238](https://github.com/atomist/lifecycle-automation/issues/238)
+
 ## [0.9.3](https://github.com/atomist/lifecycle-automation/compare/0.9.2...0.9.3) - 2018-07-27
 
 ## [0.9.2](https://github.com/atomist/lifecycle-automation/compare/0.9.1...0.9.2) - 2018-07-27
