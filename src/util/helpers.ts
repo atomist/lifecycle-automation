@@ -169,7 +169,7 @@ export function avatarUrl(repo: any, login: string, url?: string): string {
         // https://bitbucket.org/account/cdupuis/avatar/64/?ts=1523010025
         return `${htmlUrl(repo)}/account/${login}/avatar/16`;
     }
-    return `https://github.com/identicons/${login}.png`
+    return `https://github.com/identicons/${login}.png`;
 }
 export function commitUrl(repo: any, commit: any): string {
     if (isGitHub(repo)) {
