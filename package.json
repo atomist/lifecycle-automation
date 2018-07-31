@@ -28,6 +28,7 @@
     "@atomist/automation-client-ext-eventlog": "0.1.0-20180726072953",
     "@atomist/automation-client-ext-logzio": "0.1.0-20180628224529",
     "@atomist/automation-client-ext-raven": "0.1.0-20180613131132",
+    "@atomist/cli": "0.2.0-20180731103015",
     "@atomist/slack-messages": "^0.12.1",
     "@octokit/rest": "^14.0.9",
     "base64-js": "^1.2.1",
@@ -44,7 +45,6 @@
     "toposort": "^1.0.6"
   },
   "devDependencies": {
-    "@atomist/cli": "0.2.0-20180731084258",
     "@types/lodash": "^4.14.80",
     "@types/mocha": "^2.2.41",
     "@types/node": "^9.3.0",
