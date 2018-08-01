@@ -28,9 +28,14 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import { codeLine } from "@atomist/slack-messages";
 import * as slack from "@atomist/slack-messages/SlackMessages";
-import { InviteUserToSlackChannel } from "../../../typings/types";
+import * as _ from "lodash";
+import {
+    InviteUserToSlackChannel,
+    RepoByNameOwnerAndProviderId,
+} from "../../../typings/types";
 import { warning } from "../../../util/messages";
 import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
@@ -43,7 +48,22 @@ export function checkRepo(token: string,
                           name: string,
                           owner: string,
                           ctx: HandlerContext): Promise<boolean> {
-    return Promise.resolve(true);
+    return ctx.graphClient.query<RepoByNameOwnerAndProviderId.Query, RepoByNameOwnerAndProviderId.Variables>({
+            name: "repoByNameOwnerAndProviderId",
+            variables: {
+                owner,
+                name,
+                providerId,
+            },
+            options: QueryNoCacheOptions,
+        }).
+        then(result => {
+            if (_.get(result, "Repo[0].org.provider.providerId")) {
+                return true;
+            } else {
+                return false;
+            }
+        })
 }
 
 export function noRepoMessage(repo: string, owner: string, ctx: HandlerContext): slack.SlackMessage {

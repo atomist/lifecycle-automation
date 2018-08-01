@@ -7362,302 +7362,7 @@ export namespace PushById {
     Push?: Push[] | null;
   };
 
-  export type Push = {
-    __typename?: "Push";
-    _id?: Long | null;
-    builds?: Builds[] | null;
-    before?: Before | null;
-    after?: After | null;
-    repo?: Repo | null;
-    commits?: Commits[] | null;
-    timestamp?: string | null;
-    branch?: string | null;
-  };
-
-  export type Builds = {
-    __typename?: "Build";
-    buildId?: string | null;
-    buildUrl?: string | null;
-    name?: string | null;
-    provider?: string | null;
-    status?: BuildStatus | null;
-    commit?: Commit | null;
-    timestamp?: string | null;
-    workflow?: Workflow | null;
-  };
-
-  export type Commit = {
-    __typename?: "Commit";
-    sha?: string | null;
-  };
-
-  export type Workflow = {
-    __typename?: "Workflow";
-    id?: string | null;
-    name?: string | null;
-    provider?: string | null;
-    config?: string | null;
-    builds?: _Builds[] | null;
-  };
-
-  export type _Builds = {
-    __typename?: "Build";
-    jobId?: string | null;
-    jobName?: string | null;
-    finishedAt?: string | null;
-    startedAt?: string | null;
-    status?: BuildStatus | null;
-    id?: string | null;
-    buildUrl?: string | null;
-  };
-
-  export type Before = {
-    __typename?: "Commit";
-    sha?: string | null;
-  };
-
-  export type After = {
-    __typename?: "Commit";
-    sha?: string | null;
-    message?: string | null;
-    author?: Author | null;
-    statuses?: Statuses[] | null;
-    tags?: Tags[] | null;
-    images?: Images[] | null;
-    fingerprints?: Fingerprints[] | null;
-  };
-
-  export type Author = {
-    __typename?: "SCMId";
-    login?: string | null;
-    person?: Person | null;
-  };
-
-  export type Person = {
-    __typename?: "Person";
-    chatId?: ChatId | null;
-  };
-
-  export type ChatId = {
-    __typename?: "ChatId";
-    screenName?: string | null;
-  };
-
-  export type Statuses = {
-    __typename?: "Status";
-    context?: string | null;
-    description?: string | null;
-    targetUrl?: string | null;
-    state?: StatusState | null;
-    timestamp?: string | null;
-  };
-
-  export type Tags = {
-    __typename?: "Tag";
-    name?: string | null;
-    release?: Release | null;
-    builds?: __Builds[] | null;
-    timestamp?: string | null;
-  };
-
-  export type Release = {
-    __typename?: "Release";
-    name?: string | null;
-    timestamp?: string | null;
-  };
-
-  export type __Builds = {
-    __typename?: "Build";
-    buildId?: string | null;
-    buildUrl?: string | null;
-    name?: string | null;
-    provider?: string | null;
-    status?: BuildStatus | null;
-    timestamp?: string | null;
-  };
-
-  export type Images = {
-    __typename?: "DockerImage";
-    _id?: Long | null;
-    image?: string | null;
-    imageName?: string | null;
-    pods?: Pods[] | null;
-    timestamp?: string | null;
-  };
-
-  export type Pods = {
-    __typename?: "K8Pod";
-    _id?: Long | null;
-    name?: string | null;
-    phase?: string | null;
-    environment?: string | null;
-    timestamp?: string | null;
-    baseName?: string | null;
-    namespace?: string | null;
-    resourceVersion?: number | null;
-    containers?: Containers[] | null;
-  };
-
-  export type Containers = {
-    __typename?: "K8Container";
-    _id?: Long | null;
-    name?: string | null;
-    imageName?: string | null;
-    timestamp?: string | null;
-    environment?: string | null;
-    state?: string | null;
-    ready?: boolean | null;
-    restartCount?: number | null;
-    statusJSON?: string | null;
-    resourceVersion?: number | null;
-  };
-
-  export type Fingerprints = {
-    __typename?: "Fingerprint";
-    name?: string | null;
-    sha?: string | null;
-    data?: string | null;
-  };
-
-  export type Repo = {
-    __typename?: "Repo";
-    owner?: string | null;
-    name?: string | null;
-    channels?: Channels[] | null;
-    labels?: Labels[] | null;
-    org?: Org | null;
-    defaultBranch?: string | null;
-  };
-
-  export type Channels = {
-    __typename?: "ChatChannel";
-    name?: string | null;
-    team?: Team | null;
-  };
-
-  export type Team = {
-    __typename?: "ChatTeam";
-    id?: string | null;
-  };
-
-  export type Labels = {
-    __typename?: "Label";
-    name?: string | null;
-  };
-
-  export type Org = {
-    __typename?: "Org";
-    provider?: Provider | null;
-    team?: _Team | null;
-  };
-
-  export type Provider = {
-    __typename?: "GitHubProvider";
-    url?: string | null;
-    apiUrl?: string | null;
-    gitUrl?: string | null;
-    providerId?: string | null;
-    providerType?: ProviderType | null;
-  };
-
-  export type _Team = {
-    __typename?: "Team";
-    id?: string | null;
-    chatTeams?: ChatTeams[] | null;
-  };
-
-  export type ChatTeams = {
-    __typename?: "ChatTeam";
-    id?: string | null;
-    preferences?: Preferences[] | null;
-  };
-
-  export type Preferences = {
-    __typename?: "TeamPreference";
-    name?: string | null;
-    value?: string | null;
-  };
-
-  export type Commits = {
-    __typename?: "Commit";
-    sha?: string | null;
-    message?: string | null;
-    resolves?: Resolves[] | null;
-    impact?: Impact | null;
-    apps?: Apps[] | null;
-    tags?: _Tags[] | null;
-    author?: _Author | null;
-    timestamp?: string | null;
-  };
-
-  export type Resolves = {
-    __typename?: "Issue";
-    number?: number | null;
-    name?: string | null;
-    title?: string | null;
-    state?: IssueState | null;
-    openedBy?: OpenedBy | null;
-  };
-
-  export type OpenedBy = {
-    __typename?: "SCMId";
-    login?: string | null;
-  };
-
-  export type Impact = {
-    __typename?: "ParentImpact";
-    data?: string | null;
-    url?: string | null;
-  };
-
-  export type Apps = {
-    __typename?: "Application";
-    state?: string | null;
-    host?: string | null;
-    domain?: string | null;
-    data?: string | null;
-  };
-
-  export type _Tags = {
-    __typename?: "Tag";
-    name?: string | null;
-    release?: _Release | null;
-    containers?: _Containers[] | null;
-  };
-
-  export type _Release = {
-    __typename?: "Release";
-    name?: string | null;
-  };
-
-  export type _Containers = {
-    __typename?: "DockerImage";
-    pods?: _Pods[] | null;
-    image?: string | null;
-  };
-
-  export type _Pods = {
-    __typename?: "K8Pod";
-    host?: string | null;
-    state?: string | null;
-    name?: string | null;
-  };
-
-  export type _Author = {
-    __typename?: "SCMId";
-    login?: string | null;
-    person?: _Person | null;
-  };
-
-  export type _Person = {
-    __typename?: "Person";
-    chatId?: _ChatId | null;
-  };
-
-  export type _ChatId = {
-    __typename?: "ChatId";
-    screenName?: string | null;
-  };
+  export type Push = PushFields.Fragment;
 }
 export namespace PushByShaAndBranch {
   export type Variables = {
@@ -7676,6 +7381,34 @@ export namespace PushByShaAndBranch {
   };
 
   export type Pushes = PushFields.Fragment;
+}
+export namespace RepoByNameOwnerAndProviderId {
+  export type Variables = {
+    name: string;
+    owner: string;
+    providerId?: string | null;
+  };
+
+  export type Query = {
+    __typename?: "Query";
+    Repo?: Repo[] | null;
+  };
+
+  export type Repo = {
+    __typename?: "Repo";
+    name?: string | null;
+    org?: Org | null;
+  };
+
+  export type Org = {
+    __typename?: "Org";
+    provider?: Provider | null;
+  };
+
+  export type Provider = {
+    __typename?: "GitHubProvider";
+    providerId?: string | null;
+  };
 }
 export namespace RepoIssues {
   export type Variables = {
