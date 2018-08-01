@@ -1,4 +1,8 @@
-query RepoByNameOwnerAndProviderId($name: String!, $owner: String!, $providerId: String) {
+query RepoByNameOwnerAndProviderId(
+  $name: String!
+  $owner: String!
+  $providerId: String
+) {
   Repo(name: $name) @required {
     name
     org(owner: $owner) @required {

@@ -63,7 +63,7 @@ export function checkRepo(token: string,
             } else {
                 return false;
             }
-        })
+        });
 }
 
 export function noRepoMessage(repo: string, owner: string, ctx: HandlerContext): slack.SlackMessage {
