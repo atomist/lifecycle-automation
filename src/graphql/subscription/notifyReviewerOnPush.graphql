@@ -1,4 +1,4 @@
-subscription NotifyReviewerOnPush {
+subscription notifyReviewerOnPush {
   Push {
     branch
     repo {

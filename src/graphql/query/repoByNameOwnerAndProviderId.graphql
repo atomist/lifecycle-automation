@@ -1,4 +1,4 @@
-query RepoByNameOwnerAndProviderId(
+query repoByNameOwnerAndProviderId(
   $name: String!
   $owner: String!
   $providerId: String

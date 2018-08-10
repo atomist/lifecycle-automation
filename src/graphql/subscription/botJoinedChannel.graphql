@@ -1,4 +1,4 @@
-subscription BotJoinedChannel {
+subscription botJoinedChannel {
   UserJoinedChannel {
     user(isAtomistBot: "true") @required {
       isAtomistBot

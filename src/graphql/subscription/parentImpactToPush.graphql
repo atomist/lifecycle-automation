@@ -1,4 +1,4 @@
-subscription ParentImpactToPushLifecycle {
+subscription parentImpactToPushLifecycle {
   ParentImpact {
     _id
     commit {

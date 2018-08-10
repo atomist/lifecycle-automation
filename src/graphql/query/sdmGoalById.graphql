@@ -1,4 +1,4 @@
-query SdmGoalById($id: ID!) {
+query sdmGoalById($id: ID!) {
   SdmGoal(id: $id) {
     id
     goalSet

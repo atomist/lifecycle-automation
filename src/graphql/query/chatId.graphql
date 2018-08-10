@@ -1,4 +1,4 @@
-query ChatId($teamId: ID, $chatId: String!) {
+query chatId($teamId: ID, $chatId: String!) {
   ChatTeam(id: $teamId) {
     members(userId: $chatId) {
       id

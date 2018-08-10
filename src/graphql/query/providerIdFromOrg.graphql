@@ -1,4 +1,4 @@
-query ProviderIdFromOrg($owner: String!) {
+query providerIdFromOrg($owner: String!) {
   Org(owner: $owner) {
     provider {
       providerId

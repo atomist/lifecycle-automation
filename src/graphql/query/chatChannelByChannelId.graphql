@@ -1,4 +1,4 @@
-query ChatChannelByChannelId($teamId: ID!, $channelName: String!) {
+query chatChannelByChannelId($teamId: ID!, $channelName: String!) {
   ChatTeam(id: $teamId) {
     channels(name: $channelName) {
       name

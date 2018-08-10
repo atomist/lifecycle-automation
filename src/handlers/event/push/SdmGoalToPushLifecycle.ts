@@ -32,17 +32,19 @@ import {
 /**
  * Send a Push lifecycle message on SdmGoal events.
  */
-@EventHandler("Send a lifecycle message on SdmGoal events", subscription("sdmGoalToPush"))
+@EventHandler("Send a lifecycle message on SdmGoal events",
+    subscription("sdmGoalToPushLifecycle"))
 @Tags("lifecycle", "push", "sdm goal")
-export class SdmGoalToPushLifecycle extends PushLifecycleHandler<graphql.SdmGoalToPush.Subscription> {
+export class SdmGoalToPushLifecycle
+    extends PushLifecycleHandler<graphql.SdmGoalToPushLifecycle.Subscription> {
 
-    protected extractNodes(event: EventFired<graphql.SdmGoalToPush.Subscription>):
+    protected extractNodes(event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>):
         graphql.PushToPushLifecycle.Push[] {
         return [event.data.SdmGoal[0].push];
     }
 
     protected extractPreferences(
-        event: EventFired<graphql.SdmGoalToPush.Subscription>)
+        event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>)
         : { [teamId: string]: Preferences[] } {
         return chatTeamsToPreferences(_.get(event, "data.SdmGoal[0].push.repo.org.team.chatTeams"));
     }
@@ -51,17 +53,19 @@ export class SdmGoalToPushLifecycle extends PushLifecycleHandler<graphql.SdmGoal
 /**
  * Send a lifecycle card on SdmGoal events.
  */
-@EventHandler("Send a lifecycle card on Release events", subscription("sdmGoalToPush"))
+@EventHandler("Send a lifecycle card on Release events",
+    subscription("sdmGoalToPushLifecycle"))
 @Tags("lifecycle", "push", "sdm release")
-export class SdmGoalToPushCardLifecycle extends PushCardLifecycleHandler<graphql.SdmGoalToPush.Subscription> {
+export class SdmGoalToPushCardLifecycle
+    extends PushCardLifecycleHandler<graphql.SdmGoalToPushLifecycle.Subscription> {
 
-    protected extractNodes(event: EventFired<graphql.SdmGoalToPush.Subscription>):
+    protected extractNodes(event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>):
         graphql.PushToPushLifecycle.Push[] {
         return [event.data.SdmGoal[0].push];
     }
 
     protected extractPreferences(
-        event: EventFired<graphql.SdmGoalToPush.Subscription>)
+        event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>)
         : { [teamId: string]: Preferences[] } {
         return {};
     }

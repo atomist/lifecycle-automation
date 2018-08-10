@@ -1,4 +1,4 @@
-query BotOwner($teamId: ID!) {
+query botOwner($teamId: ID!) {
   ChatTeam(id: $teamId) {
     members(isOwner: "true") @required {
       screenName

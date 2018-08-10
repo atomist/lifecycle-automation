@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on Tag events.
  */
-@EventHandler("Send a lifecycle message on Tag events", subscription("tagToPush"))
+@EventHandler("Send a lifecycle message on Tag events",
+    subscription("tagToPushLifecycle"))
 @Tags("lifecycle", "push", "tag ")
 export class TagToPushLifecycle extends PushLifecycleHandler<graphql.TagToPushLifecycle.Subscription> {
 
@@ -51,7 +52,8 @@ export class TagToPushLifecycle extends PushLifecycleHandler<graphql.TagToPushLi
 /**
  * Send a lifecycle card on Tag events.
  */
-@EventHandler("Send a lifecycle card on Tag events", subscription("tagToPush"))
+@EventHandler("Send a lifecycle card on Tag events",
+    subscription("tagToPushLifecycle"))
 @Tags("lifecycle", "push", "tag ")
 export class TagToPushCardLifecycle extends PushCardLifecycleHandler<graphql.TagToPushLifecycle.Subscription> {
 

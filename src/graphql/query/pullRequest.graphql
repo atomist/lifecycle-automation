@@ -1,4 +1,4 @@
-query PullRequest(
+query pullRequest(
   $teamId: ID!
   $orgOwner: String!
   $repoName: String!

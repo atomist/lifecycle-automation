@@ -1,4 +1,4 @@
-subscription DeletedBranchToPullRequestLifecycle {
+subscription deletedBranchToPullRequestLifecycle {
   DeletedBranch {
     id
     pullRequests(first: 1) {

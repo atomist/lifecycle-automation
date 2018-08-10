@@ -1,4 +1,4 @@
-query PushById($id: ID!) {
+query pushById($id: ID!) {
   Push(id: $id) {
     ...PushFields
   }

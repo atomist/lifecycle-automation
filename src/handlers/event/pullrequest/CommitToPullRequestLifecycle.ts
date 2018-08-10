@@ -30,7 +30,8 @@ import { PullRequestCardLifecycleHandler,
 /**
  * Send a lifecycle message on Commit events.
  */
-@EventHandler("Send a lifecycle message on Commit events", subscription("commitToPullRequest"))
+@EventHandler("Send a lifecycle message on Commit events",
+    subscription("commitToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "commit")
 export class CommitToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.CommitToPullRequestLifecycle.Subscription> {
@@ -53,7 +54,8 @@ export class CommitToPullRequestLifecycle
 /**
  * Send a lifecycle card on Commit events.
  */
-@EventHandler("Send a lifecycle card on Commit events", subscription("commitToPullRequest"))
+@EventHandler("Send a lifecycle card on Commit events",
+    subscription("commitToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "commit")
 export class CommitToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.CommitToPullRequestLifecycle.Subscription> {

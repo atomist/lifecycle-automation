@@ -33,7 +33,8 @@ import { IssueToIssueCardLifecycle } from "../issue/IssueToIssueLifecycle";
 import { PullRequestToPullRequestCardLifecycle } from "../pullrequest/PullRequestToPullRequestLifecycle";
 import { PushToPushCardLifecycle } from "../push/PushToPushLifecycle";
 
-@EventHandler("Send a Push lifecycle card when a new repo has finished onboarding", subscription("repoOnboarded"))
+@EventHandler("Send a Push lifecycle card when a new repo has finished onboarding",
+    subscription("repoOnboarded"))
 @Tags("enrollment")
 export class RepositoryOnboarded implements HandleEvent<graphql.RepoOnboarded.Subscription> {
 

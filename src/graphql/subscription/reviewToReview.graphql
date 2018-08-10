@@ -1,4 +1,4 @@
-subscription ReviewToReviewLifecycle {
+subscription reviewToReviewLifecycle {
   Review {
     _id
     body

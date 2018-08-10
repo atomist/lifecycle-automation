@@ -1,4 +1,4 @@
-subscription ReleaseToPushLifecycle {
+subscription releaseToPushLifecycle {
   Release {
     _id
     name

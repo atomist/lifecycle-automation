@@ -1,4 +1,4 @@
-query MappedChannels($teamId: ID!, $name: String!) {
+query mappedChannels($teamId: ID!, $name: String!) {
   ChatChannel(name: $name) {
     team(id: $teamId) @required {
       id

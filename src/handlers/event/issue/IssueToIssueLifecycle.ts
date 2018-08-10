@@ -32,7 +32,7 @@ import {
 /**
  * Send a lifecycle message on Issue events.
  */
-@EventHandler("Send a lifecycle message on Issue events", subscription("issueToIssue"))
+@EventHandler("Send a lifecycle message on Issue events", subscription("issueToIssueLifecycle"))
 @Tags("lifecycle", "issue")
 export class IssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
 
@@ -54,7 +54,7 @@ export class IssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueTo
 /**
  * Send a lifecycle card on Issue events.
  */
-@EventHandler("Send a lifecycle message on Issue events", subscription("issueToIssue"))
+@EventHandler("Send a lifecycle message on Issue events", subscription("issueToIssueLifecycle"))
 @Tags("lifecycle", "issue")
 export class IssueToIssueCardLifecycle extends IssueCardLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
 

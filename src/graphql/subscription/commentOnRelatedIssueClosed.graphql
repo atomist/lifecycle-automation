@@ -1,4 +1,4 @@
-subscription CommentOnRelatedIssueClosed {
+subscription commentOnRelatedIssueClosed {
   Issue(state: closed) {
     number
     repo {

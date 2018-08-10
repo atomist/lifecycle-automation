@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on Comment events.
  */
-@EventHandler("Send a lifecycle message on Comment events", subscription("commentToPullRequest"))
+@EventHandler("Send a lifecycle message on Comment events",
+    subscription("commentToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "comment")
 export class CommentToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.CommentToPullRequestLifecycle.Subscription> {
@@ -55,7 +56,8 @@ export class CommentToPullRequestLifecycle
 /**
  * Send a lifecycle card on Comment events.
  */
-@EventHandler("Send a lifecycle card on Comment events", subscription("commentToPullRequest"))
+@EventHandler("Send a lifecycle card on Comment events",
+    subscription("commentToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "comment")
 export class CommentToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.CommentToPullRequestLifecycle.Subscription> {

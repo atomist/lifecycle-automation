@@ -1,4 +1,4 @@
-subscription StatusToPushLifecycle {
+subscription statusToPushLifecycle {
   Status {
     _id
     context

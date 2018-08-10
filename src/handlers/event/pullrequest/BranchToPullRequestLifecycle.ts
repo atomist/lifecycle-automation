@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on Branch events.
  */
-@EventHandler("Send a lifecycle message on Branch events", subscription("branchToPullRequest"))
+@EventHandler("Send a lifecycle message on Branch events",
+    subscription("branchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "branch")
 export class BranchToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.BranchToPullRequestLifecycle.Subscription> {
@@ -55,7 +56,8 @@ export class BranchToPullRequestLifecycle
 /**
  * Send a lifecycle message on Branch events.
  */
-@EventHandler("Send a lifecycle message on Branch events", subscription("branchToPullRequest"))
+@EventHandler("Send a lifecycle message on Branch events",
+    subscription("branchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "branch")
 export class BranchToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.BranchToPullRequestLifecycle.Subscription> {

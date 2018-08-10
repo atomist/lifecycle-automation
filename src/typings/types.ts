@@ -5936,7 +5936,7 @@ export namespace ChatTeamPreferences {
     value?: string | null;
   };
 }
-export namespace EMailAndGitHubIdByUserId {
+export namespace EmailAndGitHubIdByUserId {
   export type Variables = {
     userId: string;
   };
@@ -9713,7 +9713,7 @@ export namespace NotifyReviewerOnPush {
     id?: string | null;
   };
 }
-export namespace WebhookCreated {
+export namespace OrgWebhook {
   export type Variables = {};
 
   export type Subscription = {
@@ -10364,7 +10364,7 @@ export namespace ReviewToReviewLifecycle {
     id?: string | null;
   };
 }
-export namespace SdmGoalToPush {
+export namespace SdmGoalToPushLifecycle {
   export type Variables = {};
 
   export type Subscription = {

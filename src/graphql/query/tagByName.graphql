@@ -1,4 +1,4 @@
-query TagByName($owner: String!, $repo: String!, $name: String!) {
+query tagByName($owner: String!, $repo: String!, $name: String!) {
   Tag(name: $name) {
     name
     commit {

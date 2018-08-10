@@ -1,4 +1,4 @@
-subscription NotifyAuthorOnReview {
+subscription notifyAuthorOnReview {
   Review {
     _id
     body

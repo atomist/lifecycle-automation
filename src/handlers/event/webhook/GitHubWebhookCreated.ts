@@ -46,16 +46,16 @@ const Channels = ["dev", "engineering", "development", "devops"];
 
 @EventHandler("Displays a welcome message when a new org webhook is installed", subscription("orgWebhook"))
 @Tags("enrollment")
-export class GitHubWebhookCreated implements HandleEvent<graphql.WebhookCreated.Subscription> {
+export class GitHubWebhookCreated implements HandleEvent<graphql.OrgWebhook.Subscription> {
 
     public handle(
-        event: EventFired<graphql.WebhookCreated.Subscription>,
+        event: EventFired<graphql.OrgWebhook.Subscription>,
         ctx: HandlerContext,
     ): Promise<HandlerResult> {
 
         const orgOwner = _.get(event, "data.Webhook[0].org.owner");
         const chatTeams = _.get(event, "data.Webhook[0].org.team.chatTeams") as
-            graphql.WebhookCreated.ChatTeams[];
+            graphql.OrgWebhook.ChatTeams[];
 
         return Promise.all(chatTeams.map(chatTeam => {
             if (!chatTeam) {

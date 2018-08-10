@@ -1,4 +1,4 @@
-subscription IssueToPushLifecycle {
+subscription issueToPushLifecycle {
   Issue {
     _id
     resolvingCommits {

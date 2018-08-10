@@ -1,4 +1,4 @@
-subscription TagToPushLifecycle {
+subscription tagToPushLifecycle {
   Tag {
     _id
     name

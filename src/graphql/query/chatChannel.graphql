@@ -1,4 +1,4 @@
-query ChatChannel(
+query chatChannel(
   $teamId: ID!
   $channelName: String!
   $repoOwner: String!

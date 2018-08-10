@@ -1,4 +1,4 @@
-subscription DeploymentOnK8Pod {
+subscription deploymentOnK8Pod {
   K8Pod {
     namespace
     environment

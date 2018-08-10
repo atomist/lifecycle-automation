@@ -1,4 +1,4 @@
-query LastPullRequestOnRepo($name: String!, $owner: String!) {
+query lastPullRequestOnRepo($name: String!, $owner: String!) {
   Repo(owner: $owner, name: $name) {
     pullRequest {
       _id

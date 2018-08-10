@@ -1,4 +1,4 @@
-mutation LinkSlackChannelToRepo(
+mutation linkSlackChannelToRepo(
   $teamId: String!
   $channelId: String!
   $repo: String!

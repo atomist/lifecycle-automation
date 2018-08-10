@@ -1,4 +1,4 @@
-subscription StatusToPullRequestLifecycle {
+subscription statusToPullRequestLifecycle {
   Status {
     _id
     commit {

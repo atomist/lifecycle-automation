@@ -1,4 +1,4 @@
-query BranchWithPullRequest($id: ID!) {
+query branchWithPullRequest($id: ID!) {
   Branch(id: $id) {
     id
     pullRequests(first: 1, orderBy: [timestamp_desc]) {

@@ -1,4 +1,4 @@
-subscription AutoMergeOnBuild {
+subscription autoMergeOnBuild {
   Build {
     _id
     pullRequest {

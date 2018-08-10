@@ -1,4 +1,4 @@
-subscription K8PodToPushLifecycle {
+subscription k8PodToPushLifecycle {
   K8Pod {
     _id
     name

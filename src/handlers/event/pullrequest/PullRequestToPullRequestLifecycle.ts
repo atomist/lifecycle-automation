@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on PullRequest events.
  */
-@EventHandler("Send a lifecycle message on PullRequest events", subscription("pullRequestToPullRequest"))
+@EventHandler("Send a lifecycle message on PullRequest events",
+    subscription("pullRequestToPullRequestLifecycle"))
 @Tags("lifecycle", "pr")
 export class PullRequestToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription> {
@@ -55,7 +56,8 @@ export class PullRequestToPullRequestLifecycle
 /**
  * Send a lifecycle card on PullRequest events.
  */
-@EventHandler("Send a lifecycle card on PullRequest events", subscription("pullRequestToPullRequest"))
+@EventHandler("Send a lifecycle card on PullRequest events",
+    subscription("pullRequestToPullRequestLifecycle"))
 @Tags("lifecycle", "pr")
 export class PullRequestToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription> {

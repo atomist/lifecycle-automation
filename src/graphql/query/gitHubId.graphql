@@ -1,4 +1,4 @@
-query GitHubId($gitHubIds: [String]!) {
+query gitHubId($gitHubIds: [String]!) {
   GitHubId(logins: $gitHubIds) {
     login
     person {

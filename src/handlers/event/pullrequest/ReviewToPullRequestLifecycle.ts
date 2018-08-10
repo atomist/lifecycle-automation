@@ -29,7 +29,8 @@ import { PullRequestLifecycleHandler } from "./PullRequestLifecycle";
 /**
  * Send a lifecycle message on Review events.
  */
-@EventHandler("Send a lifecycle message on Review events", subscription("reviewToPullRequest"))
+@EventHandler("Send a lifecycle message on Review events",
+    subscription("reviewToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "review")
 export class ReviewToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {
@@ -52,7 +53,8 @@ export class ReviewToPullRequestLifecycle
 /**
  * Send a lifecycle card on Review events.
  */
-@EventHandler("Send a lifecycle card on Review events", subscription("reviewToPullRequest"))
+@EventHandler("Send a lifecycle card on Review events",
+    subscription("reviewToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "review")
 export class ReviewToPullRequestCardLifecycle
     extends PullRequestLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {

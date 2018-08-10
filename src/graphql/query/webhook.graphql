@@ -1,4 +1,4 @@
-query Webhook($owner: String!) {
+query webhook($owner: String!) {
   GitHubOrgWebhook(webhookType: organization) {
     url
     webhookType

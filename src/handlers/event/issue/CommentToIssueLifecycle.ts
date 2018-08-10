@@ -28,7 +28,8 @@ import { IssueCardLifecycleHandler } from "./IssueLifecycle";
 /**
  * Send a lifecycle card on Comment events.
  */
-@EventHandler("Send a lifecycle message on Comment events", subscription("commentToIssue"))
+@EventHandler("Send a lifecycle message on Comment events",
+    subscription("commentToIssueLifecycle"))
 @Tags("lifecycle", "issue")
 export class CommentToIssueCardLifecycle
     extends IssueCardLifecycleHandler<graphql.CommentToIssueLifecycle.Subscription> {

@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle message on DeletedBranch events", subscription("deletedBranchToPullRequest"))
+@EventHandler("Send a lifecycle message on DeletedBranch events",
+    subscription("deletedBranchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "status")
 export class DeletedBranchToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {
@@ -56,7 +57,8 @@ export class DeletedBranchToPullRequestLifecycle
 /**
  * Send a lifecycle card on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle card on DeletedBranch events", subscription("deletedBranchToPullRequest"))
+@EventHandler("Send a lifecycle card on DeletedBranch events",
+    subscription("deletedBranchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "status")
 export class DeletedBranchToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {

@@ -1,4 +1,4 @@
-subscription BuildToPushLifecycle {
+subscription buildToPushLifecycle {
   Build {
     _id
     buildId

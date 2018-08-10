@@ -1,4 +1,4 @@
-query ChatTeamPreferences($teamId: ID!) {
+query chatTeamPreferences($teamId: ID!) {
   ChatTeam(id: $teamId) {
     domain
     preferences {

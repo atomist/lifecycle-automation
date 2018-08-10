@@ -1,4 +1,4 @@
-subscription WebhookCreated {
+subscription orgWebhook {
   Webhook(webhookType: organization) {
     org {
       owner

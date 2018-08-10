@@ -1,4 +1,4 @@
-query RepoIssues($name: String!, $owner: String!) {
+query repoIssues($name: String!, $owner: String!) {
   Repo(name: $name, owner: $owner) {
     issue(state: open, orderBy: [number_desc]) {
       number

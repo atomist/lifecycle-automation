@@ -1,4 +1,4 @@
-query LastPushOnBranch($name: String!, $owner: String!, $branch: String!) {
+query lastPushOnBranch($name: String!, $owner: String!, $branch: String!) {
   Repo(owner: $owner, name: $name) {
     branches(name: $branch) {
       commit @required {

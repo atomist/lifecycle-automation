@@ -1,4 +1,4 @@
-query Orgs {
+query orgs {
   Org(orderBy: [owner_asc]) {
     owner
     provider {

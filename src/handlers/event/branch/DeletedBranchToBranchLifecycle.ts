@@ -29,7 +29,8 @@ import { BranchLifecycle } from "./BranchLifecycle";
 /**
  * Send a lifecycle message on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle message on DeletedBranch events", subscription("deletedBranchToBranch"))
+@EventHandler("Send a lifecycle message on DeletedBranch events",
+    subscription("deletedBranchToBranchLifecycle"))
 @Tags("lifecycle", "branch", "pr")
 export class DeletedBranchToBranchLifecycle
     extends BranchLifecycle<graphql.BranchToBranchLifecycle.Subscription> {

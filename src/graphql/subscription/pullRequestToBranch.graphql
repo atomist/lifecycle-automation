@@ -1,4 +1,4 @@
-subscription PullRequestToBranchLifecycle {
+subscription pullRequestToBranchLifecycle {
   PullRequest {
     branch @required {
       id

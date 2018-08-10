@@ -1,4 +1,4 @@
-query OpenPR($repo: String!, $owner: String!, $branch: String!) {
+query openPr($repo: String!, $owner: String!, $branch: String!) {
   Repo(name: $repo, owner: $owner) {
     name
     branches(name: $branch) {

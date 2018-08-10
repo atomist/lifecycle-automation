@@ -1,4 +1,4 @@
-subscription CommentToIssueLifecycle {
+subscription commentToIssueLifecycle {
   Comment(commentType: issue) {
     _id
     by {

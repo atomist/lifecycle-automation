@@ -1,4 +1,4 @@
-query LastIssueOnRepo($name: String!, $owner: String!) {
+query lastIssueOnRepo($name: String!, $owner: String!) {
   Repo(owner: $owner, name: $name) {
     issue(orderBy: [number_desc]) {
       _id

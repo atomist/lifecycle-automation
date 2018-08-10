@@ -1,4 +1,4 @@
-subscription CommentToIssueCommentLifecycle {
+subscription commentToIssueCommentLifecycle {
   Comment {
     _id
     gitHubId

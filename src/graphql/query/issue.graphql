@@ -1,4 +1,4 @@
-query Issue(
+query issue(
   $teamId: ID!
   $orgOwner: String!
   $repoName: String!

@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on Release events.
  */
-@EventHandler("Send a lifecycle message on Release events", subscription("releaseToPush"))
+@EventHandler("Send a lifecycle message on Release events",
+    subscription("releaseToPushLifecycle"))
 @Tags("lifecycle", "push", "release")
 export class ReleaseToPushLifecycle extends PushLifecycleHandler<graphql.ReleaseToPushLifecycle.Subscription> {
 
@@ -52,7 +53,8 @@ export class ReleaseToPushLifecycle extends PushLifecycleHandler<graphql.Release
 /**
  * Send a lifecycle card on Release events.
  */
-@EventHandler("Send a lifecycle card on Release events", subscription("releaseToPush"))
+@EventHandler("Send a lifecycle card on Release events",
+    subscription("releaseToPushLifecycle"))
 @Tags("lifecycle", "push", "release")
 export class ReleaseToPushCardLifecycle extends PushCardLifecycleHandler<graphql.ReleaseToPushLifecycle.Subscription> {
 

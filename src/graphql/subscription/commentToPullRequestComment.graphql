@@ -1,4 +1,4 @@
-subscription CommentToPullRequestCommentLifecycle {
+subscription commentToPullRequestCommentLifecycle {
   Comment {
     _id
     gitHubId

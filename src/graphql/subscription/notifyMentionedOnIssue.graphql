@@ -1,4 +1,4 @@
-subscription NotifyMentionedOnIssue {
+subscription notifyMentionedOnIssue {
   Issue {
     _id
     name

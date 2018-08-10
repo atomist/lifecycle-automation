@@ -1,4 +1,4 @@
-query Branch($owner: String!, $repo: String!, $branch: String!) {
+query branch($owner: String!, $repo: String!, $branch: String!) {
   Repo(owner: $owner, name: $repo) {
     branches(name: $branch) {
       name

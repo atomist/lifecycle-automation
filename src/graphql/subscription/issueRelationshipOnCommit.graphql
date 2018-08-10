@@ -1,4 +1,4 @@
-subscription IssueRelationshipOnCommit {
+subscription issueRelationshipOnCommit {
   Commit {
     repo {
       name

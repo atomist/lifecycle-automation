@@ -1,4 +1,4 @@
-subscription BranchToPullRequestLifecycle {
+subscription branchToPullRequestLifecycle {
   Branch {
     _id
     pullRequests(first: 1) {

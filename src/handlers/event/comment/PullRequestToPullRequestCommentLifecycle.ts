@@ -29,7 +29,8 @@ import { CommentLifecycleHandler } from "./CommentLifecycle";
 /**
  * Send a lifecycle message on PullRequest events.
  */
-@EventHandler("Send a lifecycle message on PullRequest events", subscription("pullRequestToPullRequestComment"))
+@EventHandler("Send a lifecycle message on PullRequest events",
+    subscription("pullRequestToPullRequestCommentLifecycle"))
 @Tags("lifecycle", "pullrequest")
 export class PullRequestToPullRequestCommentLifecycle
     extends CommentLifecycleHandler<graphql.PullRequestToPullRequestCommentLifecycle.Subscription> {

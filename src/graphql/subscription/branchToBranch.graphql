@@ -1,4 +1,4 @@
-subscription BranchToBranchLifecycle {
+subscription branchToBranchLifecycle {
   Branch {
     ...BranchFields
   }

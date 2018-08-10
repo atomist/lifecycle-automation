@@ -1,4 +1,4 @@
-query Channels($teamId: ID!, $first: Int!, $offset: Int!) {
+query channels($teamId: ID!, $first: Int!, $offset: Int!) {
   ChatTeam(id: $teamId) {
     channels(first: $first, offset: $offset) {
       repos @required {

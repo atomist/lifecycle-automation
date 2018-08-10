@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on ParentImpact events.
  */
-@EventHandler("Send a lifecycle message on ParentImpact events", subscription("parentimpactToPush"))
+@EventHandler("Send a lifecycle message on ParentImpact events",
+    subscription("parentImpactToPushLifecycle"))
 @Tags("lifecycle", "push", "parentImpact")
 export class ParentImpactToPushLifecycle
     extends PushLifecycleHandler<graphql.ParentImpactToPushLifecycle.Subscription> {
@@ -53,7 +54,8 @@ export class ParentImpactToPushLifecycle
 /**
  * Send a lifecycle card on ParentImpact events.
  */
-@EventHandler("Send a lifecycle card on ParentImpact events", subscription("parentimpactToPush"))
+@EventHandler("Send a lifecycle card on ParentImpact events",
+    subscription("parentImpactToPushLifecycle"))
 @Tags("lifecycle", "push", "parentImpact")
 export class ParentImpactToPushCardLifecycle
     extends PushCardLifecycleHandler<graphql.ParentImpactToPushLifecycle.Subscription> {

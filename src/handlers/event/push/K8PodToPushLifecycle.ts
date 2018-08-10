@@ -32,7 +32,8 @@ import {
 /**
  * Send a lifecycle message on K8Pod events.
  */
-@EventHandler("Send a lifecycle message on K8Pod events", subscription("k8podToPush"))
+@EventHandler("Send a lifecycle message on K8Pod events",
+    subscription("k8PodToPushLifecycle"))
 @Tags("lifecycle", "push", "k8pod")
 export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
 
@@ -57,7 +58,8 @@ export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPu
 /**
  * Send a lifecycle card on K8Pod events.
  */
-@EventHandler("Send a lifecycle card on K8Pod events", subscription("k8podToPush"))
+@EventHandler("Send a lifecycle card on K8Pod events",
+    subscription("k8PodToPushLifecycle"))
 @Tags("lifecycle", "push", "k8pod")
 export class K8PodToPushCardLifecycle extends PushCardLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
 

@@ -1,4 +1,4 @@
-query IssueOrPr($owner: String!, $repo: String!, $names: [String]!) {
+query issueOrPr($owner: String!, $repo: String!, $names: [String]!) {
   Org(owner: $owner) {
     repo(name: $repo) {
       name

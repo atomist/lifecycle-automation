@@ -1,4 +1,4 @@
-subscription NotifyMentionedOnPullRequest {
+subscription notifyMentionedOnPullRequest {
   PullRequest {
     _id
     name

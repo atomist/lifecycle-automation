@@ -1,4 +1,4 @@
-subscription DeletedBranchToBranchLifecycle {
+subscription deletedBranchToBranchLifecycle {
   DeletedBranch {
     ...DeletedBranchFields
   }

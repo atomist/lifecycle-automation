@@ -1,4 +1,4 @@
-mutation SetRepoLogin(
+mutation setRepoLogin(
   $owner: String!
   $repo: String!
   $login: String!

@@ -1,4 +1,4 @@
-query OrgRepos($owner: String!, $providerId: String!) {
+query orgRepos($owner: String!, $providerId: String!) {
   Repo(orderBy: [name_asc]) {
     org(owner: $owner) @required {
       owner

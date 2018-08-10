@@ -1,4 +1,4 @@
-subscription PushToPushLifecycle {
+subscription pushToPushLifecycle {
   Push {
     ...PushFields
   }

@@ -1,4 +1,4 @@
-subscription IssueToIssueCommentLifecycle {
+subscription issueToIssueCommentLifecycle {
   Issue {
     _id
     title

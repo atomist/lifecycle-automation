@@ -1,4 +1,4 @@
-query ProviderTypeFromRepo(
+query providerTypeFromRepo(
   $name: String!
   $owner: String!
   $providerId: String!

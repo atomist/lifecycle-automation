@@ -1,4 +1,4 @@
-subscription ApplicationToPushLifecycle {
+subscription applicationToPushLifecycle {
   Application {
     _id
     commits {

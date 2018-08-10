@@ -1,4 +1,4 @@
-mutation UnlinkSlackChannelFromRepo(
+mutation unlinkSlackChannelFromRepo(
   $teamId: String!
   $channelId: String!
   $repo: String!

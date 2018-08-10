@@ -34,7 +34,8 @@ import { BranchToBranchLifecycle } from "./BranchToBranchLifecycle";
 /**
  * Send a lifecycle message on PullRequest events.
  */
-@EventHandler("Send a lifecycle message on Branch events", subscription("pullRequestToBranch"))
+@EventHandler("Send a lifecycle message on Branch events",
+    subscription("pullRequestToBranchLifecycle"))
 @Tags("lifecycle", "branch", "pr")
 export class PullRequestToBranchLifecycle implements HandleEvent<graphql.PullRequestToBranchLifecycle.Subscription> {
 

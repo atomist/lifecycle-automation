@@ -1,4 +1,4 @@
-subscription PullRequestToReviewLifecycle {
+subscription pullRequestToReviewLifecycle {
   PullRequest {
     _id
     reviews {

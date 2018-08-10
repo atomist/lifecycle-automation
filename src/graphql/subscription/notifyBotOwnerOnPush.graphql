@@ -1,4 +1,4 @@
-subscription NotifyBotOwnerOnPush {
+subscription notifyBotOwnerOnPush {
   Push {
     id
     repo {

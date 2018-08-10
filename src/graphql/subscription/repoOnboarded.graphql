@@ -1,4 +1,4 @@
-subscription RepoOnboarded {
+subscription repoOnboarded {
   RepoOnboarded {
     repo {
       owner
