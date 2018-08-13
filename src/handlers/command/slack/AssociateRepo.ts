@@ -48,7 +48,7 @@ export function checkRepo(token: string,
                           name: string,
                           owner: string,
                           ctx: HandlerContext): Promise<boolean> {
-    return ctx.graphClient.query<RepoByNameOwnerAndProviderId.Query, RepoByNameOwnerAndProviderId.Variables>({
+    /*return ctx.graphClient.query<RepoByNameOwnerAndProviderId.Query, RepoByNameOwnerAndProviderId.Variables>({
             name: "repoByNameOwnerAndProviderId",
             variables: {
                 owner,
@@ -63,7 +63,8 @@ export function checkRepo(token: string,
             } else {
                 return false;
             }
-        });
+        });*/
+    return Promise.resolve(true);
 }
 
 export function noRepoMessage(repo: string, owner: string, ctx: HandlerContext): slack.SlackMessage {
