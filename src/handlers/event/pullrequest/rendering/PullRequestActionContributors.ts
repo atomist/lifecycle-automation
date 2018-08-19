@@ -34,6 +34,19 @@ import * as github from "../../../command/github/gitHubApi";
 import { LifecycleActionPreferences } from "../../preferences";
 import { isPrAutoMergeEnabled } from "../autoMerge";
 
+const SuggestedReviewersQuery = `query SuggestedReviewers($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      suggestedReviewers {
+        reviewer {
+          login
+        }
+      }
+    }
+  }
+}
+`;
+
 export class MergeActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.PullRequestToPullRequestLifecycle.PullRequest> {
 
@@ -407,7 +420,7 @@ export class AssignReviewerActionContributor extends AbstractIdentifiableContrib
             { Authorization: `bearer ${orgToken}` });
 
         return client.query<any, any>({
-                path: "./suggestedReviewers",
+                query: SuggestedReviewersQuery,
                 variables: {
                     owner: repo.owner,
                     name: repo.name,

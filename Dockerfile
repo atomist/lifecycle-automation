@@ -21,7 +21,7 @@ ENV SUPPRESS_NO_CONFIG_WARNING true
 
 ENTRYPOINT [ "dumb-init", "node", "--trace-warnings", "--expose_gc", "--optimize_for_size", "--always_compact", "--max_old_space_size=384" ]
 
-CMD ["node_modules/@atomist/automation-client/start.client.js"]
+CMD ["node_modules/@atomist/automation-client/bin/start.js"]
 
 RUN npm install -g npm@6.3.0
 

@@ -39,6 +39,16 @@ import { MoveGitHubIssue } from "../../../command/github/MoveGitHubIssue";
 import { OwnerParameters } from "../../../command/github/targetOrgAndRepo";
 import { LifecycleActionPreferences } from "../../preferences";
 
+const SuggestedAssigneeQuery = `query SuggestedAssignees($name: String!, $owner: String!) {
+  repository(name: $name, owner: $owner) {
+    assignableUsers(first: 100) {
+      nodes {
+        login
+      }
+    }
+  }
+}`;
+
 export abstract class AbstractIssueActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.IssueToIssueLifecycle.Issue> {
 
@@ -270,7 +280,7 @@ export class AssignActionContributor extends AbstractIdentifiableContribution
                 { Authorization: `bearer ${context.orgToken}` });
 
             return client.query<any, any>({
-                    path: "./suggestedAssignees",
+                    query: SuggestedAssigneeQuery,
                     variables: { owner: repo.owner, name: repo.name },
                 })
                 .then(result => {

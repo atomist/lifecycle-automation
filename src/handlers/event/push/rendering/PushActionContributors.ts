@@ -41,6 +41,21 @@ import {
     GoalSet,
 } from "../PushLifecycle";
 
+const RepositoryTagsQuery = `query RepositoryTags($name: String!, $owner: String!) {
+  repository(name: $name, owner: $owner) {
+    refs(
+      refPrefix: "refs/tags/"
+      first: 1
+      orderBy: { field: TAG_COMMIT_DATE, direction: DESC }
+    ) {
+      nodes {
+        name
+      }
+    }
+  }
+}
+`;
+
 export class BuildActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.PushFields.Builds> {
 
@@ -225,7 +240,7 @@ export class TagPushActionContributor extends AbstractIdentifiableContribution
                 { Authorization: `bearer ${context.orgToken}` });
 
             return client.query<any, any>({
-                    path: "./repositoryTags",
+                    query: RepositoryTagsQuery,
                     variables: { owner: repo.owner, name: repo.name },
                 })
                 .then(result => {

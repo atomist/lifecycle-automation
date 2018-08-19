@@ -1,9 +1,0 @@
-query SuggestedAssignees($name: String!, $owner: String!) {
-  repository(name: $name, owner: $owner) {
-    assignableUsers(first: 100) {
-      nodes {
-        login
-      }
-    }
-  }
-}
