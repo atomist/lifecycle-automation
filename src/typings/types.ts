@@ -2347,6 +2347,14 @@ export interface _BuildFilter {
   buildId_not_starts_with?: string | null /* buildId_not_starts_with */;
   buildId_ends_with?: string | null /* buildId_ends_with */;
   buildId_not_ends_with?: string | null /* buildId_not_ends_with */;
+  number?: number | null /* number */;
+  number_not?: number | null /* number_not */;
+  number_in?: number[] | null /* number_in */;
+  number_not_in?: number[] | null /* number_not_in */;
+  number_lt?: number | null /* number_lt */;
+  number_lte?: number | null /* number_lte */;
+  number_gt?: number | null /* number_gt */;
+  number_gte?: number | null /* number_gte */;
   name?: string | null /* name */;
   name_not?: string | null /* name_not */;
   name_in?: string[] | null /* name_in */;
@@ -4944,6 +4952,8 @@ export enum _BuildOrdering {
   id_desc = "id_desc",
   buildId_asc = "buildId_asc",
   buildId_desc = "buildId_desc",
+  number_asc = "number_asc",
+  number_desc = "number_desc",
   name_asc = "name_asc",
   name_desc = "name_desc",
   status_asc = "status_asc",
@@ -9531,6 +9541,7 @@ export namespace NotifyPusherOnBuild {
     status?: BuildStatus | null;
     buildUrl?: string | null;
     name?: string | null;
+    number?: number | null;
     provider?: string | null;
     buildId?: string | null;
     commit?: Commit | null;

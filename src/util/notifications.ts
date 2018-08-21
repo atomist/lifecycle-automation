@@ -460,10 +460,11 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
     const text = "`" + url(commitUrl(repo, commit), commit.sha.substring(0, 7))
         + "` " + truncateCommitMessage(commit.message, repo);
     const [message, color] = renderDecorator(build, [build], text, emojiStyle);
+    const label = build.number ? `Build #${build.number}` : build.name;
 
     const slackMessage: SlackMessage = {
         // tslint:disable-next-line:max-line-length
-        text: `${build.buildUrl ? url(build.buildUrl, `Build #${build.name}`) : `Build #${build.name}`} of your push to ${url(repoUrl(repo), repoSlug(repo))} failed`,
+        text: `${build.buildUrl ? url(build.buildUrl, label) : label} of your push to ${url(repoUrl(repo), repoSlug(repo))} failed`,
         attachments: [
             {
                 author_name: `@${commit.author.login}`,
@@ -471,7 +472,7 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
                 author_icon: avatarUrl(repo, commit.author.login),
                 text: message,
                 mrkdwn_in: ["text"],
-                fallback: `Build #${build.name} of your push failed`,
+                fallback: `${label} of your push failed`,
                 color,
                 footer: repoAndChannelFooter(repo),
                 footer_icon: commitIcon(repo),

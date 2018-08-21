@@ -4,6 +4,7 @@ subscription notifyPusherOnBuild {
     status
     buildUrl
     name
+    number
     provider
     buildId
     commit {
