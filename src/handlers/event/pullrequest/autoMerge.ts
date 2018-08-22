@@ -27,9 +27,12 @@ import {
 } from "../../../util/helpers";
 import * as github from "../../command/github/gitHubApi";
 
-export const AutoMergeLabel = "atomist:merge-on-approve";
-export const AutoMergeCheckSuccessLabel = "atomist:merge-on-check-success";
-export const AutoMergeTag = "[atomist:merge]";
+export const AutoMergeLabel = "auto-merge:on-approve";
+export const AutoMergeCheckSuccessLabel = "auto-merge:on-check-success";
+export const AutoMergeTag = "[auto-merge:merge]";
+
+export const AutoMergeMethodLabel = "auto-merge-method:";
+export const AutoMergeMethods = ["merge", "rebase", "squash"];
 
 export function autoMerge(pr: graphql.AutoMergeOnReview.PullRequest, token: string): Promise<HandlerResult> {
     if (pr) {
@@ -67,7 +70,7 @@ export function autoMerge(pr: graphql.AutoMergeOnReview.PullRequest, token: stri
                         owner: pr.repo.owner,
                         repo: pr.repo.name,
                         number: pr.number,
-                        merge_method: "merge",
+                        merge_method: mergeMethod(pr),
                         sha: pr.head.sha,
                         commit_title: `Auto merge pull request #${pr.number} from ${pr.repo.owner}/${pr.repo.name}`,
                     })
@@ -132,6 +135,17 @@ function isPrTagged(pr: graphql.AutoMergeOnReview.PullRequest, label: string = A
     }
 
     return false;
+}
+
+function mergeMethod(pr: graphql.AutoMergeOnReview.PullRequest): "merge" | "rebase" | "squash" {
+    const methodLabel = pr.labels.find(l => l.name.startsWith(AutoMergeMethodLabel));
+    if (methodLabel && methodLabel.name.includes(":")) {
+        const method = methodLabel.name.split(":")[1].toLowerCase() as any;
+        if (AutoMergeMethods.includes(method)) {
+            return method;
+        }
+    }
+    return "merge";
 }
 
 function isTagged(msg: string) {

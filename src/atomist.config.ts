@@ -23,6 +23,7 @@ import { CloudFoundryApplicationDetail } from "./handlers/command/cloudfoundry/C
 import { ScaleCloudFoundryApplication } from "./handlers/command/cloudfoundry/ScaleCloudFoundryApplication";
 import { StartCloudFoundryApplication } from "./handlers/command/cloudfoundry/StartCloudFoundryApplication";
 import { StopCloudFoundryApplication } from "./handlers/command/cloudfoundry/StopCloudFoundryApplication";
+import { AddGitHubPullRequestAutoMergeLabels } from "./handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
 import { ApproveGitHubCommit } from "./handlers/command/github/ApproveGitHubCommit";
 import { AssignGitHubPullRequestReviewer } from "./handlers/command/github/AssignGitHubPullRequestReviewer";
 import { AssignToMeGitHubIssue } from "./handlers/command/github/AssignToMeGitHubIssue";
@@ -205,6 +206,7 @@ export const configuration: any = {
         secured.githubTeam(() => new StopCloudFoundryApplication(), AdminTeam),
 
         // github
+        () => new AddGitHubPullRequestAutoMergeLabels(),
         () => new ApproveGitHubCommit(),
         () => new AssignGitHubPullRequestReviewer(),
         () => new AssignToMeGitHubIssue(),

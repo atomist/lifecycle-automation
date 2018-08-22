@@ -32,10 +32,10 @@ import { AutoMergeLabel } from "../../event/pullrequest/autoMerge";
 import * as github from "./gitHubApi";
 
 /**
- * Approve GitHub status on commit.
+ * Enable Pull Request auto merge.
  */
-@ConfigurableCommandHandler("Approve GitHub status on commit", {
-    intent: [ "auto merge pr", "auto merge github pr" ],
+@ConfigurableCommandHandler("Enable Pull Request auto merge", {
+    intent: ["auto merge pr", "auto merge github pr"],
     autoSubmit: true,
 })
 @Tags("github", "pr", "auto-merge")
@@ -79,7 +79,7 @@ export class EnableGitHubPullRequestAutoMerge implements HandleCommand {
                 owner: this.owner,
                 repo: this.repo,
                 number: this.issue,
-                labels: [ AutoMergeLabel ],
+                labels: [AutoMergeLabel],
             });
         })
         // Label doesn't exist; put create it and add it to the PR
@@ -90,14 +90,14 @@ export class EnableGitHubPullRequestAutoMerge implements HandleCommand {
                 name: AutoMergeLabel,
                 color: "277D7D",
             })
-            .then(() => {
-                return api.issues.addLabels({
-                    owner: this.owner,
-                    repo: this.repo,
-                    number: this.issue,
-                    labels: [ AutoMergeLabel ],
+                .then(() => {
+                    return api.issues.addLabels({
+                        owner: this.owner,
+                        repo: this.repo,
+                        number: this.issue,
+                        labels: [AutoMergeLabel],
+                    });
                 });
-            });
         })
         .then(() => Success, failure);
     }
