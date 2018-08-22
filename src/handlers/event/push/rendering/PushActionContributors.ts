@@ -27,8 +27,8 @@ import {
     RendererContext,
     SlackActionContributor,
 } from "../../../../lifecycle/Lifecycle";
-import { SdmGoalState } from "../../../../typings/types";
 import * as graphql from "../../../../typings/types";
+import { SdmGoalState } from "../../../../typings/types";
 import { lastGoalSet } from "../../../../util/goals";
 import { truncateCommitMessage } from "../../../../util/helpers";
 import { CreateGitHubRelease } from "../../../command/github/CreateGitHubRelease";
@@ -366,7 +366,7 @@ export class PullRequestActionContributor extends AbstractIdentifiableContributi
             return push.branch !== (push.repo.defaultBranch || "master")
                 && push.branch !== "gh-pages"
                 && (!push.builds || !push.builds.some(b => b.status !== "passed")
-                && (!push.goals || !push.goals.some(g => g.state !== SdmGoalState.success)));
+                && (!push.goals || !lastGoalSet(push.goals || []).some(g => g.state !== SdmGoalState.success)));
         } else {
             return false;
         }
