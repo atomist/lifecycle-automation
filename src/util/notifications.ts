@@ -428,13 +428,13 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
                                   repo: graphql.NotifyPusherOnBuild.Repo,
                                   ctx: HandlerContext): Promise<any> {
 
-    const login = _.get(build, "commit.author.person.chatId.screenName");
-    if (!login || isDmDisabled(build.commit.author.person.chatId, DirectMessagePreferences.build.id)) {
+    const login = _.get(build, "commit.committer.person.chatId.screenName");
+    if (!login || isDmDisabled(build.commit.committer.person.chatId, DirectMessagePreferences.build.id)) {
         return Promise.resolve(null);
     }
 
     let emojiStyle = "default";
-    const teamPreferences = _.get(build, "commit.author.person.chatId.chatTeam.preferences") as
+    const teamPreferences = _.get(build, "commit.committer.person.chatId.chatTeam.preferences") as
         graphql.NotifyPusherOnBuild.Preferences[];
     if (teamPreferences) {
         const lifecyclePreferences = teamPreferences.find(p => p.name === LifecyclePreferencesName);
@@ -464,15 +464,15 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
 
     const slackMessage: SlackMessage = {
         // tslint:disable-next-line:max-line-length
-        text: `${build.buildUrl ? url(build.buildUrl, label) : label} of your push to ${url(repoUrl(repo), repoSlug(repo))} failed`,
+        text: `${build.buildUrl ? url(build.buildUrl, label) : label} of your commit to ${url(repoUrl(repo), repoSlug(repo))} failed`,
         attachments: [
             {
-                author_name: `@${commit.author.login}`,
-                author_link: userUrl(repo, commit.author.login),
-                author_icon: avatarUrl(repo, commit.author.login),
+                author_name: `@${commit.committer.login}`,
+                author_link: userUrl(repo, commit.committer.login),
+                author_icon: avatarUrl(repo, commit.committer.login),
                 text: message,
                 mrkdwn_in: ["text"],
-                fallback: `${label} of your push failed`,
+                fallback: `${label} of your commit failed`,
                 color,
                 footer: repoAndChannelFooter(repo),
                 footer_icon: commitIcon(repo),
@@ -484,7 +484,7 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
     const msgId =
         `user_message/build/${login}/${repo.owner}/${repo.name}/${build._id}`;
     return ctx.messageClient.send(slackMessage,
-        addressSlackUsers(build.commit.author.person.chatId.chatTeam.id, login),
+        addressSlackUsers(build.commit.committer.person.chatId.chatTeam.id, login),
         { id: msgId });
 }
 
