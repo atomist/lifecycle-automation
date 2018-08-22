@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Raise PR doesn't show for sdm only builds. [#240](https://github.com/atomist/lifecycle-automation/issues/240)
+-   Notify committer not author on failed build. [#62](https://github.com/atomist/lifecycle-automation/issues/62)
 
 ## [0.9.5](https://github.com/atomist/lifecycle-automation/compare/0.9.4...0.9.5) - 2018-08-02
 
