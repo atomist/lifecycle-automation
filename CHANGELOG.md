@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.9.5...HEAD)
 
+### Added
+
+-   Allow other merge strategies for the Auto merge functionality. [#144](https://github.com/atomist/lifecycle-automation/issues/144)
+
 ### Fixed
 
 -   Raise PR doesn't show for sdm only builds. [#240](https://github.com/atomist/lifecycle-automation/issues/240)
