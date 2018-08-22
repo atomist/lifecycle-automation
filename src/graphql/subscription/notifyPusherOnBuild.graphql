@@ -10,7 +10,7 @@ subscription notifyPusherOnBuild {
     commit {
       sha
       message
-      author {
+      committer {
         login
         person {
           chatId {

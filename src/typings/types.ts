@@ -9552,10 +9552,10 @@ export namespace NotifyPusherOnBuild {
     __typename?: "Commit";
     sha?: string | null;
     message?: string | null;
-    author?: Author | null;
+    committer?: Committer | null;
   };
 
-  export type Author = {
+  export type Committer = {
     __typename?: "SCMId";
     login?: string | null;
     person?: Person | null;
