@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.9.5...HEAD)
 
+### Fixed
+
+-   Raise PR doesn't show for sdm only builds. [#240](https://github.com/atomist/lifecycle-automation/issues/240)
+
 ## [0.9.5](https://github.com/atomist/lifecycle-automation/compare/0.9.4...0.9.5) - 2018-08-02
 
 ## [0.9.4](https://github.com/atomist/lifecycle-automation/compare/0.9.3...0.9.4) - 2018-07-31
