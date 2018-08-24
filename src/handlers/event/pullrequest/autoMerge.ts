@@ -29,7 +29,8 @@ import * as github from "../../command/github/gitHubApi";
 
 export const AutoMergeLabel = "auto-merge:on-approve";
 export const AutoMergeCheckSuccessLabel = "auto-merge:on-check-success";
-export const AutoMergeTag = "[auto-merge:merge]";
+export const AutoMergeTag = `[${AutoMergeLabel}]`;
+export const AutoMergeCheckSuccessTag = `[${AutoMergeCheckSuccessLabel}]`;
 
 export const AutoMergeMethodLabel = "auto-merge-method:";
 export const AutoMergeMethods = ["merge", "rebase", "squash"];
@@ -39,7 +40,7 @@ export function autoMerge(pr: graphql.AutoMergeOnReview.PullRequest, token: stri
         // Couple of rules for auto-merging
 
         // 1. at least one approved review if PR isn't set to merge on successful build
-        if (isPrTagged(pr, AutoMergeLabel)) {
+        if (isPrTagged(pr, AutoMergeLabel, AutoMergeTag)) {
             if (!pr.reviews || pr.reviews.length === 0) {
                 return Promise.resolve(Success);
             } else if (pr.reviews.some(r => r.state !== "approved")) {
@@ -110,27 +111,30 @@ export function autoMerge(pr: graphql.AutoMergeOnReview.PullRequest, token: stri
 }
 
 export function isPrAutoMergeEnabled(pr: graphql.AutoMergeOnReview.PullRequest): boolean {
-    return isPrTagged(pr, AutoMergeLabel) || isPrTagged(pr, AutoMergeCheckSuccessLabel);
+    return isPrTagged(pr, AutoMergeLabel, AutoMergeTag)
+        || isPrTagged(pr, AutoMergeCheckSuccessLabel, AutoMergeCheckSuccessTag);
 }
 
-function isPrTagged(pr: graphql.AutoMergeOnReview.PullRequest, label: string = AutoMergeLabel) {
+function isPrTagged(pr: graphql.AutoMergeOnReview.PullRequest,
+                    label: string = AutoMergeLabel,
+                    tag: string = AutoMergeTag) {
     // 0. check labels
     if (pr.labels && pr.labels.some(l => l.name === label)) {
         return true;
     }
 
     // 1. check body and title for auto merge marker
-    if (isTagged(pr.title) || isTagged(pr.body)) {
+    if (isTagged(pr.title, tag) || isTagged(pr.body, tag)) {
         return true;
     }
 
     // 2. PR comment that contains the merger
-    if (pr.comments && pr.comments.some(c => isTagged(c.body))) {
+    if (pr.comments && pr.comments.some(c => isTagged(c.body, tag))) {
         return true;
     }
 
     // 3. Commit message containing the auto merge marker
-    if (pr.commits && pr.commits.some(c => isTagged(c.message))) {
+    if (pr.commits && pr.commits.some(c => isTagged(c.message, tag))) {
         return true;
     }
 
@@ -148,8 +152,8 @@ function mergeMethod(pr: graphql.AutoMergeOnReview.PullRequest): "merge" | "reba
     return "merge";
 }
 
-function isTagged(msg: string) {
-    return msg && msg.indexOf(AutoMergeTag) >= 0;
+function isTagged(msg: string, tag: string) {
+    return msg && msg.indexOf(tag) >= 0;
 }
 
 function reviewComment(pr: graphql.AutoMergeOnReview.PullRequest): string {
