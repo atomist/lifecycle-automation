@@ -72,7 +72,7 @@ export const LifecycleActionPreferences = {
             id: "release",
             name: "Create GitHub Release",
             description: "Create a release on GitHub for the given Git tag",
-            enabled: true,
+            enabled: false,
         },
         new_tag: {
             id: "new_tag",
