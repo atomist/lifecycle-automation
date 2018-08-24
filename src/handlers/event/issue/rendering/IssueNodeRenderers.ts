@@ -32,7 +32,7 @@ import {
     issueUrl,
     linkGitHubUsers,
     linkIssues,
-    removeAtomistMarkers,
+    removeMarkers,
     repoAndlabelsAndAssigneesFooter,
     userUrl,
 } from "../../../../util/helpers";
@@ -101,7 +101,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                 const attachment: Attachment = {
                     color,
                     pretext,
-                    text: node.state !== "closed" ? removeAtomistMarkers(linkIssues(body, repo)) : undefined,
+                    text: node.state !== "closed" ? removeMarkers(linkIssues(body, repo)) : undefined,
                     author_name,
                     author_icon,
                     author_link,

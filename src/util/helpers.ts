@@ -644,11 +644,11 @@ export function getGitHubUsers(msg: string = ""): string[] {
     return _.uniq(allMentions);
 }
 
-const AtomistMarkerExp = /(\[atomist:[a-zA-Z_\-:#()\/]*\])/gi;
+const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
 
-export function removeAtomistMarkers(body: string): string {
+export function removeMarkers(body: string): string {
     if (body) {
-        return body.replace(AtomistMarkerExp, "");
+        return body.replace(MarkerExp, "").trim();
     } else {
         return null;
     }

@@ -27,7 +27,7 @@ import {
     isDmDisabled,
     linkGitHubUsers,
     linkIssues,
-    removeAtomistMarkers,
+    removeMarkers,
     replaceChatIdWithGitHubId,
     repoSlackLink,
     truncateCommitMessage,
@@ -1047,13 +1047,13 @@ He, <@${screenName}> that is, is not a bad slide guitarist.
 
     });
 
-    describe("removeAtomistMarkers", () => {
+    describe("removeMarkers", () => {
 
         it("should remove one marker", () => {
             const body = `This is some test text
 [atomist:generated]
 in line with some other text`;
-            assert.equal(removeAtomistMarkers(body), `This is some test text
+            assert.equal(removeMarkers(body), `This is some test text
 
 in line with some other text`);
         });
@@ -1062,7 +1062,7 @@ in line with some other text`);
             const body = `This is some test text
 [atomist:generated][atomist:add-pcf-manifest]
 in line with some other text`;
-            assert.equal(removeAtomistMarkers(body), `This is some test text
+            assert.equal(removeMarkers(body), `This is some test text
 
 in line with some other text`);
         });
@@ -1072,7 +1072,7 @@ in line with some other text`);
 [atomist:generated]
 in line with some other text
 [atomist:generated]`;
-            assert.equal(removeAtomistMarkers(body), `This is some test text
+            assert.equal(removeMarkers(body), `This is some test text
 
 in line with some other text
 `);
