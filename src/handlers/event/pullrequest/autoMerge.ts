@@ -82,7 +82,7 @@ export function autoMerge(pr: graphql.AutoMergeOnReview.PullRequest, token: stri
 * ${statusComment(pr)}
 
 [${AtomistGeneratedLabel}] [${isPrTagged(
-    pr, AutoMergeCheckSuccessLabel) ? AutoMergeCheckSuccessLabel : AutoMergeLabel}]`;
+    pr, AutoMergeCheckSuccessLabel, AutoMergeCheckSuccessTag) ? AutoMergeCheckSuccessLabel : AutoMergeLabel}]`;
 
                         return api.issues.createComment({
                             owner: pr.repo.owner,
