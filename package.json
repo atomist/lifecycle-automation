@@ -20,11 +20,11 @@
     "kubernetes"
   ],
   "dependencies": {
-    "@atomist/automation-client": "0.21.4",
-    "@atomist/automation-client-ext-dashboard": "0.1.1-20180808061340",
-    "@atomist/automation-client-ext-eventlog": "0.1.0-20180801095151",
-    "@atomist/automation-client-ext-logzio": "0.1.3-20180808192153",
-    "@atomist/automation-client-ext-raven": "0.1.0-20180613131132",
+    "@atomist/automation-client": "^0.21.7",
+    "@atomist/automation-client-ext-dashboard": "^0.1.1",
+    "@atomist/automation-client-ext-eventlog": "^0.1.0",
+    "@atomist/automation-client-ext-logzio": "^0.1.3",
+    "@atomist/automation-client-ext-raven": "^0.1.0",
     "@atomist/slack-messages": "^0.12.1",
     "@octokit/rest": "^14.0.9",
     "base64-js": "^1.2.1",
