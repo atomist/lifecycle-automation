@@ -648,7 +648,7 @@ const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
 
 export function removeMarkers(body: string): string {
     if (body) {
-        return body.replace(MarkerExp, "").trim();
+        return body.replace(MarkerExp, "");
     } else {
         return null;
     }
