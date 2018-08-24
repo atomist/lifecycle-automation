@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.3...HEAD)
 
+### Changed
+
+-   Disable GitHub release button by default. [#6c5617b](https://github.com/atomist/lifecycle-automation/commit/6c5617b897751108c06c4bf823db97376015c86a)
+
 ## [0.10.3](https://github.com/atomist/lifecycle-automation/compare/0.10.2...0.10.3) - 2018-08-24
 
 ## [0.10.2](https://github.com/atomist/lifecycle-automation/compare/0.10.1...0.10.2) - 2018-08-24
