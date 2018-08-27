@@ -418,7 +418,7 @@ export function prAuthorReviewNotification(id: string,
                 return ctx.messageClient.send(
                     slackMessage,
                     addressSlackUsers(pr.author.person.chatId.chatTeam.id, login),
-                    { id: msgId });
+                    { id: msgId, post: "always" });
             }
             return Promise.resolve(null);
         });
