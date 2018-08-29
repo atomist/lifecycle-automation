@@ -2,7 +2,11 @@
   "name": "@atomist/lifecycle-automation",
   "description": "Atomist automations displaying development and operations lifecycle messages in chat",
   "version": "0.10.6",
-  "author": "Atomist",
+  "author": {
+    "name": "Atomist",
+    "email": "support@atomist.com",
+    "url": "https://atomist.com/"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
