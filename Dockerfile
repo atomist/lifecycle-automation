@@ -23,7 +23,7 @@ ENTRYPOINT [ "dumb-init", "node", "--trace-warnings", "--expose_gc", "--optimize
 
 CMD ["node_modules/.bin/atm-start"]
 
-RUN npm install -g npm@6.4.0
+RUN npm install -g npm@6.4.1
 
 COPY package.json package-lock.json ./
 
