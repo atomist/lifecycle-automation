@@ -16,13 +16,10 @@
 
 import { HandlerContext } from "@atomist/automation-client/HandlerContext";
 import { addressSlackUsers, buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages";
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
-    bold,
-    SlackMessage,
-    url,
-} from "@atomist/slack-messages/SlackMessages";
+    Action,
+    githubToSlack,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { LifecyclePreferencesName } from "../handlers/command/slack/ToggleCustomEmojiEnablement";
 import { RestartTravisBuild } from "../handlers/command/travis/RestartTravisBuild";
