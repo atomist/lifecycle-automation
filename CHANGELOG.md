@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.5...HEAD)
 
+### Fixed
+
+-   Requiring github auth for "@atomist link repos" when it's a bitbucket only team. [#243](https://github.com/atomist/lifecycle-automation/issues/243)
+
 ## [0.10.5](https://github.com/atomist/lifecycle-automation/compare/0.10.4...0.10.5) - 2018-08-27
 
 ## [0.10.4](https://github.com/atomist/lifecycle-automation/compare/0.10.3...0.10.4) - 2018-08-24
