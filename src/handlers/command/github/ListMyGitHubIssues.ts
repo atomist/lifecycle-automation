@@ -34,7 +34,7 @@ import {
     escape,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as formatDate from "format-date";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";

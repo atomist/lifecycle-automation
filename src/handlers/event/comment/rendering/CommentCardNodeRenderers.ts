@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
     bold,
+    githubToSlack,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import {
     Action,
     addCollaborator,
@@ -34,7 +34,8 @@ import {
     avatarUrl,
     issueUrl,
     linkGitHubUsers,
-    linkIssues, prUrl,
+    linkIssues,
+    prUrl,
     repoUrl,
 } from "../../../../util/helpers";
 import * as github from "../../../command/github/gitHubApi";
@@ -124,23 +125,23 @@ export class IssueCommentCardNodeRenderer extends AbstractIdentifiableContributi
                     id: node.gitHubId,
                     content: "+1",
                 })
-                .then(result => {
-                    card.reactions = (result.data || []).map(r => ({
-                        avatar: r.user.avatar_url,
-                        login: r.user.login,
-                        reaction: "+1",
-                    }));
+                    .then(result => {
+                        card.reactions = (result.data || []).map(r => ({
+                            avatar: r.user.avatar_url,
+                            login: r.user.login,
+                            reaction: "+1",
+                        }));
 
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
-                            avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
 
-                    return card;
-                })
-                .catch(err => msg);
+                        return card;
+                    })
+                    .catch(err => msg);
             });
     }
 }
@@ -211,23 +212,23 @@ export class PullRequestCommentCardNodeRenderer extends AbstractIdentifiableCont
                     id: node.gitHubId,
                     content: "+1",
                 })
-                .then(result => {
-                    card.reactions = (result.data || []).map(r => ({
-                        avatar: r.user.avatar_url,
-                        login: r.user.login,
-                        reaction: "+1",
-                    }));
+                    .then(result => {
+                        card.reactions = (result.data || []).map(r => ({
+                            avatar: r.user.avatar_url,
+                            login: r.user.login,
+                            reaction: "+1",
+                        }));
 
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
-                            avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
 
-                    return card;
-                })
-                .catch(err => msg);
+                        return card;
+                    })
+                    .catch(err => msg);
             });
     }
 }

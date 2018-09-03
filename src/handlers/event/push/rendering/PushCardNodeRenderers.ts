@@ -15,7 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client/internal/util/logger";
-import { url } from "@atomist/slack-messages/SlackMessages";
+import { url } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     Action,

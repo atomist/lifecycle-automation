@@ -24,8 +24,10 @@ import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
 import * as graphql from "../../../typings/types";
-import { PullRequestCardLifecycleHandler,
-    PullRequestLifecycleHandler } from "./PullRequestLifecycle";
+import {
+    PullRequestCardLifecycleHandler,
+    PullRequestLifecycleHandler,
+} from "./PullRequestLifecycle";
 
 /**
  * Send a lifecycle message on Commit events.

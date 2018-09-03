@@ -15,11 +15,11 @@
  */
 
 import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import { Action } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
-    ActionContributor,
-    RendererContext, SlackActionContributor,
+    RendererContext,
+    SlackActionContributor,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 

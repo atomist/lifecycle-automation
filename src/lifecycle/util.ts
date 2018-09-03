@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { ChatTeam, Preferences } from "./Lifecycle";
+import {
+    ChatTeam,
+    Preferences,
+} from "./Lifecycle";
 
 export function chatTeamsToPreferences(chatTeams: ChatTeam[] = []): { [teamId: string]: Preferences[] } {
     const preferences: {

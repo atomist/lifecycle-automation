@@ -41,14 +41,17 @@ import {
     CloseActionContributor,
     CommentActionContributor,
     DisplayMoreActionContributor,
-    LabelActionContributor, MoveActionContributor,
-    ReactionActionContributor, RelatedActionContributor,
+    LabelActionContributor,
+    MoveActionContributor,
+    ReactionActionContributor,
+    RelatedActionContributor,
     ReopenActionContributor,
 } from "./rendering/IssueActionContributors";
 import {
     CommentCardNodeRenderer,
     CorrelationsCardNodeRenderer,
-    IssueCardNodeRenderer, ReferencedIssueCardNodeRenderer,
+    IssueCardNodeRenderer,
+    ReferencedIssueCardNodeRenderer,
 } from "./rendering/IssueCardNodeRenderers";
 import {
     IssueNodeRenderer,

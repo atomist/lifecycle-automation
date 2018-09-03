@@ -20,7 +20,10 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
-import { CardMessage, newCardMessage } from "../../../lifecycle/card";
+import {
+    CardMessage,
+    newCardMessage,
+} from "../../../lifecycle/card";
 import {
     CardActionContributorWrapper,
     Lifecycle,
@@ -43,8 +46,11 @@ import {
     ThumbsUpActionContributor,
 } from "./rendering/PullRequestActionContributors";
 import {
-    BuildCardNodeRenderer, CommitCardNodeRenderer,
-    PullRequestCardNodeRenderer, ReviewCardNodeRenderer, StatusCardNodeRenderer,
+    BuildCardNodeRenderer,
+    CommitCardNodeRenderer,
+    PullRequestCardNodeRenderer,
+    ReviewCardNodeRenderer,
+    StatusCardNodeRenderer,
 } from "./rendering/PullRequestCardNodeRenderers";
 import {
     BuildNodeRenderer,

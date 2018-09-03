@@ -15,10 +15,13 @@
  */
 
 import { isSlackMessage } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as mmh3 from "murmurhash3js";
-import { CardMessage, isCardMessage } from "../lifecycle/card";
+import {
+    CardMessage,
+    isCardMessage,
+} from "../lifecycle/card";
 
 /**
  * Wraps all links inside the given SlackMessage with Mixpanel tracking links

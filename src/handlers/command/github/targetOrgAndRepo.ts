@@ -16,7 +16,6 @@
 
 import {
     HandlerContext,
-    HandlerResult,
     MappedParameter,
     MappedParameters,
     Parameter,

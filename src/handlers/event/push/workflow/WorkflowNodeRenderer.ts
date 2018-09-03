@@ -15,17 +15,21 @@
  */
 
 import {
-    Action, Attachment,
+    Action,
+    Attachment,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
-    NodeRenderer,
-    RendererContext, SlackNodeRenderer,
+    RendererContext,
+    SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import { chartUrlFromWorkflow } from "./ChartUrl";
-import {circleWorkflowtoStages, PushTrigger} from "./CircleWorkflow";
+import {
+    circleWorkflowtoStages,
+    PushTrigger,
+} from "./CircleWorkflow";
 
 export class WorkflowNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushFields.Workflow> {

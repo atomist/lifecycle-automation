@@ -18,10 +18,9 @@ import { logger } from "@atomist/automation-client";
 import {
     Action,
     Attachment,
-    emoji,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     Action as CardAction,

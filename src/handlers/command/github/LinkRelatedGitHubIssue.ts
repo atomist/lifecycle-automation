@@ -36,11 +36,11 @@ import {
     buttonForCommand,
     menuForCommand,
 } from "@atomist/automation-client/spi/message/MessageClient";
+import * as slack from "@atomist/slack-messages";
 import {
     bold,
     SlackMessage,
 } from "@atomist/slack-messages";
-import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import { IssueRelationship } from "../../../ingesters/issueRelationship";
 import * as types from "../../../typings/types";

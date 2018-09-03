@@ -22,7 +22,7 @@ import {
     menuForCommand,
     MenuSpecification,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import { Action } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
@@ -31,11 +31,11 @@ import {
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import { isGitHubCom } from "../../../../util/helpers";
-import { AssignToMe, AssignToMeGitHubIssue } from "../../../command/github/AssignToMeGitHubIssue";
-import { CreateRelatedGitHubIssue } from "../../../command/github/CreateRelatedGitHubIssue";
+import {
+    AssignToMe,
+    AssignToMeGitHubIssue,
+} from "../../../command/github/AssignToMeGitHubIssue";
 import * as github from "../../../command/github/gitHubApi";
-import { LinkRelatedGitHubIssue } from "../../../command/github/LinkRelatedGitHubIssue";
-import { MoveGitHubIssue } from "../../../command/github/MoveGitHubIssue";
 import { OwnerParameters } from "../../../command/github/targetOrgAndRepo";
 import { LifecycleActionPreferences } from "../../preferences";
 

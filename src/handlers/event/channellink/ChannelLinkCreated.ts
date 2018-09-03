@@ -32,12 +32,12 @@ import {
     addressSlackChannels,
     buttonForCommand,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages";
 import {
+    Action,
     bold,
     codeLine,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import {

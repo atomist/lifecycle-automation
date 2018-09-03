@@ -18,7 +18,7 @@ import {
     Action,
     Attachment,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import {
     extractLinkedIssues,
     issueUrl,

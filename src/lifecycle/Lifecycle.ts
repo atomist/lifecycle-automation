@@ -19,17 +19,18 @@ import {
     Failure,
     failure,
     HandleEvent,
+    HandlerContext,
     HandlerResult,
     Secret,
     Secrets,
     Success,
     SuccessPromise,
 } from "@atomist/automation-client";
-import { HandlerContext } from "@atomist/automation-client";
 import { logger } from "@atomist/automation-client/internal/util/logger";
 import {
     addressEvent,
-    addressSlackChannels, CommandReferencingAction,
+    addressSlackChannels,
+    CommandReferencingAction,
     isSlackMessage,
     MessageClient,
     MessageOptions,
@@ -37,7 +38,7 @@ import {
 import {
     Action,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as config from "config";
 import * as deepmerge from "deepmerge";
 import * as _ from "lodash";

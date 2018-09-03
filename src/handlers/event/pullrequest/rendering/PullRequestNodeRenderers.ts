@@ -15,15 +15,15 @@
  */
 
 import { guid } from "@atomist/automation-client/internal/util/string";
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
     Action,
     Attachment,
     emoji,
     escape,
+    githubToSlack,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
@@ -38,7 +38,6 @@ import {
     branchUrl,
     commitIcon,
     commitUrl,
-    isGenerated,
     linkGitHubUsers,
     linkIssues,
     prUrl,

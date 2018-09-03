@@ -16,7 +16,11 @@
 
 import { HandlerContext } from "@atomist/automation-client";
 import { guid } from "@atomist/automation-client/internal/util/string";
-import { Action, SlackMessage, url } from "@atomist/slack-messages";
+import {
+    Action,
+    SlackMessage,
+    url,
+} from "@atomist/slack-messages";
 import * as base64 from "./base64";
 
 export function success(title: string, text: string, actions?: Action[]): SlackMessage {

@@ -16,21 +16,14 @@
 
 import {
     EventFired,
-    HandlerContext,
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import {
-    CardMessage,
-    newCardMessage,
-} from "../../../lifecycle/card";
-import {
-    CardActionContributorWrapper,
     Lifecycle,
     LifecycleHandler,
 } from "../../../lifecycle/Lifecycle";
 import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
-import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
 import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../typings/types";
@@ -43,7 +36,6 @@ import {
     LabelActionContributor,
     ReactionActionContributor,
 } from "./rendering/CommentActionContributors";
-import { IssueCommentCardNodeRenderer, PullRequestCommentCardNodeRenderer } from "./rendering/CommentCardNodeRenderers";
 import {
     IssueCommentNodeRenderer,
     PullRequestCommentNodeRenderer,

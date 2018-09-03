@@ -19,7 +19,7 @@ import {
     menuForCommand,
     MenuSpecification,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import { Action } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
     RendererContext,
@@ -177,13 +177,13 @@ export class LabelActionContributor extends AbstractCommentActionContributor
                 .forEach(l => options.push({ text: l.name, value: l.name }));
         } else {
             options = [{ text: "bug", value: "bug" }, { text: "duplicate", value: "duplicate" },
-            { text: "enhancement", value: "enhancement" }, { text: "help wanted", value: "help wanted" },
-            { text: "invalid", value: "invalid" }, { text: "question", value: "question" },
-            { text: "wontfix", value: "wontfix" }];
+                { text: "enhancement", value: "enhancement" }, { text: "help wanted", value: "help wanted" },
+                { text: "invalid", value: "invalid" }, { text: "question", value: "question" },
+                { text: "wontfix", value: "wontfix" }];
         }
 
-        const existingLabels = (labels != null ? labels.
-            sort((l1, l2) => l1.name.localeCompare(l2.name)).map(l => l.name) : []);
+        const existingLabels = (labels != null ? labels.sort(
+            (l1, l2) => l1.name.localeCompare(l2.name)).map(l => l.name) : []);
         const unusedLabels = options.filter(l => existingLabels.indexOf(l.text) < 0);
 
         const menu: MenuSpecification = {
@@ -192,9 +192,10 @@ export class LabelActionContributor extends AbstractCommentActionContributor
                 text: "Remove",
                 options: existingLabels.map(l => ({ text: l, value: l })),
             },
-            {
-                text: "Add",
-                options: unusedLabels },
+                {
+                    text: "Add",
+                    options: unusedLabels,
+                },
             ],
             role: "global",
         };
@@ -275,28 +276,28 @@ export class ReactionActionContributor extends AbstractCommentActionContributor
             id: comment.gitHubId,
             content: "+1",
         })
-        .then(result =>
-            [buttonForCommand(
-                { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
-                "ReactGitHubIssueComment",
-                {
-                    comment: comment.gitHubId,
-                    repo: repo.name,
-                    owner: repo.owner,
-                    reaction: "+1",
-                })],
-        )
-        .catch(() =>
-            [buttonForCommand(
-                { text: `:+1:`, role: "react" },
-                "ReactGitHubIssueComment",
-                {
-                    comment: comment.gitHubId,
-                    repo: repo.name,
-                    owner: repo.owner,
-                    reaction: "+1",
-                })],
-        );
+            .then(result =>
+                [buttonForCommand(
+                    { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
+                    "ReactGitHubIssueComment",
+                    {
+                        comment: comment.gitHubId,
+                        repo: repo.name,
+                        owner: repo.owner,
+                        reaction: "+1",
+                    })],
+            )
+            .catch(() =>
+                [buttonForCommand(
+                    { text: `:+1:`, role: "react" },
+                    "ReactGitHubIssueComment",
+                    {
+                        comment: comment.gitHubId,
+                        repo: repo.name,
+                        owner: repo.owner,
+                        reaction: "+1",
+                    })],
+            );
     }
 
     protected createMenu(comment: graphql.CommentToIssueCommentLifecycle.Comment,

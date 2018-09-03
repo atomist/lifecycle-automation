@@ -16,9 +16,9 @@
 
 import { HandlerContext } from "@atomist/automation-client";
 import { logger } from "@atomist/automation-client/internal/util/logger";
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
-import { DefaultGitHubApiUrl, DefaultGitHubUrl } from "../handlers/command/github/gitHubApi";
+import { DefaultGitHubApiUrl } from "../handlers/command/github/gitHubApi";
 import { DirectMessagePreferences } from "../handlers/event/preferences";
 import * as graphql from "../typings/types";
 

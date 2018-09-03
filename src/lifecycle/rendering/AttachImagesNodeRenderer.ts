@@ -17,10 +17,8 @@
 import {
     Action,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
-import {
-    extractImageUrls,
-} from "../../util/helpers";
+} from "@atomist/slack-messages";
+import { extractImageUrls } from "../../util/helpers";
 import {
     AbstractIdentifiableContribution,
     RendererContext,

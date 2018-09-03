@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
     Action,
     Attachment,
     bold,
+    githubToSlack,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
     RendererContext,

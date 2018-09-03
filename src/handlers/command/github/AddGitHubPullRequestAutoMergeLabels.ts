@@ -16,13 +16,11 @@
 
 import {
     ConfigurableCommandHandler,
-    failure,
     HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
     MappedParameters,
-    Parameter,
     Secret,
     Secrets,
     Success,

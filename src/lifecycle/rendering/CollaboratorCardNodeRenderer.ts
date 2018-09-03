@@ -18,9 +18,14 @@ import {
     avatarUrl,
     userUrl,
 } from "../../util/helpers";
-import { Action, addCollaborator, CardMessage } from "../card";
 import {
-    AbstractIdentifiableContribution, CardNodeRenderer,
+    Action,
+    addCollaborator,
+    CardMessage,
+} from "../card";
+import {
+    AbstractIdentifiableContribution,
+    CardNodeRenderer,
     RendererContext,
 } from "../Lifecycle";
 

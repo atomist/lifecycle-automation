@@ -26,7 +26,7 @@ import {
     Destination,
     MessageOptions,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { fail } from "power-assert";

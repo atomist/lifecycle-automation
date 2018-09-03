@@ -20,7 +20,7 @@ import {
     menuForCommand,
     MenuSpecification,
 } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import { Action } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
@@ -29,8 +29,8 @@ import {
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import { isGenerated } from "../../../../util/helpers";
-import { DefaultGitHubApiUrl } from "../../../command/github/gitHubApi";
 import * as github from "../../../command/github/gitHubApi";
+import { DefaultGitHubApiUrl } from "../../../command/github/gitHubApi";
 import { LifecycleActionPreferences } from "../../preferences";
 import { isPrAutoMergeEnabled } from "../autoMerge";
 

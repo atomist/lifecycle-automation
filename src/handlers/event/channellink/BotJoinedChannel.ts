@@ -36,8 +36,8 @@ import {
     OptionGroup,
 } from "@atomist/automation-client/spi/message/MessageClient";
 
+import * as slack from "@atomist/slack-messages";
 import { user } from "@atomist/slack-messages";
-import * as slack from "@atomist/slack-messages/SlackMessages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import {

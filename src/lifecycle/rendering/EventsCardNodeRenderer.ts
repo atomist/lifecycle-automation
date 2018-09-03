@@ -17,7 +17,10 @@
 import { url } from "@atomist/slack-messages";
 import { renderCommitMessage } from "../../handlers/event/push/rendering/PushCardNodeRenderers";
 import * as graphql from "../../typings/types";
-import { avatarUrl, tagUrl } from "../../util/helpers";
+import {
+    avatarUrl,
+    tagUrl,
+} from "../../util/helpers";
 import {
     Action,
     CardMessage,

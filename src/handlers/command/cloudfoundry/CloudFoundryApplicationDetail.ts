@@ -19,7 +19,11 @@ import {
     HandlerContext,
     Tags,
 } from "@atomist/automation-client";
-import { Attachment, SlackMessage, url } from "@atomist/slack-messages/SlackMessages";
+import {
+    Attachment,
+    SlackMessage,
+    url,
+} from "@atomist/slack-messages";
 import * as cf from "cf-nodejs-client";
 import { AbstractCloudFoundryApplicationCommand } from "./AbstractCloudFoundryApplicationCommand";
 

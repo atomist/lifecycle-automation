@@ -18,7 +18,7 @@ import { EventFired } from "@atomist/automation-client/HandleEvent";
 import { HandlerContext } from "@atomist/automation-client/HandlerContext";
 import { Destination, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
 import { MessageClientSupport } from "@atomist/automation-client/spi/message/MessageClientSupport";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { DeletedBranchToBranchLifecycle } from "../../../../src/handlers/event/branch/DeletedBranchToBranchLifecycle";

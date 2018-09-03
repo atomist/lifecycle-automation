@@ -15,7 +15,7 @@
  */
 
 import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import { Action } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
     RendererContext,

@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
+    githubToSlack,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
-import { Action, CardMessage, Event } from "../../../../lifecycle/card";
+import {
+    Action,
+    CardMessage,
+    Event,
+} from "../../../../lifecycle/card";
 import {
     AbstractIdentifiableContribution,
     CardNodeRenderer,
@@ -28,8 +32,9 @@ import {
 import * as graphql from "../../../../typings/types";
 import {
     avatarUrl,
-    branchUrl, issueUrl,
-    linkGitHubUsers, prUrl,
+    branchUrl,
+    linkGitHubUsers,
+    prUrl,
     userUrl,
 } from "../../../../util/helpers";
 import { renderCommitMessage } from "../../push/rendering/PushCardNodeRenderers";

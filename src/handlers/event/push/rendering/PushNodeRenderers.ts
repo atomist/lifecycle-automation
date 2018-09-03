@@ -24,7 +24,7 @@ import {
     escape,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as config from "config";
 import * as _ from "lodash";
 import {

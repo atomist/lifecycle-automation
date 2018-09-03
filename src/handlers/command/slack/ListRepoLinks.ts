@@ -23,7 +23,8 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Success, Tags,
+    Success,
+    Tags,
 } from "@atomist/automation-client";
 import { guid } from "@atomist/automation-client/internal/util/string";
 import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
@@ -32,7 +33,7 @@ import {
     Attachment,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { repoUrl } from "../../../util/helpers";

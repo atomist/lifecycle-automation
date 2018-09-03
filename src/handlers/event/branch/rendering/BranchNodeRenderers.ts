@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { bold } from "@atomist/slack-messages";
 import {
     Action,
     Attachment,
+    bold,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
     RendererContext,

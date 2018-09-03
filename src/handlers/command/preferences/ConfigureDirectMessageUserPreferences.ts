@@ -33,7 +33,7 @@ import {
     Action,
     Attachment,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { DirectMessagePreferences } from "../../event/preferences";

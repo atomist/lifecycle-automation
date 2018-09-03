@@ -19,7 +19,7 @@ import assert = require("power-assert");
 import * as graphql from "../../../../src/typings/types";
 
 import { Destination, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import { ChannelLinkCreated } from "../../../../src/handlers/event/channellink/ChannelLinkCreated";
 
 describe("ChannelLinkCreated", () => {

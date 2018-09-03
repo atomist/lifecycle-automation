@@ -31,7 +31,7 @@ import {
     DefaultSlackMessageClient,
     MessageClientSupport,
 } from "@atomist/automation-client/spi/message/MessageClientSupport";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as cluster from "cluster";
 import {

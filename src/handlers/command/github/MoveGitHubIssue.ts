@@ -29,8 +29,8 @@ import {
     Tags,
 } from "@atomist/automation-client";
 import { commandHandlerFrom } from "@atomist/automation-client/onCommand";
+import * as slack from "@atomist/slack-messages";
 import { codeLine } from "@atomist/slack-messages";
-import * as slack from "@atomist/slack-messages/SlackMessages";
 import {
     success,
     warning,

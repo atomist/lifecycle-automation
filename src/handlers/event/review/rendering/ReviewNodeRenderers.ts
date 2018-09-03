@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
 import {
     Action,
     Attachment,
     bold,
+    githubToSlack,
     SlackMessage,
     url,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
-    NodeRenderer,
-    RendererContext, SlackNodeRenderer,
+    RendererContext,
+    SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import {

@@ -15,7 +15,7 @@
  */
 
 import {
-    CommandHandler, ConfigurableCommandHandler,
+    ConfigurableCommandHandler,
     Failure,
     HandleCommand,
     HandlerContext,

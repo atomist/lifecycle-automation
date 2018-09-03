@@ -17,7 +17,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
 
 import { DefaultBotName } from "../../../../src/handlers/command/slack/LinkRepo";
 import {

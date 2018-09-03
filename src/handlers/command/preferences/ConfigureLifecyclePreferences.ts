@@ -29,14 +29,14 @@ import {
 import { guid } from "@atomist/automation-client/internal/util/string";
 import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
-import { url } from "@atomist/slack-messages";
 import {
     Action,
     Attachment,
     bold,
     channel,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+    url,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import {
@@ -44,7 +44,10 @@ import {
     LifecyclePreferences,
     LifecycleRendererPreferences,
 } from "../../event/preferences";
-import { isCustomEmojisEnabled, ToggleCustomEmojiEnablement } from "../slack/ToggleCustomEmojiEnablement";
+import {
+    isCustomEmojisEnabled,
+    ToggleCustomEmojiEnablement,
+} from "../slack/ToggleCustomEmojiEnablement";
 
 /**
  * Configure DM preferences for the invoking user.

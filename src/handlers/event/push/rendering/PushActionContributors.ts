@@ -18,8 +18,10 @@ import { ApolloGraphClient } from "@atomist/automation-client/graph/ApolloGraphC
 import { logger } from "@atomist/automation-client/internal/util/logger";
 import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
-import { Action } from "@atomist/slack-messages/SlackMessages";
+import {
+    Action,
+    githubToSlack,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as semver from "semver";
 import {

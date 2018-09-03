@@ -15,8 +15,10 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { githubToSlack } from "@atomist/slack-messages/Markdown";
-import { url } from "@atomist/slack-messages/SlackMessages";
+import {
+    githubToSlack,
+    url,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     Action,

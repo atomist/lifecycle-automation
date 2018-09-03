@@ -29,11 +29,11 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { url } from "@atomist/slack-messages";
 import {
     codeLine,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+    url,
+} from "@atomist/slack-messages";
 import * as graphql from "../../../typings/types";
 import {
     loadChatIdByChatId,

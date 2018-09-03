@@ -26,7 +26,7 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
 
 @CommandHandler("Replace repo channel linking prompt with instructions")
 @Tags("slack", "repo")

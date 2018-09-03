@@ -32,7 +32,7 @@ import {
     Attachment,
     codeLine,
     SlackMessage,
-} from "@atomist/slack-messages/SlackMessages";
+} from "@atomist/slack-messages";
 import * as graphql from "../../../typings/types";
 import * as github from "./gitHubApi";
 import { ListMyGitHubIssues } from "./ListMyGitHubIssues";

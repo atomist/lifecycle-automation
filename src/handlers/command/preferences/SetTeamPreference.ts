@@ -29,7 +29,7 @@ import {
 } from "@atomist/automation-client";
 import { guid } from "@atomist/automation-client/internal/util/string";
 import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import { SlackMessage } from "@atomist/slack-messages/SlackMessages";
+import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 
