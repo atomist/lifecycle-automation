@@ -23,8 +23,6 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Secret,
-    Secrets,
     Success,
     Tags,
 } from "@atomist/automation-client";
@@ -63,9 +61,6 @@ export class CreateChannel implements HandleCommand {
     @MappedParameter(MappedParameters.SlackUser)
     public userId: string;
 
-    @Secret(Secrets.userToken("repo"))
-    public githubToken: string;
-
     @Parameter({
         displayName: "Channel Name",
         description: "name of the channel to create",
@@ -99,7 +94,6 @@ export class CreateChannel implements HandleCommand {
                     associateRepo.owner = this.owner;
                     associateRepo.apiUrl = this.apiUrl;
                     associateRepo.userId = this.userId;
-                    associateRepo.githubToken = this.githubToken;
                     associateRepo.repo = this.repo;
                     associateRepo.msgId = this.msgId;
                     associateRepo.teamId = this.teamId;

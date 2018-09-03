@@ -29,7 +29,7 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
 import { DefaultGitHubApiUrl } from "../github/gitHubApi";
 import { LinkRepo } from "./LinkRepo";
 
@@ -86,7 +86,6 @@ export class LinkOwnerRepo implements HandleCommand {
         linkRepo.channelId = this.channelId;
         linkRepo.channelName = this.channelName;
         linkRepo.apiUrl = apiUrl;
-        linkRepo.githubToken = this.githubToken;
         linkRepo.name = name;
         linkRepo.owner = owner;
         linkRepo.msgId = this.msgId;

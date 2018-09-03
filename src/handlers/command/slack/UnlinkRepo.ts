@@ -23,13 +23,11 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Secret,
-    Secrets,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import * as slack from "@atomist/slack-messages/SlackMessages";
-import { codeLine } from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
+import { codeLine } from "@atomist/slack-messages";
 import * as graphql from "../../../typings/types";
 import { success } from "../../../util/messages";
 import {
@@ -59,9 +57,6 @@ export class UnlinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.GitHubRepositoryProvider)
     public provider: string;
 
-    @Secret(Secrets.userToken("repo"))
-    public githubToken: string;
-
     @Parameter({
         displayName: "Repository Name",
         description: "name of the repository to link",
@@ -76,7 +71,7 @@ export class UnlinkRepo implements HandleCommand {
     public msgId: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
-        return checkRepo(this.githubToken, this.apiUrl, this.provider, this.name, this.owner, ctx)
+        return checkRepo(this.apiUrl, this.provider, this.name, this.owner, ctx)
             .then(repoExists => {
                 if (!repoExists) {
                     return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx));

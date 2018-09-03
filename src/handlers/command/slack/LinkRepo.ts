@@ -23,12 +23,10 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Secret,
-    Secrets,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import * as slack from "@atomist/slack-messages/SlackMessages";
+import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
 import { isChannel } from "../../../util/slack";
 import {
@@ -96,9 +94,6 @@ export class LinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.GitHubAllRepositories)
     public name: string;
 
-    @Secret(Secrets.userToken("repo"))
-    public githubToken: string;
-
     @Parameter({ pattern: /^\S*$/, displayable: false, required: false })
     public msgId: string;
 
@@ -112,7 +107,7 @@ export class LinkRepo implements HandleCommand {
             return ctx.messageClient.addressChannels(err, this.channelName)
                 .then(() => Success, failure);
         }
-        return checkRepo(this.githubToken, this.apiUrl, this.provider, this.name, this.owner, ctx)
+        return checkRepo(this.apiUrl, this.provider, this.name, this.owner, ctx)
             .then(repoExists => {
                 if (!repoExists) {
                     return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx), { dashboard: false });

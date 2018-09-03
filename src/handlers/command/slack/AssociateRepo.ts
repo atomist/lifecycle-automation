@@ -23,27 +23,23 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
-    Secret,
-    Secrets,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import { codeLine } from "@atomist/slack-messages";
-import * as slack from "@atomist/slack-messages/SlackMessages";
-import * as _ from "lodash";
 import {
-    InviteUserToSlackChannel,
-    RepoByNameOwnerAndProviderId,
-} from "../../../typings/types";
+    bold,
+    channel,
+    codeLine,
+    SlackMessage,
+} from "@atomist/slack-messages";
+import { InviteUserToSlackChannel } from "../../../typings/types";
 import { warning } from "../../../util/messages";
 import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
 import { addBotToSlackChannel } from "./AddBotToChannel";
 import { linkSlackChannelToRepo } from "./LinkRepo";
 
-export function checkRepo(token: string,
-                          url: string,
+export function checkRepo(url: string,
                           providerId: string,
                           name: string,
                           owner: string,
@@ -67,7 +63,7 @@ export function checkRepo(token: string,
     return Promise.resolve(true);
 }
 
-export function noRepoMessage(repo: string, owner: string, ctx: HandlerContext): slack.SlackMessage {
+export function noRepoMessage(repo: string, owner: string, ctx: HandlerContext): SlackMessage {
     return warning(
         "Link Repository",
         `The repository ${codeLine(`${owner}/${repo}`)} either does not exist or you do not have access to it.`,
@@ -114,9 +110,6 @@ export class AssociateRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackUser)
     public userId: string;
 
-    @Secret(Secrets.userToken("repo"))
-    public githubToken: string;
-
     @Parameter({
         displayName: "Repository Name",
         description: "name of the repository to link",
@@ -137,7 +130,7 @@ export class AssociateRepo implements HandleCommand {
             return ctx.messageClient.respond(err, { dashboard: false })
                 .then(() => Success, failure);
         }
-        return checkRepo(this.githubToken, this.apiUrl, this.provider, this.repo, this.owner, ctx)
+        return checkRepo(this.apiUrl, this.provider, this.repo, this.owner, ctx)
             .then(repoExists => {
                 if (!repoExists) {
                     return ctx.messageClient.respond(noRepoMessage(this.repo, this.owner, ctx), { dashboard: false });
@@ -147,8 +140,8 @@ export class AssociateRepo implements HandleCommand {
                                 ctx, this.teamId, this.channelId, this.repo, this.owner, this.provider))
                     .then(() => inviteUserToSlackChannel(ctx, this.teamId, this.channelId, this.userId))
                     .then(() => {
-                        const msg = `Linked ${slack.bold(this.owner + "/" + this.repo)} to ` +
-                            `${slack.channel(this.channelId)} and invited you to the channel.`;
+                        const msg = `Linked ${bold(this.owner + "/" + this.repo)} to ` +
+                            `${channel(this.channelId)} and invited you to the channel.`;
                         const screenName = extractScreenNameFromMapRepoMessageId(this.msgId);
                         if (screenName) {
                             return ctx.messageClient.addressUsers(
