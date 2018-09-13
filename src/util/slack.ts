@@ -24,3 +24,18 @@
 export function isChannel(id: string): boolean {
     return id.indexOf("C") === 0 || id.indexOf("G") === 0;
 }
+
+/**
+ * Determine if the chat system is Slack.
+ *
+ * This is a simple implementation right now in order to add basic support
+ * for Microsoft Teams. In future we prefer not to use the channel id
+ * format to determine the chat system, but have Atomist provide us with the
+ * type of chat system in the request message.
+ *
+ * @param id channel ID
+ * @return true if the system is Slack
+ */
+export function isSlack(id: string): boolean {
+    return !id.includes("skype");
+}
