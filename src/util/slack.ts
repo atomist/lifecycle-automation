@@ -37,5 +37,5 @@ export function isChannel(id: string): boolean {
  * @return true if the system is Slack
  */
 export function isSlack(id: string): boolean {
-    return id.indexOf("skype") === -1;
+    return !id.includes("skype");
 }

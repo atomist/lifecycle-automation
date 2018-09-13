@@ -17,7 +17,10 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { isChannel, isSlack } from "../../src/util/slack";
+import {
+    isChannel,
+    isSlack,
+} from "../../src/util/slack";
 
 describe("slack", () => {
 

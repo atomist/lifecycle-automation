@@ -28,7 +28,10 @@ import {
 } from "@atomist/automation-client";
 import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
-import { isChannel, isSlack } from "../../../util/slack";
+import {
+    isChannel,
+    isSlack,
+} from "../../../util/slack";
 import {
     checkRepo,
     noRepoMessage,
