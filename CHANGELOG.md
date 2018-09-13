@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.6...HEAD)
 
+### Added
+
+-   Permit the linking of MS Teams channels to repo with the LinkRepo command. [#245](https://github.com/atomist/lifecycle-automation/issues/245)
+
 ## [0.10.6](https://github.com/atomist/lifecycle-automation/compare/0.10.5...0.10.6) - 2018-09-05
 
 ### Fixed
