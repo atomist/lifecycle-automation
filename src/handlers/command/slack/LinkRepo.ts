@@ -28,7 +28,7 @@ import {
 } from "@atomist/automation-client";
 import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
-import { isChannel } from "../../../util/slack";
+import { isChannel, isSlack } from "../../../util/slack";
 import {
     checkRepo,
     noRepoMessage,
@@ -101,7 +101,7 @@ export class LinkRepo implements HandleCommand {
     public msg: string = "";
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
-        if (!isChannel(this.channelId)) {
+        if (isSlack(this.channelId) && !isChannel(this.channelId)) {
             const err = "The Atomist Bot can only link repositories to public or private channels. " +
                 "Please try again in a public or private channel.";
             return ctx.messageClient.addressChannels(err, this.channelName)

@@ -17,7 +17,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { isChannel } from "../../src/util/slack";
+import { isChannel, isSlack } from "../../src/util/slack";
 
 describe("slack", () => {
 
@@ -42,6 +42,20 @@ describe("slack", () => {
         it("should accept private group chats", () => {
             ["GR8W1D0PN", "G767PBQBG"].forEach(i => {
                 assert(isChannel(i));
+            });
+        });
+
+    });
+
+    describe("checkIsSlack", () => {
+
+        it("should report false for any MS Team channel ID", () => {
+            assert(!isSlack("12:a347e001ebcd4f02ab3a086c1ddb0a03@thread.skype"));
+        });
+
+        it("should report true for any other type of channel ID (good or bad)", () => {
+            ["D1LL0N123", "GR8W1D0PN", "C2KDBBLBA", "ch4r1i3", "not a real id", "" ].forEach(i => {
+                assert(isSlack(i));
             });
         });
 
