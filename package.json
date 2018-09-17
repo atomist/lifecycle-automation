@@ -82,7 +82,7 @@
     "fmt": "npm-run-all fmt:gql",
     "fmt:gql": "prettier --write \"**/*.graphql\"",
     "git:info": "atm-git-info",
-    "gql:copy": "copyfiles \"src/**/*.graphql\" build/src",
+    "gql:copy": "copyfiles \"src/**/*.graphql\" build",
     "gql:gen": "atm-gql-gen",
     "lint": "npm-run-all lint:ts lint:gql",
     "lint:ts": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
