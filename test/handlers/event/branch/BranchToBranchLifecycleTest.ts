@@ -17,7 +17,11 @@
 import { EventFired } from "@atomist/automation-client/HandleEvent";
 import { HandlerContext } from "@atomist/automation-client/HandlerContext";
 import { guid } from "@atomist/automation-client/internal/util/string";
-import { Destination, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+    SlackDestination,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import {
     DefaultSlackMessageClient,
     MessageClientSupport,

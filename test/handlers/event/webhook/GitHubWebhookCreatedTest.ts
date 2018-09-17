@@ -17,7 +17,10 @@
 import "mocha";
 import assert = require("power-assert");
 
-import { MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    MessageOptions,
+    SlackDestination,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { Destination } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
 import { GitHubWebhookCreated } from "../../../../src/handlers/event/webhook/GitHubWebhookCreated";

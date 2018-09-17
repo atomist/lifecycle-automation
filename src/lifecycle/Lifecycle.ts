@@ -16,8 +16,8 @@
 
 import {
     EventFired,
-    Failure,
     failure,
+    Failure,
     HandleEvent,
     HandlerContext,
     HandlerResult,

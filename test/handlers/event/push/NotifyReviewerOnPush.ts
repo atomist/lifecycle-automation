@@ -16,7 +16,11 @@
 
 import { EventFired } from "@atomist/automation-client/HandleEvent";
 import { HandlerContext } from "@atomist/automation-client/HandlerContext";
-import { Destination, MessageOptions, SlackDestination } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+    SlackDestination,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import { MessageClientSupport } from "@atomist/automation-client/spi/message/MessageClientSupport";
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";

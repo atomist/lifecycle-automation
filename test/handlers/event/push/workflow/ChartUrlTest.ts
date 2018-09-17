@@ -16,8 +16,8 @@
 
 import "mocha";
 import * as assert from "power-assert";
-import {chartUrlFromWorkflow} from "../../../../../src/handlers/event/push/workflow/ChartUrl";
-import {WorkflowStage} from "../../../../../src/handlers/event/push/workflow/WorkflowStage";
+import { chartUrlFromWorkflow } from "../../../../../src/handlers/event/push/workflow/ChartUrl";
+import { WorkflowStage } from "../../../../../src/handlers/event/push/workflow/WorkflowStage";
 import { BuildStatus } from "../../../../../src/typings/types";
 
 describe("ChartUrl", () => {

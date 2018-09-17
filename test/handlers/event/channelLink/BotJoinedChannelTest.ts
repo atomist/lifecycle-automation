@@ -20,7 +20,10 @@ import * as assert from "power-assert";
 import * as slack from "@atomist/slack-messages";
 import axios from "axios";
 
-import { Destination, MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    Destination,
+    MessageOptions,
+} from "@atomist/automation-client/spi/message/MessageClient";
 import {
     BotJoinedChannel,
     fuzzyChannelRepoMatch,
