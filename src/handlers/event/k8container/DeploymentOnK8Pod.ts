@@ -24,6 +24,7 @@ import {
 } from "@atomist/automation-client";
 import { subscription } from "@atomist/automation-client/graph/graphQL";
 import { addressEvent } from "@atomist/automation-client/spi/message/MessageClient";
+import * as _ from "lodash";
 import {
     Deployment,
     DeploymentRootType,
@@ -52,10 +53,27 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
                 ts: Date.now(),
             };
 
-            await ctx.messageClient.send(deployment, addressEvent(DeploymentRootType));
+            if (await !isDeployed(deployment, ctx)) {
+                await ctx.messageClient.send(deployment, addressEvent(DeploymentRootType));
+            }
         }
 
         return SuccessPromise;
     }
 
+}
+
+async function isDeployed(deployment: Deployment,
+                          ctx: HandlerContext): Promise<boolean> {
+    const result = await ctx.graphClient.query<graphql.Deployment.Query, graphql.Deployment.Variables>({
+        name: "deployment",
+        variables: {
+            owner: [deployment.commit.owner],
+            repo: [deployment.commit.repo],
+            sha: [deployment.commit.sha],
+            environment: [deployment.environment],
+        },
+    });
+
+    return !!_.get(result, "Deployment[0].commit[0]");
 }

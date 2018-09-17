@@ -5946,6 +5946,32 @@ export namespace ChatTeamPreferences {
     value?: string | null;
   };
 }
+export namespace Deployment {
+  export type Variables = {
+    owner: string[];
+    repo: string[];
+    sha: string[];
+    environment: string[];
+  };
+
+  export type Query = {
+    __typename?: "Query";
+    Deployment?: Deployment[] | null;
+  };
+
+  export type Deployment = {
+    __typename?: "Deployment";
+    commit?: Commit | null;
+    environment?: string | null;
+  };
+
+  export type Commit = {
+    __typename?: "DeploymentCommit";
+    sha?: string | null;
+    owner?: string | null;
+    repo?: string | null;
+  };
+}
 export namespace EmailAndGitHubIdByUserId {
   export type Variables = {
     userId: string;

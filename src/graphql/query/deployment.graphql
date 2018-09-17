@@ -1,0 +1,15 @@
+query Deployment(
+  $owner: [String]!
+  $repo: [String]!
+  $sha: [String]!
+  $environment: [String]!
+) {
+  Deployment(environment: $environment) {
+    commit(owner: $owner, repo: $repo, sha: $sha) @required {
+      sha
+      owner
+      repo
+    }
+    environment
+  }
+}
