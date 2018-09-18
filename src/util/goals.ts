@@ -45,49 +45,60 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
     // only maintain latest version of SdmGoals
     const goals = lastGoalSet(allGoals);
 
-    // sort envs first
-    const envConditions = _.flatten(goals.filter(g => g.preConditions && g.preConditions.length > 0)
-        .map(g => g.preConditions.map(p => {
-            if (g.environment !== p.environment) {
-                return[g.environment, p.environment];
-            } else {
-                return null;
-            }
-        })));
-    const sortedEnvs = toposort(envConditions.filter(c => c !== null)).reverse();
+    try {
 
-    // if we have no conditions between goals of different environments we need up manually add all envs
-    if (sortedEnvs.length === 0) {
-        sortedEnvs.push(..._.uniq(goals.map(g => g.environment)));
-    }
-
-    // add the goals per each environment
-    const sortedGoalsWithEnvironment: EnvironmentWithGoals[] = sortedEnvs.map(env => ({
-        environment: env,
-        goals: goals.filter(g => g.environment === env),
-    }));
-
-    // sort goals within an environment
-    sortedGoalsWithEnvironment.forEach(env => {
-        const goalConditions = _.flatten(env.goals.map(g => {
-            const preConditions = (g.preConditions || []).filter(p => p.environment === env.environment);
-            if (preConditions.length > 0) {
-                return preConditions.map(p => [g.name, p.name]) as any;
-            } else {
-                return [g.name, env.environment] as any;
-            }
-        }));
-        const sortedGoals = toposort(goalConditions).reverse();
-        env.goals = _.sortBy<SdmGoalsByCommit.SdmGoal>(env.goals, g => sortedGoals.indexOf(g.name))
-            .sort((g1, g2) => {
-                if ((!g1.preConditions || g1.preConditions.length === 0)
-                    && (!g2.preConditions || g2.preConditions.length === 0)) {
-                    return g1.name.localeCompare(g2.name);
+        // sort envs first
+        const envConditions = _.flatten(goals.filter(g => g.preConditions && g.preConditions.length > 0)
+            .map(g => g.preConditions.map(p => {
+                // console.log(`${g.name} ${g.environment} -> ${g.preConditions.map(pc => pc.environment).join(", ")}`);
+                if (g.environment !== p.environment) {
+                    return [g.environment, p.environment];
                 } else {
-                    return 0;
+                    return null;
                 }
-        });
-    });
+            })));
+        // console.log(JSON.stringify(envConditions));
+        const sortedEnvs = toposort(envConditions.filter(c => c !== null)).reverse();
 
-    return sortedGoalsWithEnvironment;
+        // if we have no conditions between goals of different environments we need up manually add all envs
+        if (sortedEnvs.length === 0) {
+            sortedEnvs.push(..._.uniq(goals.map(g => g.environment)));
+        }
+
+        // add the goals per each environment
+        const sortedGoalsWithEnvironment: EnvironmentWithGoals[] = sortedEnvs.map(env => ({
+            environment: env,
+            goals: goals.filter(g => g.environment === env),
+        }));
+
+        // sort goals within an environment
+        sortedGoalsWithEnvironment.forEach(env => {
+            const goalConditions = _.flatten(env.goals.map(g => {
+                const preConditions = (g.preConditions || []).filter(p => p.environment === env.environment);
+                if (preConditions.length > 0) {
+                    return preConditions.map(p => [g.name, p.name]) as any;
+                } else {
+                    return [g.name, env.environment] as any;
+                }
+            }));
+            const sortedGoals = toposort(goalConditions).reverse();
+            env.goals = _.sortBy<SdmGoalsByCommit.SdmGoal>(env.goals, g => sortedGoals.indexOf(g.name))
+                .sort((g1, g2) => {
+                    if ((!g1.preConditions || g1.preConditions.length === 0)
+                        && (!g2.preConditions || g2.preConditions.length === 0)) {
+                        return g1.name.localeCompare(g2.name);
+                    } else {
+                        return 0;
+                    }
+                });
+        });
+
+        return sortedGoalsWithEnvironment;
+
+    } catch (err) {
+        return [{
+            environment: goals[0].environment,
+            goals,
+        }]
+    }
 }
