@@ -99,6 +99,6 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
         return [{
             environment: goals[0].environment,
             goals,
-        }]
+        }];
     }
 }
