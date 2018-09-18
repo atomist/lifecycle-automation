@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.8...HEAD)
 
+### Fixed
+
+-   Catch cyclic goal sorting issues and render unsorted. [#34dea29](https://github.com/atomist/lifecycle-automation/commit/34dea29815b29b00200f425bb4a9e82f75c26619)
+
 ## [0.10.8](https://github.com/atomist/lifecycle-automation/compare/0.10.7...0.10.8) - 2018-09-17
 
 ## [0.10.7](https://github.com/atomist/lifecycle-automation/compare/0.10.6...0.10.7) - 2018-09-17
