@@ -41,7 +41,6 @@ export function lastGoalSet(allGoals: SdmGoalsByCommit.SdmGoal[] = []): SdmGoals
 }
 
 export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): EnvironmentWithGoals[] {
-
     // only maintain latest version of SdmGoals
     const goals = lastGoalSet(allGoals);
 
@@ -50,26 +49,39 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
         // sort envs first
         const envConditions = _.flatten(goals.filter(g => g.preConditions && g.preConditions.length > 0)
             .map(g => g.preConditions.map(p => {
-                // console.log(`${g.name} ${g.environment} -> ${g.preConditions.map(pc => pc.environment).join(", ")}`);
                 if (g.environment !== p.environment) {
                     return [g.environment, p.environment];
                 } else {
                     return null;
                 }
-            })));
-        // console.log(JSON.stringify(envConditions));
-        const sortedEnvs = toposort(envConditions.filter(c => c !== null)).reverse();
+            }))).filter(c => c !== null);
 
-        // if we have no conditions between goals of different environments we need up manually add all envs
-        if (sortedEnvs.length === 0) {
-            sortedEnvs.push(..._.uniq(goals.map(g => g.environment)));
+        let sortedGoalsWithEnvironment: EnvironmentWithGoals[];
+        try {
+            const sortedEnvs = toposort(envConditions).reverse();
+
+            // if we have no conditions between goals of different environments we need up manually add all envs
+            if (sortedEnvs.length === 0) {
+                sortedEnvs.push(..._.uniq(goals.map(g => g.environment)));
+            }
+
+            // add the goals per each environment
+            sortedGoalsWithEnvironment = sortedEnvs.map(env => ({
+                environment: env,
+                goals: goals.filter(g => g.environment === env),
+            }));
+        } catch (err) {
+            // this means we can't order the envs due to some cyclic dependencies
+            sortedGoalsWithEnvironment = [{
+                environment: goals[0].environment,
+                goals: goals.map(g => {
+                    if (g.preConditions) {
+                        g.preConditions.forEach(pc => pc.environment = goals[0].environment);
+                    }
+                    return g;
+                }),
+            }];
         }
-
-        // add the goals per each environment
-        const sortedGoalsWithEnvironment: EnvironmentWithGoals[] = sortedEnvs.map(env => ({
-            environment: env,
-            goals: goals.filter(g => g.environment === env),
-        }));
 
         // sort goals within an environment
         sortedGoalsWithEnvironment.forEach(env => {
@@ -78,7 +90,7 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
                 if (preConditions.length > 0) {
                     return preConditions.map(p => [g.name, p.name]) as any;
                 } else {
-                    return [g.name, env.environment] as any;
+                    return [[g.name, env.environment]] as any;
                 }
             }));
             const sortedGoals = toposort(goalConditions).reverse();
@@ -87,6 +99,12 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
                     if ((!g1.preConditions || g1.preConditions.length === 0)
                         && (!g2.preConditions || g2.preConditions.length === 0)) {
                         return g1.name.localeCompare(g2.name);
+                    } else if (!g1.preConditions || g1.preConditions.length === 0) {
+                        return -1;
+                        return 0;
+                    } else if (!g2.preConditions || g2.preConditions.length === 0) {
+                        return 1;
+
                     } else {
                         return 0;
                     }
