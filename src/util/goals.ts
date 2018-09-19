@@ -101,7 +101,6 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): Environmen
                         return g1.name.localeCompare(g2.name);
                     } else if (!g1.preConditions || g1.preConditions.length === 0) {
                         return -1;
-                        return 0;
                     } else if (!g2.preConditions || g2.preConditions.length === 0) {
                         return 1;
 
