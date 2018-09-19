@@ -53,7 +53,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
                 ts: Date.now(),
             };
 
-            if (await !isDeployed(deployment, ctx)) {
+            if (!(await isDeployed(deployment, ctx))) {
                 await ctx.messageClient.send(deployment, addressEvent(DeploymentRootType));
             }
         }
@@ -66,7 +66,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
 async function isDeployed(deployment: Deployment,
                           ctx: HandlerContext): Promise<boolean> {
     const result = await ctx.graphClient.query<graphql.Deployment.Query, graphql.Deployment.Variables>({
-        name: "deployment",
+        name: "Deployment",
         variables: {
             owner: [deployment.commit.owner],
             repo: [deployment.commit.repo],
@@ -75,5 +75,5 @@ async function isDeployed(deployment: Deployment,
         },
     });
 
-    return !!_.get(result, "Deployment[0].commit[0]");
+    return result.Deployment && result.Deployment.length > 0;
 }
