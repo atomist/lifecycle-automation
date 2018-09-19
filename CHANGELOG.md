@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.9...HEAD)
 
+### Fixed
+
+-   Better goal sorting within envs. [#cdffb54](https://github.com/atomist/lifecycle-automation/commit/cdffb54676ef1c82ece44833b06c74a49917b25e)
+
 ## [0.10.9](https://github.com/atomist/lifecycle-automation/compare/0.10.8...0.10.9) - 2018-09-18
 
 ### Fixed
