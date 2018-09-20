@@ -53,7 +53,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
                 ts: Date.now(),
             };
 
-            if (!(await isDeployed(deployment, ctx))) {
+            if (container.ready && !(await isDeployed(deployment, ctx))) {
                 await ctx.messageClient.send(deployment, addressEvent(DeploymentRootType));
             }
         }

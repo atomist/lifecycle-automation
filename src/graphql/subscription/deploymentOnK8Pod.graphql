@@ -5,6 +5,7 @@ subscription deploymentOnK8Pod {
     containers(state: "running") @required {
       name
       state
+      ready
       timestamp
       image {
         commits @required {

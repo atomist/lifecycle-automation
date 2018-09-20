@@ -8629,6 +8629,7 @@ export namespace DeploymentOnK8Pod {
     __typename?: "K8Container";
     name?: string | null;
     state?: string | null;
+    ready?: boolean | null;
     timestamp?: string | null;
     image?: Image | null;
   };
