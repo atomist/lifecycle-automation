@@ -245,7 +245,8 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             // Now each one
             const lines = statuses.map(s => {
                 let details = "";
-                if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure) && s.phase) {
+                if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
+                    s.state === SdmGoalState.stopped) && s.phase) {
                     details += ` | ${s.phase}`;
                 }
                 if (s.externalUrl) {
@@ -303,7 +304,7 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             if (creator) {
                 attachment.footer =
                     `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
-                    lastGoals[0].goalSetId.slice(0, 7)} | ${duration}`;
+                        lastGoals[0].goalSetId.slice(0, 7)} | ${duration}`;
             } else {
                 attachment.footer = duration;
             }
@@ -369,7 +370,8 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
             // Now each one
             sg.goals.forEach(s => {
                 let details = "";
-                if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure) && s.phase) {
+                if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
+                    s.state === SdmGoalState.stopped) && s.phase) {
                     details += ` | ${s.phase}`;
                 }
                 if (s.approval && s.approval.userId) {
