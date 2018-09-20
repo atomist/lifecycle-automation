@@ -5002,9 +5002,11 @@ export enum SdmGoalState {
   approved = "approved",
   waiting_for_approval = "waiting_for_approval",
   failure = "failure",
+  stopped = "stopped",
   planned = "planned",
   in_process = "in_process",
-  skipped = "skipped"
+  skipped = "skipped",
+  canceled = "canceled"
 }
 
 /* Ordering Enum for Tag */
@@ -5327,14 +5329,14 @@ export enum _Ordering {
   asc = "asc"
 }
 
-export enum CommitIssueRelationshipType {
-  fixes = "fixes",
-  references = "references"
-}
-
 export enum SdmDeployState {
   requested = "requested",
   disabled = "disabled"
+}
+
+export enum CommitIssueRelationshipType {
+  fixes = "fixes",
+  references = "references"
 }
 
 export namespace AddBotToSlackChannel {

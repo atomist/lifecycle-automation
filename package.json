@@ -31,6 +31,7 @@
     "@atomist/automation-client-ext-raven": "^0.1.0",
     "@atomist/slack-messages": "1.0.0",
     "@octokit/rest": "^14.0.9",
+    "apollo-codegen": "^0.20.2",
     "base64-js": "^1.2.1",
     "cf-nodejs-client": "^0.13.0",
     "config": "^2.0.1",
