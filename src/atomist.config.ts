@@ -15,7 +15,6 @@
  */
 
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
-// import { configureEventLog } from "@atomist/automation-client-ext-eventlog";
 import { configureLogzio } from "@atomist/automation-client-ext-logzio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
 import * as secured from "@atomist/automation-client/secured";
@@ -379,12 +378,6 @@ export const configuration: any = {
     ],
     postProcessors: [
         configureDashboardNotifications,
-        /*async config => {
-            if (config.environment !== "gke-int-production_production") {
-                return await configureEventLog()(config);
-            }
-            return config;
-        },*/
         configureRaven,
         configureLogzio,
     ],
