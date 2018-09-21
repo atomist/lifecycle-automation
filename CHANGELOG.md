@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.15...HEAD)
 
+### Removed
+
+-   Remove event log. [#246](https://github.com/atomist/lifecycle-automation/issues/246)
+
 ## [0.10.15](https://github.com/atomist/lifecycle-automation/compare/0.10.14...0.10.15) - 2018-09-20
 
 ## [0.10.14](https://github.com/atomist/lifecycle-automation/compare/0.10.13...0.10.14) - 2018-09-20
