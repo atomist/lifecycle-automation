@@ -408,11 +408,11 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
             } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
                 state = SdmGoalState.waiting_for_approval;
             } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
-                state = SdmGoalState.stopped;
+                state = SdmGoalState.approved;
             } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
+                state = SdmGoalState.stopped;
+            } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
                 state = SdmGoalState.canceled;
-            } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
-                state = SdmGoalState.waiting_for_approval;
             } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
                 state = SdmGoalState.in_process;
             } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
