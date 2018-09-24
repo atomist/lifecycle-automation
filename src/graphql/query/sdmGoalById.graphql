@@ -38,7 +38,6 @@ query sdmGoalById($id: ID!) {
       userId
       channelId
     }
-    approvalRequired
     preApproval {
       correlationId
       registration
@@ -48,7 +47,6 @@ query sdmGoalById($id: ID!) {
       userId
       channelId
     }
-    preApprovalRequired
     provenance {
       correlationId
       registration
