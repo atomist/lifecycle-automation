@@ -44,5 +44,15 @@ fragment SdmGoalFields on SdmGoal {
     version
   }
   approvalRequired
+  preApproval {
+    channelId
+    correlationId
+    name
+    registration
+    ts
+    userId
+    version
+  }
+  preApprovalRequired
   data
 }

@@ -236,7 +236,8 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
 
             // "planned" | "requested" | "in_process" | "waiting_for_approval" | "success" | "failure" | "skipped";
             const pending = statuses.filter(s =>
-                ["planned", "requested", "in_process", "waiting_for_approval", "approved"].includes(s.state)).length;
+                ["planned", "requested", "in_process", "waiting_for_approval",
+                    "approved", "waiting_for_pre_approval", "pre_approved"].includes(s.state)).length;
             const success = statuses.filter(s =>
                 ["success", "skipped", "canceled", "stopped"].includes(s.state)).length;
             const error = statuses.length - pending - success;
@@ -251,6 +252,13 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                 }
                 if (s.externalUrl) {
                     details = ` | ${url(s.externalUrl, "Link")}`;
+                }
+                if (s.preApproval && s.preApproval.userId) {
+                    if (s.state === SdmGoalState.pre_approved) {
+                        details += ` | start requested by @${s.preApproval.userId}`;
+                    } else {
+                        details += ` | started by @${s.preApproval.userId}`;
+                    }
                 }
                 if (s.approval && s.approval.userId) {
                     if (s.state === SdmGoalState.approved) {
@@ -317,21 +325,23 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
 
     private emoji(state: string): string {
         switch (state) {
-            case "planned":
-            case "requested":
+            case SdmGoalState.planned:
+            case SdmGoalState.requested:
                 return EMOJI_SCHEME[this.emojiStyle].build.requested;
-            case "in_process":
+            case SdmGoalState.in_process:
                 return EMOJI_SCHEME[this.emojiStyle].build.started;
-            case "approved":
-            case "waiting_for_approval":
+            case SdmGoalState.approved:
+            case SdmGoalState.waiting_for_approval:
+            case SdmGoalState.pre_approved:
+            case SdmGoalState.waiting_for_approval:
                 return EMOJI_SCHEME[this.emojiStyle].build.waiting;
-            case "success":
+            case SdmGoalState.success:
                 return EMOJI_SCHEME[this.emojiStyle].build.passed;
-            case "skipped":
+            case SdmGoalState.skipped:
                 return EMOJI_SCHEME[this.emojiStyle].build.skipped;
-            case "canceled":
+            case SdmGoalState.canceled:
                 return EMOJI_SCHEME[this.emojiStyle].build.canceled;
-            case "stopped":
+            case SdmGoalState.stopped:
                 return EMOJI_SCHEME[this.emojiStyle].build.stopped;
             default:
                 return EMOJI_SCHEME[this.emojiStyle].build.failed;
@@ -374,6 +384,13 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                     s.state === SdmGoalState.stopped) && s.phase) {
                     details += ` | ${s.phase}`;
                 }
+                if (s.preApproval && s.preApproval.userId) {
+                    if (s.state === SdmGoalState.pre_approved) {
+                        details += ` | start requested by @${s.preApproval.userId}`;
+                    } else {
+                        details += ` | started by @${s.preApproval.userId}`;
+                    }
+                }
                 if (s.approval && s.approval.userId) {
                     if (s.state === SdmGoalState.approved) {
                         details += ` | approval requested by @${s.approval.userId}`;
@@ -409,6 +426,10 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                 state = SdmGoalState.waiting_for_approval;
             } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
                 state = SdmGoalState.approved;
+            } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+                state = SdmGoalState.waiting_for_pre_approval;
+            } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
+                state = SdmGoalState.pre_approved;
             } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
                 state = SdmGoalState.stopped;
             } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {

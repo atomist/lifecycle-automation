@@ -4998,7 +4998,9 @@ export enum _PushOrdering {
 
 export enum SdmGoalState {
   success = "success",
+  pre_approved = "pre_approved",
   requested = "requested",
+  waiting_for_pre_approval = "waiting_for_pre_approval",
   approved = "approved",
   waiting_for_approval = "waiting_for_approval",
   failure = "failure",
@@ -7502,6 +7504,9 @@ export namespace SdmGoalById {
     retryFeasible?: boolean | null;
     preConditions?: PreConditions[] | null;
     approval?: Approval | null;
+    approvalRequired?: boolean | null;
+    preApproval?: PreApproval | null;
+    preApprovalRequired?: boolean | null;
     provenance?: Provenance[] | null;
     data?: string | null;
   };
@@ -7526,6 +7531,17 @@ export namespace SdmGoalById {
   };
 
   export type Approval = {
+    __typename?: "SdmProvenance";
+    correlationId?: string | null;
+    registration?: string | null;
+    name?: string | null;
+    version?: string | null;
+    ts?: number | null;
+    userId?: string | null;
+    channelId?: string | null;
+  };
+
+  export type PreApproval = {
     __typename?: "SdmProvenance";
     correlationId?: string | null;
     registration?: string | null;
@@ -11494,6 +11510,8 @@ export namespace SdmGoalFields {
     repo?: Repo | null;
     approval?: Approval | null;
     approvalRequired?: boolean | null;
+    preApproval?: PreApproval | null;
+    preApprovalRequired?: boolean | null;
     data?: string | null;
   };
 
@@ -11525,6 +11543,17 @@ export namespace SdmGoalFields {
   };
 
   export type Approval = {
+    __typename?: "SdmProvenance";
+    channelId?: string | null;
+    correlationId?: string | null;
+    name?: string | null;
+    registration?: string | null;
+    ts?: number | null;
+    userId?: string | null;
+    version?: string | null;
+  };
+
+  export type PreApproval = {
     __typename?: "SdmProvenance";
     channelId?: string | null;
     correlationId?: string | null;

@@ -38,6 +38,17 @@ query sdmGoalById($id: ID!) {
       userId
       channelId
     }
+    approvalRequired
+    preApproval {
+      correlationId
+      registration
+      name
+      version
+      ts
+      userId
+      channelId
+    }
+    preApprovalRequired
     provenance {
       correlationId
       registration
