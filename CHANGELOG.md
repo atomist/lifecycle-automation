@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.16...HEAD)
 
+### Added
+
+-   Handle pre approval of goals. [0acb9d5](https://github.com/atomist/lifecycle-automation/commit/0acb9d58c7d677156f4942dae383779f644d9653)
+
 ## [0.10.16](https://github.com/atomist/lifecycle-automation/compare/0.10.15...0.10.16) - 2018-09-21
 
 ### Removed
