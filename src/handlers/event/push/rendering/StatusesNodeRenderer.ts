@@ -333,7 +333,7 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             case SdmGoalState.approved:
             case SdmGoalState.waiting_for_approval:
             case SdmGoalState.pre_approved:
-            case SdmGoalState.waiting_for_approval:
+            case SdmGoalState.waiting_for_pre_approval:
                 return EMOJI_SCHEME[this.emojiStyle].build.waiting;
             case SdmGoalState.success:
                 return EMOJI_SCHEME[this.emojiStyle].build.passed;
