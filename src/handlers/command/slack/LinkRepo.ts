@@ -43,6 +43,7 @@ export function linkSlackChannelToRepo(
     ctx: HandlerContext,
     teamId: string,
     channelId: string,
+    channelName: string,
     repo: string,
     owner: string,
     providerId: string,
@@ -53,6 +54,7 @@ export function linkSlackChannelToRepo(
             variables: {
                 teamId,
                 channelId,
+                channelName,
                 repo,
                 owner,
                 providerId,
@@ -116,7 +118,7 @@ export class LinkRepo implements HandleCommand {
                     return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx), { dashboard: false });
                 }
                 return linkSlackChannelToRepo(
-                    ctx, this.teamId, this.channelId, this.name, this.owner, this.provider)
+                    ctx, this.teamId, this.channelId, this.channelName, this.name, this.owner, this.provider)
                     .then(() => {
                         if (this.msgId) {
                             return ctx.messageClient.addressChannels(

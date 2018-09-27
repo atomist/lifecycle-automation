@@ -98,6 +98,9 @@ export class AssociateRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannel)
     public channelId: string;
 
+    @MappedParameter(MappedParameters.SlackChannelName)
+    public channelName: string;
+
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
 
@@ -137,7 +140,8 @@ export class AssociateRepo implements HandleCommand {
                 }
                 return addBotToSlackChannel(ctx, this.teamId, this.channelId)
                     .then(() => linkSlackChannelToRepo(
-                                ctx, this.teamId, this.channelId, this.repo, this.owner, this.provider))
+                                ctx, this.teamId, this.channelId, this.channelName, this.repo, this.owner,
+                                    this.provider))
                     .then(() => inviteUserToSlackChannel(ctx, this.teamId, this.channelId, this.userId))
                     .then(() => {
                         const msg = `Linked ${bold(this.owner + "/" + this.repo)} to ` +
