@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.18...HEAD)
 
+### Changed
+
+-   Ensuring that ChannelName is passed through to the link repo mutation. [#248](https://github.com/atomist/lifecycle-automation/issues/248)
+
 ## [0.10.18](https://github.com/atomist/lifecycle-automation/compare/0.10.17...0.10.18) - 2018-09-24
 
 ## [0.10.17](https://github.com/atomist/lifecycle-automation/compare/0.10.16...0.10.17) - 2018-09-24
