@@ -5394,6 +5394,7 @@ export namespace LinkSlackChannelToRepo {
   export type Variables = {
     teamId: string;
     channelId: string;
+    channelName: string;
     repo: string;
     owner: string;
     providerId?: string | null;
