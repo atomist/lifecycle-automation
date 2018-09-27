@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.18...HEAD)
 
+### Added
+
+-   Adding missing channelName variable to LinkSlackChannelToRepo mutation. [#249](https://github.com/atomist/lifecycle-automation/issues/249)
+
 ### Changed
 
 -   Ensuring that ChannelName is passed through to the link repo mutation. [#248](https://github.com/atomist/lifecycle-automation/issues/248)
