@@ -1917,6 +1917,10 @@ export interface _PullRequestFilter {
   state_not_starts_with?: string | null /* state_not_starts_with */;
   state_ends_with?: string | null /* state_ends_with */;
   state_not_ends_with?: string | null /* state_not_ends_with */;
+  action?: PullRequestAction | null /* action */;
+  action_not?: PullRequestAction | null /* action_not */;
+  action_in?: PullRequestAction[] | null /* action_in */;
+  action_not_in?: PullRequestAction[] | null /* action_not_in */;
   merged?: boolean | null /* merged */;
   merged_not?: boolean | null /* merged_not */;
   timestamp?: string | null /* timestamp */;
@@ -4601,6 +4605,23 @@ export enum WebhookType {
   repository = "repository"
 }
 
+/* Enum for PullRequestAction */
+export enum PullRequestAction {
+  assigned = "assigned",
+  created = "created",
+  unassigned = "unassigned",
+  review_requested = "review_requested",
+  review_request_removed = "review_request_removed",
+  labeled = "labeled",
+  unlabeled = "unlabeled",
+  opened = "opened",
+  edited = "edited",
+  closed = "closed",
+  reopened = "reopened",
+  synchronize = "synchronize",
+  submitted = "submitted"
+}
+
 /* Enum for MergeStatus */
 export enum MergeStatus {
   can_be_merged = "can_be_merged",
@@ -4910,6 +4931,8 @@ export enum _PullRequestOrdering {
   body_desc = "body_desc",
   state_asc = "state_asc",
   state_desc = "state_desc",
+  action_asc = "action_asc",
+  action_desc = "action_desc",
   merged_asc = "merged_asc",
   merged_desc = "merged_desc",
   timestamp_asc = "timestamp_asc",
@@ -5334,6 +5357,11 @@ export enum _Ordering {
 export enum SdmDeployState {
   requested = "requested",
   disabled = "disabled"
+}
+
+export enum EcsTerraformTarget {
+  GREEN = "GREEN",
+  BLUE = "BLUE"
 }
 
 export enum CommitIssueRelationshipType {
@@ -7505,9 +7533,7 @@ export namespace SdmGoalById {
     retryFeasible?: boolean | null;
     preConditions?: PreConditions[] | null;
     approval?: Approval | null;
-    approvalRequired?: boolean | null;
     preApproval?: PreApproval | null;
-    preApprovalRequired?: boolean | null;
     provenance?: Provenance[] | null;
     data?: string | null;
   };

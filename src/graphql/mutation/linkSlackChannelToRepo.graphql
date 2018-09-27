@@ -1,6 +1,7 @@
 mutation linkSlackChannelToRepo(
   $teamId: String!
   $channelId: String!
+  $channelName: String!
   $repo: String!
   $owner: String!
   $providerId: String
@@ -8,6 +9,7 @@ mutation linkSlackChannelToRepo(
   linkSlackChannelToRepo(
     chatTeamId: $teamId
     channelId: $channelId
+    channelName: $channelName
     repo: $repo
     owner: $owner
     providerId: $providerId
@@ -15,3 +17,4 @@ mutation linkSlackChannelToRepo(
     id
   }
 }
+
