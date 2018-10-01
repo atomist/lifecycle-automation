@@ -46,18 +46,15 @@ import {
     repoSlug,
 } from "../../../util/helpers";
 import * as github from "../../command/github/gitHubApi";
-import { LinkOwnerRepo } from "../../command/slack/LinkOwnerRepo";
+import {
+    LinkOwnerRepo,
+    RepoProvider,
+} from "../../command/slack/LinkOwnerRepo";
 import {
     DefaultBotName,
     LinkRepo,
 } from "../../command/slack/LinkRepo";
 import { NoLinkRepo } from "../../command/slack/NoLinkRepo";
-
-export interface RepoApi {
-    name: string;
-    owner: string;
-    api: string;
-}
 
 @EventHandler("Display a helpful message when the bot joins a channel", subscription("botJoinedChannel"))
 @Tags("enrollment")
@@ -112,8 +109,8 @@ I won't be able to do much without GitHub integration, though. Run \`@${botName}
             const orgs = j.channel.team.orgs.filter(o => o);
 
             return Promise.all(orgs.map(o => {
-                const repos: RepoApi[] = [];
-                const apiUrl = (o.provider && o.provider.apiUrl) ? o.provider.apiUrl : undefined;
+                const repos: RepoProvider[] = [];
+                const apiUrl = (o.provider && o.provider.apiUrl) ? o.provider.apiUrl : github.DefaultGitHubApiUrl;
                 const api = github.api(this.orgToken, apiUrl);
                 return ((o.ownerType === "user") ?
                     api.repos.getForUser({ username: o.owner, per_page: 100 }) :
@@ -125,11 +122,14 @@ I won't be able to do much without GitHub integration, though. Run \`@${botName}
                                 login: string;
                             };
                         }
+                        const providerId = (o.provider && o.provider.providerId) ?
+                            o.provider.providerId : github.DefaultGitHubProviderId;
                         const ghRepos = res.data as GitHubRepoResponse[];
                         ghRepos.forEach(ghr => repos.push({
                             name: ghr.name,
                             owner: ghr.owner.login,
-                            api: apiUrl,
+                            apiUrl,
+                            providerId,
                         }));
                         return repos;
                     })
@@ -167,11 +167,15 @@ I don't see any repositories in GitHub${ownerText}.`;
                         const linkRepo = new LinkRepo();
                         const org = orgs.find(o => o.owner === r.owner);
                         const apiUrl = (org && org.provider && org.provider.apiUrl) ?
-                            org.provider.apiUrl : undefined;
-                        linkRepo.apiUrl = apiUrl;
+                            org.provider.apiUrl : github.DefaultGitHubApiUrl;
+                        const providerId = (org && org.provider && org.provider.providerId) ?
+                            org.provider.providerId : github.DefaultGitHubProviderId;
+                        linkRepo.teamId = j.channel.team.id;
                         linkRepo.channelId = j.channel.channelId;
                         linkRepo.channelName = channelName;
                         linkRepo.owner = r.owner;
+                        linkRepo.apiUrl = apiUrl;
+                        linkRepo.provider = providerId;
                         linkRepo.name = r.name;
                         linkRepo.msgId = msgId;
                         linkRepo.msg = helloText;
@@ -183,12 +187,13 @@ I don't see any repositories in GitHub${ownerText}.`;
                             text: "repository...",
                             options: repoOptions(lolRepos),
                         };
-                        const linkRepoSlug = new LinkOwnerRepo();
-                        linkRepoSlug.channelId = j.channel.channelId;
-                        linkRepoSlug.channelName = channelName;
-                        linkRepoSlug.msgId = msgId;
-                        linkRepoSlug.msg = helloText;
-                        actions.push(menuForCommand(menu, linkRepoSlug, "slug"));
+                        const linkOwnerRepo = new LinkOwnerRepo();
+                        linkOwnerRepo.teamId = j.channel.team.id;
+                        linkOwnerRepo.channelId = j.channel.channelId;
+                        linkOwnerRepo.channelName = channelName;
+                        linkOwnerRepo.msgId = msgId;
+                        linkOwnerRepo.msg = helloText;
+                        actions.push(menuForCommand(menu, linkOwnerRepo, "slug"));
                     }
 
                     const noLinkRepo = new NoLinkRepo();
@@ -220,21 +225,16 @@ OK. If you want to link a repository later, type \`${linkCmd}\``;
     }
 }
 
-function repoSlugApi(repo: RepoApi): string {
-    const api = (repo.api) ? repo.api : "";
-    return `${repoSlug(repo)}|${api}`;
-}
-
-export function repoOptions(lol: RepoApi[][]): OptionGroup[] {
+export function repoOptions(lol: RepoProvider[][]): OptionGroup[] {
     return lol.map(repos => {
         if (repos.length < 1) {
-            return null;
+            return undefined;
         }
         const owner = repos[0].owner;
         return {
             text: `${owner}/`,
             options: repos.map(r => {
-                return { text: r.name, value: repoSlugApi(r) };
+                return { text: r.name, value: JSON.stringify(r) };
             }).sort((a, b) => a.text.localeCompare(b.text)),
         };
     }).filter(og => og);

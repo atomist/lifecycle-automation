@@ -33,6 +33,10 @@ import {
     isSlack,
 } from "../../../util/slack";
 import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../github/gitHubApi";
+import {
     checkRepo,
     noRepoMessage,
 } from "./AssociateRepo";
@@ -50,16 +54,16 @@ export function linkSlackChannelToRepo(
 ): Promise<LinkSlackChannelToRepo.Mutation> {
 
     return ctx.graphClient.mutate<LinkSlackChannelToRepo.Mutation, LinkSlackChannelToRepo.Variables>({
-            name: "linkSlackChannelToRepo",
-            variables: {
-                teamId,
-                channelId,
-                channelName,
-                repo,
-                owner,
-                providerId,
-            },
-        });
+        name: "linkSlackChannelToRepo",
+        variables: {
+            teamId,
+            channelId,
+            channelName,
+            repo,
+            owner,
+            providerId,
+        },
+    });
 }
 
 @ConfigurableCommandHandler("Link a repository and channel", {
@@ -112,17 +116,26 @@ export class LinkRepo implements HandleCommand {
             return ctx.messageClient.addressChannels(err, this.channelName)
                 .then(() => Success, failure);
         }
-        return checkRepo(this.apiUrl, this.provider, this.name, this.owner, ctx)
+        if (!this.teamId) {
+            const err = "No Slack team ID was provided when invoking this command.";
+            return ctx.messageClient.addressChannels(err, this.channelName)
+                .then(() => Success, failure);
+        }
+        const apiUrl = (this.apiUrl) ? this.apiUrl : DefaultGitHubApiUrl;
+        const provider = (this.provider) ? this.provider : DefaultGitHubProviderId;
+        return checkRepo(apiUrl, provider, this.name, this.owner, ctx)
             .then(repoExists => {
                 if (!repoExists) {
-                    return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx), { dashboard: false });
+                    return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx), { dashboard: false })
+                        .then(() => Success, failure);
                 }
-                return linkSlackChannelToRepo(
-                    ctx, this.teamId, this.channelId, this.channelName, this.name, this.owner, this.provider)
+                return linkSlackChannelToRepo(ctx, this.teamId, this.channelId, this.channelName, this.name,
+                    this.owner, this.provider)
                     .then(() => {
                         if (this.msgId) {
                             return ctx.messageClient.addressChannels(
-                                this.msg, this.channelName, { id: this.msgId, dashboard: false });
+                                this.msg, this.channelName, { id: this.msgId, dashboard: false })
+                                .then(() => Success, failure);
                         }
                         return Success;
                     });

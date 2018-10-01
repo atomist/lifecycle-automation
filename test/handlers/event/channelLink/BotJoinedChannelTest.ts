@@ -25,11 +25,14 @@ import {
     MessageOptions,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import {
+    RepoProvider,
+} from "../../../../src/handlers/command/slack/LinkOwnerRepo";
+import {
     BotJoinedChannel,
     fuzzyChannelRepoMatch,
-    RepoApi,
     repoOptions,
 } from "../../../../src/handlers/event/channellink/BotJoinedChannel";
+
 import * as graphql from "../../../../src/typings/types";
 
 describe("BotJoinedChannel", () => {
@@ -144,29 +147,33 @@ describe("BotJoinedChannel", () => {
 
     describe("repoOptions", () => {
 
-        const lolRepos: RepoApi[][] = [
+        const lolRepos: RepoProvider[][] = [
             [
                 {
                     name: "7-mary-3",
                     owner: "jon",
-                    api: undefined,
+                    apiUrl: undefined,
+                    providerId: undefined,
                 },
                 {
                     name: "79-charles",
                     owner: "jon",
-                    api: undefined,
+                    apiUrl: undefined,
+                    providerId: undefined,
                 },
             ],
             [
                 {
                     name: "7-mary-4",
                     owner: "ponch",
-                    api: "https://ghe.chp.gov/v3/",
+                    apiUrl: "https://ghe.chp.gov/v3/",
+                    providerId: "vneoipqjavzdpawwejsgj",
                 },
                 {
                     name: "79-mary-4",
                     owner: "ponch",
-                    api: "https://ghe.chp.gov/v3/",
+                    apiUrl: "https://ghe.chp.gov/v3/",
+                    providerId: "vneoipqjavzdpawwejsgj",
                 },
             ],
         ];
@@ -178,11 +185,11 @@ describe("BotJoinedChannel", () => {
                     options: [
                         {
                             text: "7-mary-3",
-                            value: "jon/7-mary-3|",
+                            value: JSON.stringify(lolRepos[0][0]),
                         },
                         {
                             text: "79-charles",
-                            value: "jon/79-charles|",
+                            value: JSON.stringify(lolRepos[0][1]),
                         },
                     ],
                 },
@@ -191,11 +198,11 @@ describe("BotJoinedChannel", () => {
                     options: [
                         {
                             text: "7-mary-4",
-                            value: "ponch/7-mary-4|https://ghe.chp.gov/v3/",
+                            value: JSON.stringify(lolRepos[1][0]),
                         },
                         {
                             text: "79-mary-4",
-                            value: "ponch/79-mary-4|https://ghe.chp.gov/v3/",
+                            value: JSON.stringify(lolRepos[1][1]),
                         },
                     ],
                 },

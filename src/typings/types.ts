@@ -8141,6 +8141,7 @@ export namespace BotJoinedChannel {
   export type _Provider = {
     __typename?: "GitHubProvider";
     apiUrl?: string | null;
+    providerId?: string | null;
   };
 
   export type Repo = {
