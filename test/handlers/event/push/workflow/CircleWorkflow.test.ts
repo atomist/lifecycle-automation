@@ -16,10 +16,10 @@
 
 import "mocha";
 import * as assert from "power-assert";
-import { circleWorkflowtoStages } from "../../../../../src/handlers/event/push/workflow/CircleWorkflow";
-import { WorkflowStage } from "../../../../../src/handlers/event/push/workflow/WorkflowStage";
-import { BuildStatus } from "../../../../../src/typings/types";
-import * as graphql from "../../../../../src/typings/types";
+import { circleWorkflowtoStages } from "../../../../../lib/handlers/event/push/workflow/CircleWorkflow";
+import { WorkflowStage } from "../../../../../lib/handlers/event/push/workflow/WorkflowStage";
+import { BuildStatus } from "../../../../../lib/typings/types";
+import * as graphql from "../../../../../lib/typings/types";
 
 describe("CircleWorkflow", () => {
     const workflowConfig = "version: 2\njobs:\n  build:\n    docker:\n      - image: circleci/node:8.4\n    " +

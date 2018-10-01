@@ -17,7 +17,7 @@
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { AttachImagesNodeRenderer } from "../../../src/lifecycle/rendering/AttachImagesNodeRenderer";
+import { AttachImagesNodeRenderer } from "../../../lib/lifecycle/rendering/AttachImagesNodeRenderer";
 
 describe("AttachImagesNodeRenderer", () => {
 

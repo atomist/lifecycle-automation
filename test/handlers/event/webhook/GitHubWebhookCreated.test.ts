@@ -23,7 +23,7 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { Destination } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-import { GitHubWebhookCreated } from "../../../../src/handlers/event/webhook/GitHubWebhookCreated";
+import { GitHubWebhookCreated } from "../../../../lib/handlers/event/webhook/GitHubWebhookCreated";
 
 describe("GitHubWebhookCreated", () => {
 

@@ -20,7 +20,7 @@ import * as assert from "power-assert";
 import {
     isChannel,
     isSlack,
-} from "../../src/util/slack";
+} from "../../lib/util/slack";
 
 describe("slack", () => {
 

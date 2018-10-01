@@ -16,7 +16,7 @@
 
 import "mocha";
 import assert = require("power-assert");
-import * as graphql from "../../../../src/typings/types";
+import * as graphql from "../../../../lib/typings/types";
 
 import {
     Destination,
@@ -24,7 +24,7 @@ import {
     SlackDestination,
 } from "@atomist/automation-client/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
-import { ChannelLinkCreated } from "../../../../src/handlers/event/channellink/ChannelLinkCreated";
+import { ChannelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 
 describe("ChannelLinkCreated", () => {
 

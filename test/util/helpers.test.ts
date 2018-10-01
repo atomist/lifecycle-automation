@@ -31,7 +31,7 @@ import {
     replaceChatIdWithGitHubId,
     repoSlackLink,
     truncateCommitMessage,
-} from "../../src/util/helpers";
+} from "../../lib/util/helpers";
 
 LoggingConfig.format = "cli";
 
