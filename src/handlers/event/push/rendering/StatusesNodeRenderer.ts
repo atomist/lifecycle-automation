@@ -236,10 +236,11 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
 
             // "planned" | "requested" | "in_process" | "waiting_for_approval" | "success" | "failure" | "skipped";
             const pending = statuses.filter(s =>
-                ["planned", "requested", "in_process", "waiting_for_approval",
-                    "approved", "waiting_for_pre_approval", "pre_approved"].includes(s.state)).length;
+                ["planned", "requested", "in_process", "waiting_for_pre_approval",
+                    "pre_approved"].includes(s.state)).length;
             const success = statuses.filter(s =>
-                ["success", "skipped", "canceled", "stopped"].includes(s.state)).length;
+                ["success", "skipped", "canceled", "stopped", "waiting_for_approval",
+                    "approved"].includes(s.state)).length;
             const error = statuses.length - pending - success;
             const nonPlanned = statuses.some(s => s.state !== "planned" && s.state !== "skipped");
 
@@ -332,9 +333,10 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                 return EMOJI_SCHEME[this.emojiStyle].build.started;
             case SdmGoalState.approved:
             case SdmGoalState.waiting_for_approval:
+                return EMOJI_SCHEME[this.emojiStyle].build.approval;
             case SdmGoalState.pre_approved:
             case SdmGoalState.waiting_for_pre_approval:
-                return EMOJI_SCHEME[this.emojiStyle].build.waiting;
+                return EMOJI_SCHEME[this.emojiStyle].build.preapproval;
             case SdmGoalState.success:
                 return EMOJI_SCHEME[this.emojiStyle].build.passed;
             case SdmGoalState.skipped:
