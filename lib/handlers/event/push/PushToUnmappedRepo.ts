@@ -40,6 +40,10 @@ import {
     repoChannelName,
     repoSlackLink,
 } from "../../../util/helpers";
+import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../../command/github/gitHubApi";
 import { SetUserPreference } from "../../command/preferences/SetUserPreference";
 import { CreateChannel } from "../../command/slack/CreateChannel";
 import {
@@ -88,7 +92,7 @@ export class PushToUnmappedRepo implements HandleEvent<graphql.PushToUnmappedRep
 
             return sendUnMappedRepoMessage(chatIds, p.repo, ctx, botNames);
         }))
-        .then(() => Success, failure);
+            .then(() => Success, failure);
     }
 
 }
@@ -119,7 +123,7 @@ export function sendUnMappedRepoMessage(
             addressSlackUsers(chatId.chatTeam.id, chatId.screenName),
             { id, dashboard: false });
     }))
-    .then(() => Success);
+        .then(() => Success);
 }
 
 /**
@@ -194,7 +198,7 @@ export function leaveRepoUnmapped(
 }
 
 function populateMapCommand(c: CreateChannel, repo: graphql.PushToUnmappedRepo.Repo, msgId: string): CreateChannel {
-    c.apiUrl = (repo.org.provider) ? repo.org.provider.apiUrl : undefined;
+    c.apiUrl = (repo.org.provider) ? repo.org.provider.apiUrl : DefaultGitHubApiUrl;
     c.owner = repo.owner;
     c.repo = repo.name;
     c.msgId = msgId;
