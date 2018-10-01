@@ -28,18 +28,22 @@ import {
 } from "@atomist/automation-client";
 import { CreateSlackChannel } from "../../../typings/types";
 import { error } from "../../../util/messages";
+import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../github/gitHubApi";
 import { AssociateRepo } from "./AssociateRepo";
 
 export function createChannel(ctx: HandlerContext,
                               teamId: string,
                               channelName: string): Promise<CreateSlackChannel.Mutation> {
     return ctx.graphClient.mutate<CreateSlackChannel.Mutation, CreateSlackChannel.Variables>({
-            name: "createSlackChannel",
-            variables: {
-                teamId,
-                name: channelName,
-            },
-        });
+        name: "createSlackChannel",
+        variables: {
+            teamId,
+            name: channelName,
+        },
+    });
 }
 
 /**
@@ -57,6 +61,9 @@ export class CreateChannel implements HandleCommand {
 
     @MappedParameter(MappedParameters.GitHubApiUrl)
     public apiUrl: string;
+
+    @MappedParameter(MappedParameters.GitHubRepositoryProvider)
+    public provider: string;
 
     @MappedParameter(MappedParameters.SlackUser)
     public userId: string;
@@ -85,18 +92,22 @@ export class CreateChannel implements HandleCommand {
     public msgId: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
+        const apiUrl = (this.apiUrl) ? this.apiUrl : DefaultGitHubApiUrl;
+        const providerId = (this.provider) ? this.provider : DefaultGitHubProviderId;
         return createChannel(ctx, this.teamId, this.channel)
             .then(channel => {
                 if (channel && channel.createSlackChannel) {
                     const associateRepo = new AssociateRepo();
+                    associateRepo.teamId = this.teamId;
                     associateRepo.channelId = Array.isArray(channel.createSlackChannel)
                         ? channel.createSlackChannel[0].id : channel.createSlackChannel.id;
+                    associateRepo.channelName = this.channel;
                     associateRepo.owner = this.owner;
-                    associateRepo.apiUrl = this.apiUrl;
+                    associateRepo.apiUrl = apiUrl;
+                    associateRepo.provider = providerId;
                     associateRepo.userId = this.userId;
                     associateRepo.repo = this.repo;
                     associateRepo.msgId = this.msgId;
-                    associateRepo.teamId = this.teamId;
                     return associateRepo.handle(ctx);
                 } else {
                     return ctx.messageClient.respond(

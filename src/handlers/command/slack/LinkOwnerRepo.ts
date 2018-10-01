@@ -30,12 +30,25 @@ import {
     Tags,
 } from "@atomist/automation-client";
 import * as slack from "@atomist/slack-messages";
-import { DefaultGitHubApiUrl } from "../github/gitHubApi";
+import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../github/gitHubApi";
 import { LinkRepo } from "./LinkRepo";
+
+export interface RepoProvider {
+    name: string;
+    owner: string;
+    apiUrl: string;
+    providerId: string;
+}
 
 @CommandHandler("Link a repository, provided as an owner/repo|api slug, and channel")
 @Tags("slack", "repo")
 export class LinkOwnerRepo implements HandleCommand {
+
+    @MappedParameter(MappedParameters.SlackTeam)
+    public teamId: string;
 
     @MappedParameter(MappedParameters.SlackChannel)
     public channelId: string;
@@ -47,14 +60,14 @@ export class LinkOwnerRepo implements HandleCommand {
     public githubToken: string;
 
     @Parameter({
-        displayName: "Repository Slug",
-        description: "'owner/name' of the repository to link",
-        pattern: /^[-.\w]+\/[-.\w]+\|\S*$/,
-        minLength: 1,
-        maxLength: 512,
+        displayName: "Stringified Repository API Provider object ",
+        description: `'{"owner":"OWNER","name":"NAME","apiUrl":"URL","providerId":"ID"}' of the repository to link`,
+        pattern: /^[\s\S]+$/,
+        minLength: 20,
+        maxLength: 1024,
         required: true,
     })
-    public slug: string;
+    public repoProvider: string;
 
     @Parameter({ pattern: /^\S*$/, displayable: false, required: false })
     public msgId: string;
@@ -63,31 +76,26 @@ export class LinkOwnerRepo implements HandleCommand {
     public msg: string = "";
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
-        const slugApiParts = this.slug.split("|");
-        if (!slugApiParts || slugApiParts.length !== 2 || !slugApiParts[0]) {
-            const err = `failed to parse slug '${this.slug}' into slug and API, ` +
+        let repo: RepoProvider;
+        try {
+            repo = JSON.parse(this.repoProvider);
+        } catch (e) {
+            const err = `Failed to parse repo-provider '${this.repoProvider}' into repo and provider, ` +
                 `not linking to #${this.channelName}`;
             logger.error(err);
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        const apiUrl = (slugApiParts[1]) ? slugApiParts[1] : DefaultGitHubApiUrl;
-        const slugParts = slugApiParts[0].split("/");
-        if (!slugParts || slugParts.length !== 2 || !slugParts[0] || !slugParts[1]) {
-            const err = `failed to parse repo slug '${slugApiParts[0]}' into owner and name, ` +
-                `not linking to #${this.channelName}`;
-            logger.error(err);
-            return ctx.messageClient.respond(err)
-                .then(() => Success, failure);
-        }
-        const owner = slugParts[0];
-        const name = slugParts[1];
+        const apiUrl = (repo.apiUrl) ? repo.apiUrl : DefaultGitHubApiUrl;
+        const providerId = (repo.providerId) ? repo.providerId : DefaultGitHubProviderId;
         const linkRepo = new LinkRepo();
+        linkRepo.teamId = this.teamId;
         linkRepo.channelId = this.channelId;
         linkRepo.channelName = this.channelName;
+        linkRepo.owner = repo.owner;
         linkRepo.apiUrl = apiUrl;
-        linkRepo.name = name;
-        linkRepo.owner = owner;
+        linkRepo.provider = providerId;
+        linkRepo.name = repo.name;
         linkRepo.msgId = this.msgId;
         linkRepo.msg = this.msg;
 

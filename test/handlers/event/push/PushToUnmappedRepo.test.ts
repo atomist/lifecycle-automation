@@ -19,6 +19,10 @@ import * as assert from "power-assert";
 
 import * as slack from "@atomist/slack-messages";
 
+import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../../../../src/handlers/command/github/gitHubApi";
 import { DefaultBotName } from "../../../../src/handlers/command/slack/LinkRepo";
 import {
     extractScreenNameFromMapRepoMessageId,
@@ -283,7 +287,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[0].type === "button");
             const command = (linkMsg.actions[0] as any).command;
             assert(command.name === "CreateChannel");
-            assert(command.parameters.apiUrl === undefined);
+            assert(command.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(command.parameters.channel === "sin-city");
             assert(command.parameters.owner === "grievous-angel");
             assert(command.parameters.repo === "sin-city");
@@ -293,7 +297,7 @@ describe("PushToUnmappedRepo", () => {
             const menuCommand = (linkMsg.actions[1] as any).command;
             assert(menuCommand.name === "CreateChannel");
             assert(menuCommand.parameterName === "channel");
-            assert(menuCommand.parameters.apiUrl === undefined);
+            assert(menuCommand.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(menuCommand.parameters.channel === undefined);
             assert(menuCommand.parameters.owner === "grievous-angel");
             assert(menuCommand.parameters.repo === "sin-city");
@@ -424,7 +428,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[0].type === "button");
             const command = (linkMsg.actions[0] as any).command;
             assert(command.name === "CreateChannel");
-            assert(command.parameters.apiUrl === undefined);
+            assert(command.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(command.parameters.channel === "sin-city");
             assert(command.parameters.owner === "grievous-angel");
             assert(command.parameters.repo === "sin-city");
@@ -432,7 +436,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[1].type === "button");
             const cmd1 = (linkMsg.actions[1] as any).command;
             assert(cmd1.name === "CreateChannel");
-            assert(cmd1.parameters.apiUrl === undefined);
+            assert(cmd1.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(cmd1.parameters.channel === "sin-city-1");
             assert(cmd1.parameters.owner === "grievous-angel");
             assert(cmd1.parameters.repo === "sin-city");
@@ -440,7 +444,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[2].type === "button");
             const cmd2 = (linkMsg.actions[2] as any).command;
             assert(cmd2.name === "CreateChannel");
-            assert(cmd2.parameters.apiUrl === undefined);
+            assert(cmd2.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(cmd2.parameters.channel === "sin-city-2");
             assert(cmd2.parameters.owner === "grievous-angel");
             assert(cmd2.parameters.repo === "sin-city");
@@ -457,7 +461,7 @@ describe("PushToUnmappedRepo", () => {
             const menuCommand = (linkMsg.actions[3] as any).command;
             assert(menuCommand.name === "CreateChannel");
             assert(menuCommand.parameterName === "channel");
-            assert(menuCommand.parameters.apiUrl === undefined);
+            assert(menuCommand.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(menuCommand.parameters.channel === undefined);
             assert(menuCommand.parameters.owner === "grievous-angel");
             assert(menuCommand.parameters.repo === "sin-city");
@@ -506,7 +510,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[0].type === "button");
             const command = (linkMsg.actions[0] as any).command;
             assert(command.name === "CreateChannel");
-            assert(command.parameters.apiUrl === undefined);
+            assert(command.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(command.parameters.channel === "sin-city");
             assert(command.parameters.owner === "grievous-angel");
             assert(command.parameters.repo === "sin-city");
@@ -514,7 +518,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[1].type === "button");
             const cmd1 = (linkMsg.actions[1] as any).command;
             assert(cmd1.name === "CreateChannel");
-            assert(cmd1.parameters.apiUrl === undefined);
+            assert(cmd1.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(cmd1.parameters.channel === "sin-city-1");
             assert(cmd1.parameters.owner === "grievous-angel");
             assert(cmd1.parameters.repo === "sin-city");
@@ -522,7 +526,7 @@ describe("PushToUnmappedRepo", () => {
             assert(linkMsg.actions[2].type === "button");
             const cmd2 = (linkMsg.actions[2] as any).command;
             assert(cmd2.name === "CreateChannel");
-            assert(cmd2.parameters.apiUrl === undefined);
+            assert(cmd2.parameters.apiUrl === DefaultGitHubApiUrl);
             assert(cmd2.parameters.channel === "sin-city-2");
             assert(cmd2.parameters.owner === "grievous-angel");
             assert(cmd2.parameters.repo === "sin-city");
