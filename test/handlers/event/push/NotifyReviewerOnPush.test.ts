@@ -25,7 +25,7 @@ import { MessageClientSupport } from "@atomist/automation-client/spi/message/Mes
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { NotifyReviewerOnPush } from "../../../../src/handlers/event/push/NotifyReviewerOnPush";
+import { NotifyReviewerOnPush } from "../../../../lib/handlers/event/push/NotifyReviewerOnPush";
 
 describe("NotifyReviewerOnPush", () => {
 

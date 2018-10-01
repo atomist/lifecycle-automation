@@ -17,7 +17,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import { LinkRepo } from "../../../../src/handlers/command/slack/LinkRepo";
+import { LinkRepo } from "../../../../lib/handlers/command/slack/LinkRepo";
 
 describe("LinkRepo", () => {
 

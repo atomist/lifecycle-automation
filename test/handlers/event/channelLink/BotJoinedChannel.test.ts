@@ -29,8 +29,9 @@ import {
     fuzzyChannelRepoMatch,
     RepoApi,
     repoOptions,
-} from "../../../../src/handlers/event/channellink/BotJoinedChannel";
-import * as graphql from "../../../../src/typings/types";
+} from "../../../../lib/handlers/event/channellink/BotJoinedChannel";
+
+import * as graphql from "../../../../lib/typings/types";
 
 describe("BotJoinedChannel", () => {
 

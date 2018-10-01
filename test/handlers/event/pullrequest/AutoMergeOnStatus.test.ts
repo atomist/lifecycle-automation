@@ -19,7 +19,7 @@ import * as assert from "power-assert";
 
 import { Success } from "@atomist/automation-client";
 
-import { AutoMergeOnStatus } from "../../../../src/handlers/event/pullrequest/AutoMergeOnStatus";
+import { AutoMergeOnStatus } from "../../../../lib/handlers/event/pullrequest/AutoMergeOnStatus";
 
 describe("AutoMergeOnStatus", () => {
 

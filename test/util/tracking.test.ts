@@ -18,7 +18,7 @@ import "mocha";
 import * as assert from "power-assert";
 
 import * as namespace from "@atomist/automation-client/internal/util/cls";
-import { wrapLinksInText } from "../../src/util/tracking";
+import { wrapLinksInText } from "../../lib/util/tracking";
 
 const event = "RemEvent";
 const workspaceId = "TREM1980";
