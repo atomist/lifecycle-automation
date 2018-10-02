@@ -29,7 +29,7 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { BranchToBranchLifecycle } from "../../../../src/handlers/event/branch/BranchToBranchLifecycle";
+import { BranchToBranchLifecycle } from "../../../../lib/handlers/event/branch/BranchToBranchLifecycle";
 
 describe("BranchToBranchLifecycle", () => {
 

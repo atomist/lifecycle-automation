@@ -26,7 +26,7 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { PushToPushLifecycle } from "../../../../src/handlers/event/push/PushToPushLifecycle";
+import { PushToPushLifecycle } from "../../../../lib/handlers/event/push/PushToPushLifecycle";
 
 describe("PushToPushLifecycle", () => {
 

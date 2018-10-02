@@ -25,8 +25,8 @@ import { MessageClientSupport } from "@atomist/automation-client/spi/message/Mes
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { DeletedBranchToBranchLifecycle } from "../../../../src/handlers/event/branch/DeletedBranchToBranchLifecycle";
-import { PullRequestToBranchLifecycle } from "../../../../src/handlers/event/branch/PullRequestToBranchLifecycle";
+import { DeletedBranchToBranchLifecycle } from "../../../../lib/handlers/event/branch/DeletedBranchToBranchLifecycle";
+import { PullRequestToBranchLifecycle } from "../../../../lib/handlers/event/branch/PullRequestToBranchLifecycle";
 
 describe("PullRequestToBranchLifecycle", () => {
 

@@ -30,7 +30,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { fail } from "power-assert";
-import { StatusToPushLifecycle } from "../../../../src/handlers/event/push/StatusToPushLifecycle";
+import { StatusToPushLifecycle } from "../../../../lib/handlers/event/push/StatusToPushLifecycle";
 
 describe("StatusToPushLifecycle", () => {
 

@@ -22,8 +22,8 @@ import * as slack from "@atomist/slack-messages";
 import {
     DefaultGitHubApiUrl,
     DefaultGitHubProviderId,
-} from "../../../../src/handlers/command/github/gitHubApi";
-import { DefaultBotName } from "../../../../src/handlers/command/slack/LinkRepo";
+} from "../../../../lib/handlers/command/github/gitHubApi";
+import { DefaultBotName } from "../../../../lib/handlers/command/slack/LinkRepo";
 import {
     extractScreenNameFromMapRepoMessageId,
     fuzzyRepoChannelMatch,
@@ -31,8 +31,8 @@ import {
     mapRepoMessage,
     mapRepoMessageId,
     repoString,
-} from "../../../../src/handlers/event/push/PushToUnmappedRepo";
-import * as graphql from "../../../../src/typings/types";
+} from "../../../../lib/handlers/event/push/PushToUnmappedRepo";
+import * as graphql from "../../../../lib/typings/types";
 
 describe("PushToUnmappedRepo", () => {
 

@@ -26,14 +26,14 @@ import {
 } from "@atomist/automation-client/spi/message/MessageClient";
 import {
     RepoProvider,
-} from "../../../../src/handlers/command/slack/LinkOwnerRepo";
+} from "../../../../lib/handlers/command/slack/LinkOwnerRepo";
 import {
     BotJoinedChannel,
     fuzzyChannelRepoMatch,
     repoOptions,
-} from "../../../../src/handlers/event/channellink/BotJoinedChannel";
+} from "../../../../lib/handlers/event/channellink/BotJoinedChannel";
 
-import * as graphql from "../../../../src/typings/types";
+import * as graphql from "../../../../lib/typings/types";
 
 describe("BotJoinedChannel", () => {
 

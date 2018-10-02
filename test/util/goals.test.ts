@@ -18,8 +18,8 @@ import { LoggingConfig } from "@atomist/automation-client/internal/util/logger";
 import * as _ from "lodash";
 import "mocha";
 import * as assert from "power-assert";
-import { SdmGoalsByCommit } from "../../src/typings/types";
-import { sortGoals } from "../../src/util/goals";
+import { SdmGoalsByCommit } from "../../lib/typings/types";
+import { sortGoals } from "../../lib/util/goals";
 
 LoggingConfig.format = "cli";
 

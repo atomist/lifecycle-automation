@@ -71,8 +71,8 @@
     "test": "test"
   },
   "scripts": {
-    "autostart": "nodemon --watch src --ext ts --delay 4 --exec ts-node -- node_modules/@atomist/automation-client/bin/start.js",
-    "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "autostart": "nodemon --watch index.ts --watch lib --ext ts --delay 4 --exec ts-node -- node_modules/@atomist/automation-client/bin/start.js",
+    "autotest": "supervisor --watch index.ts,lib,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
     "build": "run-s compile test lint doc",
     "clean": "run-p clean:compile clean:test clean:doc clean:run",
     "clean:compile": "rimraf build git-info.json \"index.{d.ts,js{,.map}}\" \"{lib,src,test}/**/*.{d.ts,js{,.map}}\" \"{lib,src}/typings/types.ts\"",
@@ -81,19 +81,17 @@
     "clean:npm": "rimraf node_modules",
     "clean:run": "rimraf *-v8.log profile.txt log",
     "clean:test": "rimraf .nyc_output coverage",
-    "compile": "run-s git:info compile:gql compile:ts",
-    "compile:gql": "run-s gql:gen gql:copy",
+    "compile": "run-s git:info gql:gen compile:ts",
     "compile:ts": "tsc --project .",
     "debug": "node --inspect node_modules/@atomist/automation-client/bin/start.js",
-    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc src",
+    "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "fmt": "run-s fmt:gql",
     "fmt:gql": "prettier --write \"**/*.graphql\"",
     "git:info": "atm-git-info",
-    "gql:copy": "copyfiles \"src/**/*.graphql\" build",
     "gql:gen": "atm-gql-gen",
     "lint": "run-s lint:ts lint:gql",
     "lint:ts": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
-    "lint:gql": "prettier --list-different \"src/graphql/**/*.graphql\"",
+    "lint:gql": "prettier --list-different \"lib/graphql/**/*.graphql\"",
     "lint:fix": "run-s lint:ts:fix fmt:gql",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "start": "atm-start",
@@ -107,13 +105,13 @@
   },
   "nyc": {
     "include": [
-      "src/**/*.*"
+      "lib/**/*.*"
     ],
     "extension": [
       ".ts"
     ],
     "exclude": [
-      "src/typings",
+      "lib/typings",
       "**/*.d.ts"
     ],
     "reporter": [

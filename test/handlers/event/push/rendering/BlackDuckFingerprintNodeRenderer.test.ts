@@ -18,8 +18,8 @@ import "mocha";
 import * as assert from "power-assert";
 import {
     BlackDuckFingerprintNodeRenderer,
-} from "../../../../../src/handlers/event/push/rendering/PushNodeRenderers";
-import * as graphql from "../../../../../src/typings/types";
+} from "../../../../../lib/handlers/event/push/rendering/PushNodeRenderers";
+import * as graphql from "../../../../../lib/typings/types";
 
 describe("BlackDuckFingerprintNodeRenderer", () => {
 
