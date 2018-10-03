@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.19...HEAD)
 
+### Changed
+
+-   Update to more standard Node.js package layout. [#251](https://github.com/atomist/lifecycle-automation/issues/251)
+
 ## [0.10.19](https://github.com/atomist/lifecycle-automation/compare/0.10.18...0.10.19) - 2018-10-02
 
 ### Added
