@@ -36,14 +36,21 @@ import { InviteUserToSlackChannel } from "../../../typings/types";
 import { warning } from "../../../util/messages";
 import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
+import {
+    DefaultGitHubApiUrl,
+    DefaultGitHubProviderId,
+} from "../github/gitHubApi";
 import { addBotToSlackChannel } from "./AddBotToChannel";
 import { linkSlackChannelToRepo } from "./LinkRepo";
 
-export function checkRepo(url: string,
-                          providerId: string,
-                          name: string,
-                          owner: string,
-                          ctx: HandlerContext): Promise<boolean> {
+export function checkRepo(
+    url: string,
+    providerId: string,
+    name: string,
+    owner: string,
+    ctx: HandlerContext,
+): Promise<boolean> {
+
     /*return ctx.graphClient.query<RepoByNameOwnerAndProviderId.Query, RepoByNameOwnerAndProviderId.Variables>({
             name: "repoByNameOwnerAndProviderId",
             variables: {
@@ -127,21 +134,27 @@ export class AssociateRepo implements HandleCommand {
     public msgId: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
+        if (!this.channelName) {
+            const err = "No channel name was provided when invoking this command.";
+            return ctx.messageClient.respond(err)
+                .then(() => Success, failure);
+        }
         if (!isChannel(this.channelId)) {
             const err = "The Atomist Bot can only link repositories to public channels. " +
                 "Please try again with a public channel.";
             return ctx.messageClient.respond(err, { dashboard: false })
                 .then(() => Success, failure);
         }
-        return checkRepo(this.apiUrl, this.provider, this.repo, this.owner, ctx)
+        const apiUrl = (this.apiUrl) ? this.apiUrl : DefaultGitHubApiUrl;
+        const providerId = (this.provider) ? this.provider : DefaultGitHubProviderId;
+        return checkRepo(apiUrl, providerId, this.repo, this.owner, ctx)
             .then(repoExists => {
                 if (!repoExists) {
                     return ctx.messageClient.respond(noRepoMessage(this.repo, this.owner, ctx), { dashboard: false });
                 }
                 return addBotToSlackChannel(ctx, this.teamId, this.channelId)
-                    .then(() => linkSlackChannelToRepo(
-                                ctx, this.teamId, this.channelId, this.channelName, this.repo, this.owner,
-                                    this.provider))
+                    .then(() => linkSlackChannelToRepo(ctx, this.teamId, this.channelId, this.channelName, this.repo,
+                        this.owner, providerId))
                     .then(() => inviteUserToSlackChannel(ctx, this.teamId, this.channelId, this.userId))
                     .then(() => {
                         const msg = `Linked ${bold(this.owner + "/" + this.repo)} to ` +

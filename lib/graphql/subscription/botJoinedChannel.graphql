@@ -25,6 +25,7 @@ subscription botJoinedChannel {
           ownerType
           provider {
             apiUrl
+            providerId
           }
           repo {
             name
