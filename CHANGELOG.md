@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Update to more standard Node.js package layout. [#251](https://github.com/atomist/lifecycle-automation/issues/251)
 
+### Fixed
+
+-   Selecting repo from drop-down list when creating a channel doesn't link that repo. [#247](https://github.com/atomist/lifecycle-automation/issues/247)
+-   Always provide channel name when linking repo and channel.
+
 ## [0.10.19](https://github.com/atomist/lifecycle-automation/compare/0.10.18...0.10.19) - 2018-10-02
 
 ### Added
