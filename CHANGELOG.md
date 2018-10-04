@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.20...HEAD)
 
+### Fixed
+
+-   Configure lifecycle doesn't persist in atomist-community. [#241](https://github.com/atomist/lifecycle-automation/issues/241)
+
 ## [0.10.20](https://github.com/atomist/lifecycle-automation/compare/0.10.19...0.10.20) - 2018-10-03
 
 ### Changed
