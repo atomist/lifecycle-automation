@@ -39,6 +39,7 @@ import {
     branchUrl,
     commitIcon,
     commitUrl,
+    getAuthor,
     issueUrl,
     prUrl,
     repoSlug,
@@ -155,8 +156,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         let author = null;
         let commitsByAuthor: any = {};
         for (const commit of commits) {
-            const ca = (commit.author != null && commit.author.login && commit.author.login !== ""
-                ? commit.author.login : (commit.email ? commit.email.address : "(unknown)"));
+            const ca = getAuthor(commit);
 
             if (author == null || author !== ca) {
                 commitsByAuthor = {

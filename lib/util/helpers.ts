@@ -20,6 +20,7 @@ import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { DefaultGitHubApiUrl } from "../handlers/command/github/gitHubApi";
 import { DirectMessagePreferences } from "../handlers/event/preferences";
+import { PullRequestFields } from "../typings/types";
 import * as graphql from "../typings/types";
 
 /**
@@ -774,4 +775,14 @@ export class ReferencedIssues {
 
     constructor(public issues: graphql.IssueOrPr.Issue[],
                 public prs: graphql.IssueOrPr.PullRequest[]) { }
+}
+
+export function getAuthor(commit: PullRequestFields.Commits): string {
+    if (commit && commit.author && commit.author.login && commit.author.login.length > 0) {
+        return commit.author.login;
+    } else if (commit && commit.email && commit.email.address) {
+        return commit.email.address;
+    } else {
+        return "(unknown)";
+    }
 }

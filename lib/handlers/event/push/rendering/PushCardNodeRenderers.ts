@@ -33,6 +33,7 @@ import {
     branchUrl,
     commitUrl,
     extractLinkedIssues,
+    getAuthor,
     issueUrl,
     prUrl,
     repoSlug,
@@ -103,8 +104,7 @@ export class CommitCardNodeRenderer extends AbstractIdentifiableContribution
         const repo = context.lifecycle.extract("repo");
         const commits = _.uniqBy(push.commits, c => c.sha)
             .sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
-        const author = push.after && push.after.author ?
-            push.after.author.login : (push.after.email ? push.after.email.address : "(unknown)");
+        const author = getAuthor(push.after);
 
         msg.body = {
             avatar: avatarUrl(repo, author, push.after.author ? push.after.author.avatar : undefined),
