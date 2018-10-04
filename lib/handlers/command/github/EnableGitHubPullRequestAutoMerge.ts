@@ -78,4 +78,4 @@ export class EnableGitHubPullRequestAutoMerge implements HandleCommand {
         return Success;
     }
 
-}        
+}
