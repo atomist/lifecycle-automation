@@ -16,7 +16,6 @@
 
 import {
     ConfigurableCommandHandler,
-    failure,
     HandleCommand,
     HandlerContext,
     HandlerResult,
@@ -29,6 +28,7 @@ import {
     Tags,
 } from "@atomist/automation-client";
 import { AutoMergeLabel } from "../../event/pullrequest/autoMerge";
+import { addAutoMergeLabels } from "./AddGitHubPullRequestAutoMergeLabels";
 import * as github from "./gitHubApi";
 
 /**
@@ -64,41 +64,18 @@ export class EnableGitHubPullRequestAutoMerge implements HandleCommand {
     @Secret(Secrets.userToken("repo"))
     public githubToken: string;
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
-        const api = github.api(this.githubToken, this.apiUrl);
+    public async handle(ctx: HandlerContext): Promise<HandlerResult> {
+        await addAutoMergeLabels(ctx);
 
-        // Verify that auto-merge label exists
-        return api.issues.getLabel({
-            name: AutoMergeLabel,
-            repo: this.repo,
+        const api = github.api(this.githubToken, this.apiUrl);
+        await api.issues.addLabels({
             owner: this.owner,
-        })
-        // Label exists; add it to the PR
-        .then(() => {
-            return api.issues.addLabels({
-                owner: this.owner,
-                repo: this.repo,
-                number: this.issue,
-                labels: [AutoMergeLabel],
-            });
-        })
-        // Label doesn't exist; put create it and add it to the PR
-        .catch(() => {
-            return api.issues.createLabel({
-                owner: this.owner,
-                repo: this.repo,
-                name: AutoMergeLabel,
-                color: "277D7D",
-            })
-                .then(() => {
-                    return api.issues.addLabels({
-                        owner: this.owner,
-                        repo: this.repo,
-                        number: this.issue,
-                        labels: [AutoMergeLabel],
-                    });
-                });
-        })
-        .then(() => Success, failure);
+            repo: this.repo,
+            number: this.issue,
+            labels: [AutoMergeLabel],
+        });
+
+        return Success;
     }
-}
+
+}        
