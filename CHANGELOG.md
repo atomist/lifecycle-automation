@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.20...HEAD)
 
+### Changed
+
+-   Show "Raise PR if successful" button when pushing to a branch. [#244](https://github.com/atomist/lifecycle-automation/issues/244)
+
 ### Fixed
 
 -   Configure lifecycle doesn't persist in atomist-community. [#241](https://github.com/atomist/lifecycle-automation/issues/241)
