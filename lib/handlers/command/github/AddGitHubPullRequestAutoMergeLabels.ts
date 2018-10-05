@@ -60,7 +60,7 @@ export class AddGitHubPullRequestAutoMergeLabels implements HandleCommand {
     public githubToken: string;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
-        await addAutoMergeLabels(ctx);
+        await addAutoMergeLabels(this.githubToken, this.apiUrl, ctx);
 
         await ctx.messageClient.respond(success(
             "Auto Merge",
@@ -69,8 +69,8 @@ export class AddGitHubPullRequestAutoMergeLabels implements HandleCommand {
     }
 }
 
-export async function addAutoMergeLabels(ctx: HandlerContext): Promise<HandlerResult> {
-    const api = github.api(this.githubToken, this.apiUrl);
+export async function addAutoMergeLabels(token: string, apiUrl: string, ctx: HandlerContext): Promise<HandlerResult> {
+    const api = github.api(token, apiUrl);
 
     await addLabel(AutoMergeLabel, "277D7D", this.owner, this.repo, api);
     await addLabel(AutoMergeCheckSuccessLabel, "277D7D", this.owner, this.repo, api);
