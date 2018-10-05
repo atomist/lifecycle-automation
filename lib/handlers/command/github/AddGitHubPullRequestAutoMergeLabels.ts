@@ -60,7 +60,7 @@ export class AddGitHubPullRequestAutoMergeLabels implements HandleCommand {
     public githubToken: string;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
-        await addAutoMergeLabels(this.githubToken, this.apiUrl, ctx);
+        await addAutoMergeLabels(this.owner, this.repo, this.githubToken, this.apiUrl);
 
         await ctx.messageClient.respond(success(
             "Auto Merge",
@@ -69,20 +69,27 @@ export class AddGitHubPullRequestAutoMergeLabels implements HandleCommand {
     }
 }
 
-export async function addAutoMergeLabels(token: string, apiUrl: string, ctx: HandlerContext): Promise<HandlerResult> {
+export async function addAutoMergeLabels(owner: string,
+                                         repo: string,
+                                         token: string,
+                                         apiUrl: string): Promise<HandlerResult> {
     const api = github.api(token, apiUrl);
 
-    await addLabel(AutoMergeLabel, "277D7D", this.owner, this.repo, api);
-    await addLabel(AutoMergeCheckSuccessLabel, "277D7D", this.owner, this.repo, api);
+    await addLabel(AutoMergeLabel, "277D7D", owner, repo, api);
+    await addLabel(AutoMergeCheckSuccessLabel, "277D7D", owner, repo, api);
 
     AutoMergeMethods.forEach(
         async mm =>
-            await addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", this.owner, this.repo, api));
+            await addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", owner, repo, api));
 
     return Success;
 }
 
-async function addLabel(name: string, color: string, owner: string, repo: string, api: Github) {
+async function addLabel(name: string,
+                        color: string,
+                        owner: string,
+                        repo: string,
+                        api: Github) {
     try {
         await api.issues.getLabel({
             name,

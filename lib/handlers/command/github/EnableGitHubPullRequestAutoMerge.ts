@@ -65,7 +65,7 @@ export class EnableGitHubPullRequestAutoMerge implements HandleCommand {
     public githubToken: string;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
-        await addAutoMergeLabels(this.githubToken, this.apiUrl, ctx);
+        await addAutoMergeLabels(this.owner, this.repo, this.githubToken, this.apiUrl);
 
         const api = github.api(this.githubToken, this.apiUrl);
         await api.issues.addLabels({
