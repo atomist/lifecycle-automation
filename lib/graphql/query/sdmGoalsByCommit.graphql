@@ -17,6 +17,7 @@ query sdmGoalsByCommit($sha: [String!], $branch: [String!]) {
       registration
       name
       version
+      ts
     }
     ts
     approval {

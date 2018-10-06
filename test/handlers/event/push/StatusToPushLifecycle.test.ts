@@ -20,7 +20,6 @@ import { guid } from "@atomist/automation-client/internal/util/string";
 import {
     GraphClient,
     MutationOptions,
-    QueryOptions,
 } from "@atomist/automation-client/spi/graph/GraphClient";
 import {
     Destination,

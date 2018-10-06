@@ -303,9 +303,9 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             require("moment-duration-format");
 
             const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
-            const creator = _.flatten<SdmGoalsByCommit.Provenance>(
-                lastGoals.map(g => (g.provenance || [])))
-                .find(p => p.name === "SetGoalsOnPush" || p.name === "ResetGoalsOnCommit");
+
+            const creator = _.minBy(
+                _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
 
             const attachment = attachments.slice(-1)[0];
             attachment.actions = actions;
@@ -417,9 +417,8 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
             const min = _.min(ts);
             const max = _.max(ts);
 
-            const creator = _.flatten<SdmGoalsByCommit.Provenance>(
-                lastGoals.map(g => (g.provenance || [])))
-                .find(p => p.name === "SetGoalsOnPush" || p.name === "ResetGoalsOnCommit");
+            const creator = _.minBy(
+                _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
 
             let state: SdmGoalState;
             if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
