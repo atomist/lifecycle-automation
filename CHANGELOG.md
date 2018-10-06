@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.23...HEAD)
+## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.24...HEAD)
+
+## [0.10.24](https://github.com/atomist/lifecycle-automation/compare/0.10.23...0.10.24) - 2018-10-06
 
 ## [0.10.23](https://github.com/atomist/lifecycle-automation/compare/0.10.22...0.10.23) - 2018-10-05
 
