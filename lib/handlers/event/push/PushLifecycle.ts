@@ -152,6 +152,8 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                         return extractDomains(push).sort((d1, d2) => d1.name.localeCompare(d2.name));
                     } else if (type === "events") {
                         return null;
+                    } else if (type === "goalSets") {
+                        return push.goalSets;
                     }
                     return null;
                 },

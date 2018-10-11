@@ -16,7 +16,10 @@
 
 import * as _ from "lodash";
 import * as toposort from "toposort";
-import { SdmGoalsByCommit } from "../typings/types";
+import {
+    PushFields,
+    SdmGoalsByCommit,
+} from "../typings/types";
 
 export interface EnvironmentWithGoals {
     environment: string;
@@ -26,13 +29,13 @@ export interface EnvironmentWithGoals {
 export function lastGoalSet(allGoals: SdmGoalsByCommit.SdmGoal[] = []): SdmGoalsByCommit.SdmGoal[] {
     // find latest goal set
     const goalSet = _.maxBy(_.map(_.groupBy(allGoals, g => g.goalSetId), v => {
-        return ({ goalSetId: v[0].goalSetId, ts: _.max(v.map(vv => vv.ts))});
+        return ({ goalSetId: v[0].goalSetId, ts: _.max(v.map(vv => vv.ts)) });
     }), "ts");
 
     // only maintain latest version of SdmGoals
     const goals: SdmGoalsByCommit.SdmGoal[] = [];
     _.forEach(_.groupBy(allGoals.filter(g => g.goalSetId === goalSet.goalSetId),
-            g => `${g.environment}-${g.name}`), v => {
+        g => `${g.environment}-${g.uniqueName}`), v => {
         // using the ts property might not be good enough but let's see
         goals.push(_.maxBy(v, "ts"));
     });
@@ -40,10 +43,39 @@ export function lastGoalSet(allGoals: SdmGoalsByCommit.SdmGoal[] = []): SdmGoals
     return goals;
 }
 
-export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[] = []): EnvironmentWithGoals[] {
+export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[],
+                          goalSets: PushFields.GoalSets[]): EnvironmentWithGoals[] {
     // only maintain latest version of SdmGoals
     const goals = lastGoalSet(allGoals);
 
+    // if no goals are given exit early
+    if (goals.length === 0) {
+        return [];
+    }
+
+    // we have a goalSet with ordered goal information; use that to sort
+    const goalSet = (goalSets || []).find(gs => gs.goalSetId === goals[0].goalSetId);
+
+    if (goalSet) {
+        const sortedGoals = goals.sort((g1, g2) => {
+            const i1 = goalSet.goals.findIndex(g => g.uniqueName === g1.uniqueName);
+            const i2 = goalSet.goals.findIndex(g => g.uniqueName === g2.uniqueName);
+            return i1 - i2;
+        });
+
+        const envs: EnvironmentWithGoals[] = [];
+        sortedGoals.forEach(sg => {
+            let env = envs.find(e => e.environment === sg.environment);
+            if (!env) {
+                env = { environment: sg.environment, goals: [] };
+                envs.push(env);
+            }
+            env.goals.push(sg);
+        });
+        return envs;
+    }
+
+    // attempt to sort manually using a topo sort algorithm.
     try {
 
         // sort envs first

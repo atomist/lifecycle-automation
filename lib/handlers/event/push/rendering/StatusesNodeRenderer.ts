@@ -223,9 +223,10 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                         context: RendererContext): Promise<SlackMessage> {
 
         const sortedGoals = [];
+        const goalSets = context.lifecycle.extract("goalSets");
 
         try {
-            sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || []));
+            sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || [], goalSets));
         } catch (err) {
             logger.warn(`Goal sorting failed with error: '%s'`, err.message);
         }
@@ -367,9 +368,10 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                         msg: CardMessage,
                         context: RendererContext): Promise<CardMessage> {
         const sortedGoals = [];
+        const goalSets = context.lifecycle.extract("goalSets");
 
         try {
-            sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || []));
+            sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || [], goalSets));
         } catch (err) {
             logger.warn(`Goal sorting failed with error: '%s'`, err.message);
         }
