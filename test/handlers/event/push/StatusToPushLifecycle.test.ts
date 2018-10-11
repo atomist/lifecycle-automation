@@ -593,7 +593,7 @@ describe("StatusToPushLifecycle", () => {
       "environment": "0-code",
       "name": "version"
     }],
-    "uniqueName": null,
+    "uniqueName": "build",
     "name": "build",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -623,7 +623,7 @@ describe("StatusToPushLifecycle", () => {
   {
     "description": "Code review passed",
     "preConditions": [],
-    "uniqueName": null,
+    "uniqueName": "review",
     "name": "review",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -652,7 +652,7 @@ describe("StatusToPushLifecycle", () => {
   {
     "description": "Autofixed",
     "preConditions": [],
-    "uniqueName": null,
+    "uniqueName": "autofix",
     "name": "autofix",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -684,7 +684,7 @@ describe("StatusToPushLifecycle", () => {
       "environment": "0-code",
       "name": "build"
     }],
-    "uniqueName": null,
+    "uniqueName": "docker build",
     "name": "docker build",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -721,7 +721,7 @@ describe("StatusToPushLifecycle", () => {
         "name": "build"
       }
     ],
-    "uniqueName": null,
+    "uniqueName": "tag",
     "name": "tag",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -750,7 +750,7 @@ describe("StatusToPushLifecycle", () => {
   {
     "description": "Versioned",
     "preConditions": [],
-    "uniqueName": null,
+    "uniqueName": "version",
     "name": "version",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -787,7 +787,7 @@ describe("StatusToPushLifecycle", () => {
         "name": "build"
       }
     ],
-    "uniqueName": null,
+    "uniqueName": "deploy to test",
     "name": "deploy to test",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -819,7 +819,7 @@ describe("StatusToPushLifecycle", () => {
       "environment": "1-deploy-test",
       "name": "deploy to test"
     }],
-    "uniqueName": null,
+    "uniqueName": "deploy to prod",
     "name": "deploy to prod",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -851,7 +851,7 @@ describe("StatusToPushLifecycle", () => {
       "environment": "2-deploy-prod",
       "name": "deploy to prod"
     }],
-    "uniqueName": null,
+    "uniqueName": "verify prod",
     "name": "verify prod",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
@@ -879,7 +879,7 @@ describe("StatusToPushLifecycle", () => {
   },
   {
     "description": "Notify deployment",
-    "uniqueName": null,
+    "uniqueName": "notify prod",
     "name": "notify prod",
     "goalSet": "node docker",
     "goalSetId": "32787e94-7743-5024-bf7b-ec2fe6f55a76",
