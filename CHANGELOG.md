@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.24...HEAD)
 
+### Changed
+
+-   Sort goals with information from the planned goalSet. [2bbff42](https://github.com/atomist/lifecycle-automation/commit/2bbff4286a83cecb356bdad843561d3e01f0b141)
+
 ## [0.10.24](https://github.com/atomist/lifecycle-automation/compare/0.10.23...0.10.24) - 2018-10-06
 
 ## [0.10.23](https://github.com/atomist/lifecycle-automation/compare/0.10.22...0.10.23) - 2018-10-05
