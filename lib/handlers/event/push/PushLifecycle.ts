@@ -229,6 +229,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                         return push;
                     } else if (type === "domains") {
                         return extractDomains(push).sort((d1, d2) => d1.name.localeCompare(d2.name));
+                    } else if (type === "goalSets") {
+                        return push.goalSets;
                     }
                     return null;
                 },
