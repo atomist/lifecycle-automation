@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.28...HEAD)
 
+### Added
+
+-   Make goalSets part of the push lifecycle msgId. [4a3295d](https://github.com/atomist/lifecycle-automation/commit/4a3295d1c8618ad4f8379822fe4248c80df27483)
+
 ## [0.10.28](https://github.com/atomist/lifecycle-automation/compare/0.10.27...0.10.28) - 2018-10-11
 
 ## [0.10.27](https://github.com/atomist/lifecycle-automation/compare/0.10.26...0.10.27) - 2018-10-11
