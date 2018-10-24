@@ -214,7 +214,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
                     new ApplicationActionContributor(),
-                    ] : [
+                ] : [
                     new BuildActionContributor(),
                     new ApproveGoalActionContributor(),
                     new ApplicationActionContributor(),
@@ -241,7 +241,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
     protected abstract extractNodes(event: EventFired<R>): PushToPushLifecycle.Push[];
 
-    private filterChannels(push: graphql.PushToPushLifecycle.Push, preferences: {[teamId: string]: Preferences[]} = {})
+    private filterChannels(push: graphql.PushToPushLifecycle.Push, preferences: { [teamId: string]: Preferences[] } = {})
         : Channel[] {
         const channels = (_.get(push, "repo.channels") || [])
             .filter(c => c.name && c.name.length >= 1);
@@ -274,23 +274,23 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                                 const exclude = repoConfiguration.exclude ?
                                     matches(repoConfiguration.exclude, branch) : null;
                                 if (include === true && exclude !== false) {
-                                    channelNames.push({name: channel.name, teamId: channel.team.id});
+                                    channelNames.push({ name: channel.name, teamId: channel.team.id });
                                 } else if (include === null && exclude !== true) {
-                                    channelNames.push({name: channel.name, teamId: channel.team.id});
+                                    channelNames.push({ name: channel.name, teamId: channel.team.id });
                                 }
                             }
                         } else {
-                            channelNames.push({name: channel.name, teamId: channel.team.id});
+                            channelNames.push({ name: channel.name, teamId: channel.team.id });
                         }
                     } catch (err) {
                         logger.warn(
                             `Team preferences 'lifecycle_branches' are corrupt: '${branchConfiguration.value}'`);
                     }
                 } else {
-                    channelNames.push({name: channel.name, teamId: channel.team.id});
+                    channelNames.push({ name: channel.name, teamId: channel.team.id });
                 }
             } else {
-                channelNames.push({name: channel.name, teamId: channel.team.id});
+                channelNames.push({ name: channel.name, teamId: channel.team.id });
             }
         });
 
@@ -340,7 +340,7 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
     // Add Goals nodes
     const goalSets: GoalSet[] = [];
     _.forEach(_.groupBy(push.goals, "goalSetId"),
-            v => goalSets.push({ goals: v, goalSetId: v[0].goalSetId, ts: _.min(v.map(g => g.ts))}));
+        v => goalSets.push({ goals: v, goalSetId: v[0].goalSetId, ts: _.min(v.map(g => g.ts)) }));
     nodes.push(...goalSets.sort((g1, g2) => g2.ts - g1.ts));
     return nodes;
 }
@@ -373,11 +373,9 @@ function matches(pattern: string, target: string): boolean {
 }
 
 function createId(push: graphql.PushToPushLifecycle.Push): string {
-    let id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
-    if (push.goalSets) {
-        if (push.goalSets.length > 1) {
-            return `${id}/${push.goalSets.length - 1}`;
-        } 
+    const id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
+    if (push.goalSets && push.goalSets.length > 1) {
+        return `${id}/${push.goalSets.length}`;
     }
     return id;
 }
