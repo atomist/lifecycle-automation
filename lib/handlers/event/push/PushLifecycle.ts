@@ -137,7 +137,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                     new CardActionContributorWrapper(new ApplicationActionContributor()),
                 ],
-                id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
+                id: createId(push),
                 timestamp: Date.now().toString(),
                 channels: [{
                     name: "atomist:dashboard",
@@ -219,7 +219,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApproveGoalActionContributor(),
                     new ApplicationActionContributor(),
                 ],
-                id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
+                id: createId(push),
                 timestamp: Date.now().toString(),
                 channels,
                 extract: (type: string) => {
@@ -370,6 +370,16 @@ function matches(pattern: string, target: string): boolean {
     const regexp = new RegExp(pattern, "g");
     const match = regexp.exec(target);
     return match != null && match.length > 0;
+}
+
+function createId(push: graphql.PushToPushLifecycle.Push): string {
+    let id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
+    if (push.goalSets) {
+        if (push.goalSets.length > 1) {
+            return `${id}/${push.goalSets.length - 1}`;
+        } 
+    }
+    return id;
 }
 
 export interface Domain {
