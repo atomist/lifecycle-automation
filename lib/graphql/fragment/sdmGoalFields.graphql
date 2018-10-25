@@ -16,6 +16,10 @@ fragment SdmGoalFields on SdmGoal {
   description
   url
   externalUrl
+  externalUrls {
+    label
+    url
+  }
   externalKey
   retryFeasible
   ts

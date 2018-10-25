@@ -95,6 +95,7 @@ export class UpdateSdmGoalState implements HandleCommand {
 
         goal.state = this.state;
         goal.ts = Date.now();
+        goal.version = (goal.version || 0) + 1;
         delete goal.id;
 
         return ctx.messageClient.send(goal, addressEvent("SdmGoal"));

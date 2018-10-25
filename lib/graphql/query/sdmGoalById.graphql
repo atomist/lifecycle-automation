@@ -20,6 +20,10 @@ query sdmGoalById($id: ID!) {
     description
     url
     externalUrl
+    externalUrls {
+      label
+      url
+    }
     state
     externalKey
     ts
@@ -57,5 +61,6 @@ query sdmGoalById($id: ID!) {
       channelId
     }
     data
+    version
   }
 }
