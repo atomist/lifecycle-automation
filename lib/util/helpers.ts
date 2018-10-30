@@ -124,7 +124,7 @@ export function commitIcon(repo: any): string {
 }
 
 export function apiUrl(repo: any): string {
-    if (repo.org && repo.org.provider && repo.org.provider.url) {
+    if (repo.org && repo.org.provider && repo.org.provider.apiUrl) {
         let providerUrl = repo.org.provider.apiUrl;
         if (providerUrl.slice(-1) === "/") {
             providerUrl = providerUrl.slice(0, -1);
