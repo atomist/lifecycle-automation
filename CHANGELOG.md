@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.30...HEAD)
 
+### Fixed
+
+-   Auto merging PRs is not working for GHE. [#254](https://github.com/atomist/lifecycle-automation/issues/254)
+
 ## [0.10.30](https://github.com/atomist/lifecycle-automation/compare/0.10.28...0.10.30) - 2018-10-25
 
 ### Added
