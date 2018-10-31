@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   Auto merging PRs is not working for GHE. [#254](https://github.com/atomist/lifecycle-automation/issues/254)
+-   Add approvalRequired and preApprovalRequired to update SDM goal. [a8273aa](https://github.com/atomist/lifecycle-automation/commit/a8273aa0376d9185be15d5391087c689cc2bde97)
 
 ## [0.10.30](https://github.com/atomist/lifecycle-automation/compare/0.10.28...0.10.30) - 2018-10-25
 
