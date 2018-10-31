@@ -89,8 +89,10 @@ export class UpdateSdmGoalState implements HandleCommand {
         // Don't set approval for restart updates
         if (this.state === SdmGoalState.approved) {
             goal.approval = prov;
+            goal.approvalRequired = false;
         } else if (this.state === SdmGoalState.pre_approved) {
             goal.preApproval = prov;
+            goal.preApprovalRequired = false;
         }
 
         goal.state = this.state;
