@@ -33,6 +33,7 @@ query sdmGoalById($id: ID!) {
       environment
       name
     }
+    approvalRequired
     approval {
       correlationId
       registration
@@ -42,6 +43,7 @@ query sdmGoalById($id: ID!) {
       userId
       channelId
     }
+    preApprovalRequired
     preApproval {
       correlationId
       registration
