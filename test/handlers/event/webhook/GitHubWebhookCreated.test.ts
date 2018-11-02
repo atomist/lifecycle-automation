@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import "mocha";
-import assert = require("power-assert");
-
 import {
+    Destination,
     MessageOptions,
     SlackDestination,
-} from "@atomist/automation-client/spi/message/MessageClient";
-import { Destination } from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
+import "mocha";
+import assert = require("power-assert");
 import { GitHubWebhookCreated } from "../../../../lib/handlers/event/webhook/GitHubWebhookCreated";
 
 describe("GitHubWebhookCreated", () => {

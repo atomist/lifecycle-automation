@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -33,7 +33,7 @@ import {
  * Send a lifecycle message on ParentImpact events.
  */
 @EventHandler("Send a lifecycle message on ParentImpact events",
-    subscription("parentImpactToPushLifecycle"))
+    GraphQL.subscription("parentImpactToPushLifecycle"))
 @Tags("lifecycle", "push", "parentImpact")
 export class ParentImpactToPushLifecycle
     extends PushLifecycleHandler<graphql.ParentImpactToPushLifecycle.Subscription> {
@@ -55,7 +55,7 @@ export class ParentImpactToPushLifecycle
  * Send a lifecycle card on ParentImpact events.
  */
 @EventHandler("Send a lifecycle card on ParentImpact events",
-    subscription("parentImpactToPushLifecycle"))
+    GraphQL.subscription("parentImpactToPushLifecycle"))
 @Tags("lifecycle", "push", "parentImpact")
 export class ParentImpactToPushCardLifecycle
     extends PushCardLifecycleHandler<graphql.ParentImpactToPushLifecycle.Subscription> {

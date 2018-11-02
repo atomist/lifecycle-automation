@@ -15,19 +15,19 @@
  */
 
 import {
-    CommandHandler,
     failure,
-    HandleCommand,
+    guid,
     HandlerContext,
     HandlerResult,
     MappedParameter,
     MappedParameters,
     Parameter,
+    QueryNoCacheOptions,
     success,
     Tags,
 } from "@atomist/automation-client";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
     bold,
     codeLine,

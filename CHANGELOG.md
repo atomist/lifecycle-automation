@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.10.33...HEAD)
 
+### Changed
+
+-   Migrate to latest automation-client APIs. [d8cc2c7](https://github.com/atomist/lifecycle-automation/commit/d8cc2c71ee864387dcc34aa4d68638a0810be4f0)
+
 ## [0.10.33](https://github.com/atomist/lifecycle-automation/compare/0.10.32...0.10.33) - 2018-10-31
 
 ## [0.10.32](https://github.com/atomist/lifecycle-automation/compare/0.10.30...0.10.32) - 2018-10-31

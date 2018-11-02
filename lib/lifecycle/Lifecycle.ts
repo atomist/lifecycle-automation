@@ -15,26 +15,24 @@
  */
 
 import {
+    addressEvent,
+    addressSlackChannels,
+    CommandReferencingAction,
     EventFired,
     failure,
     Failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
+    isSlackMessage,
+    logger,
+    MessageClient,
+    MessageOptions,
     Secret,
     Secrets,
     Success,
     SuccessPromise,
 } from "@atomist/automation-client";
-import { logger } from "@atomist/automation-client/internal/util/logger";
-import {
-    addressEvent,
-    addressSlackChannels,
-    CommandReferencingAction,
-    isSlackMessage,
-    MessageClient,
-    MessageOptions,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import {
     Action,
     SlackMessage,

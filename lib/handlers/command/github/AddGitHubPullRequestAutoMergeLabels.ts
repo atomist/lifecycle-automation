@@ -15,8 +15,6 @@
  */
 
 import {
-    ConfigurableCommandHandler,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -26,6 +24,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import { bold } from "@atomist/slack-messages";
 import * as Github from "@octokit/rest";
 import { success } from "../../../util/messages";

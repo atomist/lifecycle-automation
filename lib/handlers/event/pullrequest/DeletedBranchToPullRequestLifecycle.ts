@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -33,7 +33,7 @@ import {
  * Send a lifecycle message on DeletedBranch events.
  */
 @EventHandler("Send a lifecycle message on DeletedBranch events",
-    subscription("deletedBranchToPullRequestLifecycle"))
+    GraphQL.subscription("deletedBranchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "status")
 export class DeletedBranchToPullRequestLifecycle
     extends PullRequestLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {
@@ -58,7 +58,7 @@ export class DeletedBranchToPullRequestLifecycle
  * Send a lifecycle card on DeletedBranch events.
  */
 @EventHandler("Send a lifecycle card on DeletedBranch events",
-    subscription("deletedBranchToPullRequestLifecycle"))
+    GraphQL.subscription("deletedBranchToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "status")
 export class DeletedBranchToPullRequestCardLifecycle
     extends PullRequestCardLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {

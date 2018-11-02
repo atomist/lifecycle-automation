@@ -15,21 +15,21 @@
  */
 
 import {
-    CommandHandler,
+    buttonForCommand,
     failure,
-    HandleCommand,
+    guid,
     HandlerContext,
     HandlerResult,
     logger,
     MappedParameter,
     MappedParameters,
     Parameter,
+    QueryNoCacheOptions,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";

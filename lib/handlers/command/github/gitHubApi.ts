@@ -17,11 +17,11 @@
 import {
     failure,
     HandlerContext,
+    HandlerError,
     HandlerResult,
+    MessageOptions,
     Success,
 } from "@atomist/automation-client";
-import { HandlerError } from "@atomist/automation-client/HandlerResult";
-import { MessageOptions } from "@atomist/automation-client/spi/message/MessageClient";
 import * as GitHubApi from "@octokit/rest";
 import * as URL from "url";
 import { error } from "../../../util/messages";

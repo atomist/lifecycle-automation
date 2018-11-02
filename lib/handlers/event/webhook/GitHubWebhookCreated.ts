@@ -15,21 +15,19 @@
  */
 
 import {
+    addressSlackUsers,
+    buttonForCommand,
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
+    GraphQL,
     HandlerContext,
     HandlerResult,
     Success,
     SuccessPromise,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import {
-    addressSlackUsers,
-    buttonForCommand,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import {
     Attachment,
     codeLine,
@@ -44,7 +42,7 @@ import { DefaultBotName } from "../../command/slack/LinkRepo";
 // list of channels we look for to create buttons
 const Channels = ["dev", "engineering", "development", "devops"];
 
-@EventHandler("Displays a welcome message when a new org webhook is installed", subscription("orgWebhook"))
+@EventHandler("Displays a welcome message when a new org webhook is installed", GraphQL.subscription("orgWebhook"))
 @Tags("enrollment")
 export class GitHubWebhookCreated implements HandleEvent<graphql.OrgWebhook.Subscription> {
 

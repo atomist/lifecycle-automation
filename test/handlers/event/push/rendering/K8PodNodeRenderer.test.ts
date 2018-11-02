@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EventFired } from "@atomist/automation-client/HandleEvent";
+import { EventFired } from "@atomist/automation-client";
 import "mocha";
 import * as assert from "power-assert";
 import { K8PodNodeRenderer } from "../../../../../lib/handlers/event/push/rendering/PushNodeRenderers";

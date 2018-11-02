@@ -15,9 +15,7 @@
  */
 
 import {
-    ConfigurableCommandHandler,
     failure,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -26,6 +24,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
 import {

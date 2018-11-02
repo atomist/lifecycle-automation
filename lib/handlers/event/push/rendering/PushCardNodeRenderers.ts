@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client/internal/util/logger";
+import { logger } from "@atomist/automation-client";
 import { url } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

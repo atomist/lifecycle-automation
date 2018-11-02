@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isSlackMessage } from "@atomist/automation-client/spi/message/MessageClient";
+import { isSlackMessage } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as mmh3 from "murmurhash3js";

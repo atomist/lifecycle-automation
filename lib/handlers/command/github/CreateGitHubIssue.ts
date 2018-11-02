@@ -15,8 +15,6 @@
  */
 
 import {
-    CommandHandler,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -27,6 +25,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { replaceChatIdWithGitHubId } from "../../../util/helpers";

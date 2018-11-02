@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-import { LoggingConfig } from "@atomist/automation-client/internal/util/logger";
 import * as _ from "lodash";
 import "mocha";
 import * as assert from "power-assert";
 import { SdmGoalsByCommit } from "../../lib/typings/types";
 import { sortGoals } from "../../lib/util/goals";
-
-LoggingConfig.format = "cli";
 
 describe("goals", () => {
 

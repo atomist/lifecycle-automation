@@ -15,24 +15,20 @@
  */
 
 import {
+    addressEvent,
     EventFired,
-    EventHandler,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     SuccessPromise,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import { addressEvent } from "@atomist/automation-client/spi/message/MessageClient";
-import {
-    CommitIssueRelationship,
-    CommitIssueRelationshipRootType,
-} from "../../../ingesters/commitIssueRelationship";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as graphql from "../../../typings/types";
 import { extractLinkedIssues } from "../../../util/helpers";
 
 @EventHandler("Create a relationship between a commit and issue/PR",
-    subscription("issueRelationshipOnCommit"))
+    GraphQL.subscription("issueRelationshipOnCommit"))
 export class IssueRelationshipOnCommit implements HandleEvent<graphql.IssueRelationshipOnCommit.Subscription> {
 
     public async handle(e: EventFired<graphql.IssueRelationshipOnCommit.Subscription>,
@@ -54,7 +50,7 @@ export class IssueRelationshipOnCommit implements HandleEvent<graphql.IssueRelat
     }
 
     private async storeCommitIssueRelationship(commit, issue, ctx: HandlerContext) {
-        const referencedIssue: CommitIssueRelationship = {
+        const referencedIssue = {
             commit: {
                 owner: commit.repo.owner,
                 repo: commit.repo.name,
@@ -67,6 +63,6 @@ export class IssueRelationshipOnCommit implements HandleEvent<graphql.IssueRelat
             },
             type: "references",
         };
-        await ctx.messageClient.send(referencedIssue, addressEvent(CommitIssueRelationshipRootType));
+        await ctx.messageClient.send(referencedIssue, addressEvent("CommitIssueRelationship"));
     }
 }

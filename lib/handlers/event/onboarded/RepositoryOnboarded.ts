@@ -16,9 +16,7 @@
 
 import {
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Secret,
@@ -26,7 +24,9 @@ import {
     success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { IssueToIssueCardLifecycle } from "../issue/IssueToIssueLifecycle";
@@ -34,7 +34,7 @@ import { PullRequestToPullRequestCardLifecycle } from "../pullrequest/PullReques
 import { PushToPushCardLifecycle } from "../push/PushToPushLifecycle";
 
 @EventHandler("Send a Push lifecycle card when a new repo has finished onboarding",
-    subscription("repoOnboarded"))
+    GraphQL.subscription("repoOnboarded"))
 @Tags("enrollment")
 export class RepositoryOnboarded implements HandleEvent<graphql.RepoOnboarded.Subscription> {
 

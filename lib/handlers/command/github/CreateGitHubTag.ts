@@ -15,9 +15,9 @@
  */
 
 import {
-    ConfigurableCommandHandler,
+    buttonForCommand,
     failure,
-    HandleCommand,
+    guid,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -29,9 +29,9 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { commandHandlerFrom } from "@atomist/automation-client/onCommand";
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { commandHandlerFrom } from "@atomist/automation-client/lib/onCommand";
 import {
     bold,
     codeLine,

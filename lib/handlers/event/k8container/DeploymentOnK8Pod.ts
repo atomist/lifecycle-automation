@@ -15,24 +15,19 @@
  */
 
 import {
+    addressEvent,
     EventFired,
-    EventHandler,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     SuccessPromise,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import { addressEvent } from "@atomist/automation-client/spi/message/MessageClient";
-import * as _ from "lodash";
-import {
-    Deployment,
-    DeploymentRootType,
-} from "../../../ingesters/deployment";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as graphql from "../../../typings/types";
 
 @EventHandler("Create a deployment on running K8 container events",
-    subscription("deploymentOnK8Pod"))
+    GraphQL.subscription("deploymentOnK8Pod"))
 export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.Subscription> {
 
     public async handle(e: EventFired<graphql.DeploymentOnK8Pod.Subscription>,
@@ -43,7 +38,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
         for (const container of containers) {
             const commit = container.image.commits[0];
 
-            const deployment: Deployment = {
+            const deployment = {
                 commit: {
                     owner: commit.repo.owner,
                     repo: commit.repo.name,
@@ -54,7 +49,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
             };
 
             if (container.ready && !(await isDeployed(deployment, ctx))) {
-                await ctx.messageClient.send(deployment, addressEvent(DeploymentRootType));
+                await ctx.messageClient.send(deployment, addressEvent("Deployment"));
             }
         }
 
@@ -63,7 +58,7 @@ export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.
 
 }
 
-async function isDeployed(deployment: Deployment,
+async function isDeployed(deployment: any,
                           ctx: HandlerContext): Promise<boolean> {
     const result = await ctx.graphClient.query<graphql.Deployment.Query, graphql.Deployment.Variables>({
         name: "Deployment",

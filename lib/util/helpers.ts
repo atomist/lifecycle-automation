@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-import { HandlerContext } from "@atomist/automation-client";
-import { logger } from "@atomist/automation-client/internal/util/logger";
+import {
+    HandlerContext,
+    logger,
+} from "@atomist/automation-client";
 import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { DefaultGitHubApiUrl } from "../handlers/command/github/gitHubApi";
 import { DirectMessagePreferences } from "../handlers/event/preferences";
-import { PullRequestFields } from "../typings/types";
 import * as graphql from "../typings/types";
+import { PullRequestFields } from "../typings/types";
 
 /**
  * Safely truncate the first line of a commit message to 50 characters

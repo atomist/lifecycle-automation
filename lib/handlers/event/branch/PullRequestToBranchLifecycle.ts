@@ -17,17 +17,17 @@
 import {
     AutomationContextAware,
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
+    QueryNoCacheOptions,
     Success,
     SuccessPromise,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as graphql from "../../../typings/types";
 import { BranchToBranchLifecycle } from "./BranchToBranchLifecycle";
 
@@ -35,7 +35,7 @@ import { BranchToBranchLifecycle } from "./BranchToBranchLifecycle";
  * Send a lifecycle message on PullRequest events.
  */
 @EventHandler("Send a lifecycle message on Branch events",
-    subscription("pullRequestToBranchLifecycle"))
+    GraphQL.subscription("pullRequestToBranchLifecycle"))
 @Tags("lifecycle", "branch", "pr")
 export class PullRequestToBranchLifecycle implements HandleEvent<graphql.PullRequestToBranchLifecycle.Subscription> {
 

@@ -15,10 +15,10 @@
  */
 
 import {
-    CommandHandler,
     Parameter,
     Tags,
 } from "@atomist/automation-client";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { AbstractCloudFoundryApplicationUpdateCommand } from "./AbstractCloudFoundryApplicationUpdateCommand";
 import { CloudFoundryParameters } from "./parameters";
 

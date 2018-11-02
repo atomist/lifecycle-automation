@@ -15,10 +15,11 @@
  */
 
 import {
+    addressSlackChannels,
+    buttonForCommand,
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
+    guid,
     HandlerContext,
     HandlerResult,
     Secret,
@@ -26,12 +27,9 @@ import {
     success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import {
-    addressSlackChannels,
-    buttonForCommand,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import {
     Action,
     bold,
@@ -53,7 +51,7 @@ import {
 import { ListRepoLinks } from "../../command/slack/ListRepoLinks";
 import { PushToPushLifecycle } from "../push/PushToPushLifecycle";
 
-@EventHandler("Display an unlink message when a channel is linked", subscription("channelLinkCreated"))
+@EventHandler("Display an unlink message when a channel is linked", GraphQL.subscription("channelLinkCreated"))
 @Tags("enrollment")
 export class ChannelLinkCreated implements HandleEvent<graphql.ChannelLinkCreated.Subscription> {
 

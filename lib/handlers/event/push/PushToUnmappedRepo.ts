@@ -15,23 +15,21 @@
  */
 
 import {
+    addressSlackUsers,
+    buttonForCommand,
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     logger,
+    menuForCommand,
+    MenuSpecification,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import {
-    addressSlackUsers,
-    buttonForCommand,
-    menuForCommand,
-    MenuSpecification,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
@@ -40,10 +38,7 @@ import {
     repoChannelName,
     repoSlackLink,
 } from "../../../util/helpers";
-import {
-    DefaultGitHubApiUrl,
-    DefaultGitHubProviderId,
-} from "../../command/github/gitHubApi";
+import { DefaultGitHubApiUrl } from "../../command/github/gitHubApi";
 import { SetUserPreference } from "../../command/preferences/SetUserPreference";
 import { CreateChannel } from "../../command/slack/CreateChannel";
 import {
@@ -55,7 +50,7 @@ import { DirectMessagePreferences } from "../preferences";
 /**
  * Suggest mapping a repo to committer on unmapped repo.
  */
-@EventHandler("Suggest mapping a repo to committer on unmapped repo", subscription("pushToUnmappedRepo"))
+@EventHandler("Suggest mapping a repo to committer on unmapped repo", GraphQL.subscription("pushToUnmappedRepo"))
 @Tags("lifecycle", "push")
 export class PushToUnmappedRepo implements HandleEvent<graphql.PushToUnmappedRepo.Subscription> {
 

@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -33,7 +33,7 @@ import {
  * Send a lifecycle message on Application events.
  */
 @EventHandler("Send a lifecycle message on Application events",
-    subscription("applicationToPushLifecycle"))
+    GraphQL.subscription("applicationToPushLifecycle"))
 @Tags("lifecycle", "push", "application")
 export class ApplicationToPushLifecycle extends PushLifecycleHandler<graphql.ApplicationToPushLifecycle.Subscription> {
 
@@ -57,7 +57,7 @@ export class ApplicationToPushLifecycle extends PushLifecycleHandler<graphql.App
  * Send a lifecycle card on Application events.
  */
 @EventHandler("Send a lifecycle card on Application events",
-    subscription("applicationToPushLifecycle"))
+    GraphQL. subscription("applicationToPushLifecycle"))
 @Tags("lifecycle", "push", "application")
 export class ApplicationToPushCardLifecycle
     extends PushCardLifecycleHandler<graphql.ApplicationToPushLifecycle.Subscription> {

@@ -17,7 +17,7 @@
 import "mocha";
 import * as assert from "power-assert";
 
-import * as namespace from "@atomist/automation-client/internal/util/cls";
+import * as namespace from "@atomist/automation-client/lib/internal/util/cls";
 import { wrapLinksInText } from "../../lib/util/tracking";
 
 const event = "RemEvent";
@@ -28,7 +28,7 @@ const operation = "BeginTheBegin";
 describe("tracking", () => {
 
     function setup() {
-        namespace.init();
+        namespace.create();
         namespace.set({
             correlationId: "xxx",
             workspaceId,
@@ -44,7 +44,7 @@ describe("tracking", () => {
     describe("wrapLinksInText", () => {
 
         it("should wrap an named link", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -57,7 +57,7 @@ describe("tracking", () => {
         });
 
         it("should wrap an unnamed link", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -70,7 +70,7 @@ describe("tracking", () => {
         });
 
         it("should wrap an named link with URI escapes", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/reckoning/01-%2BDon%31t%20Go%20Back%20to%2C%20Rockvillle.html`;
@@ -83,7 +83,7 @@ describe("tracking", () => {
         });
 
         it("should wrap an unnamed link with URI escapes", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/reckoning/01-%2BDon%31t%20Go%20Back%20to%2C%20Rockvillle.html`;
@@ -96,7 +96,7 @@ describe("tracking", () => {
         });
 
         it("should ignore a bare link", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const t = `http://www.rem.com/`;
@@ -106,7 +106,7 @@ describe("tracking", () => {
         });
 
         it("should ignore a non link", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const t = `Less < than || greater > than`;
@@ -116,7 +116,7 @@ describe("tracking", () => {
         });
 
         it("should wrap a named link in text", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -129,7 +129,7 @@ describe("tracking", () => {
         });
 
         it("should wrap an unnamed link in text", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -142,7 +142,7 @@ describe("tracking", () => {
         });
 
         it("should wrap a named link multiple times", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -156,7 +156,7 @@ describe("tracking", () => {
         });
 
         it("should wrap an unnamed link in text multiple times", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com/`;
@@ -170,7 +170,7 @@ describe("tracking", () => {
         });
 
         it("should wrap multiple named links", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com`;
@@ -196,7 +196,7 @@ wasn't.  It was on _<${urlToMixPanel(hashes[4][0])}|Reckoning>_ by <${urlToMixPa
         });
 
         it("should wrap multiple unnamed links", () => {
-            const ses = namespace.init();
+            const ses = namespace.create();
             ses.run(() => {
                 setup();
                 const u = `http://www.rem.com`;

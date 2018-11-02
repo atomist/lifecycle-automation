@@ -15,24 +15,24 @@
  */
 
 import {
+    buttonForCommand,
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import { Action } from "@atomist/slack-messages";
 import * as graphql from "../../../typings/types";
 import { issueNotification } from "../../../util/notifications";
 import { CommentGitHubIssue } from "../../command/github/CommentGitHubIssue";
 import { ReactGitHubIssueComment } from "../../command/github/ReactGitHubIssueComment";
 
-@EventHandler("Notify mentioned user in slack", subscription("notifyMentionedOnIssueComment"))
+@EventHandler("Notify mentioned user in slack", GraphQL.subscription("notifyMentionedOnIssueComment"))
 @Tags("lifecycle", "issue comment", "notification")
 export class NotifyMentionedOnIssueComment implements HandleEvent<graphql.NotifyMentionedOnIssueComment.Subscription> {
 

@@ -16,9 +16,7 @@
 
 import {
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Secret,
@@ -26,13 +24,15 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as config from "config";
 import * as graphql from "../../../typings/types";
 import { apiUrl } from "../../../util/helpers";
 import * as github from "../../command/github/gitHubApi";
 
-@EventHandler("Send Fingerprint changes to GitHub statuses", subscription("statusOnParentImpact"))
+@EventHandler("Send Fingerprint changes to GitHub statuses", GraphQL.subscription("statusOnParentImpact"))
 @Tags("lifecycle", "impact")
 export class StatusOnParentImpact implements HandleEvent<graphql.StatusOnParentImpact.Subscription> {
 

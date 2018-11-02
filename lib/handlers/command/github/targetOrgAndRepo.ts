@@ -15,18 +15,16 @@
  */
 
 import {
+    buttonForCommand,
+    guid,
     HandlerContext,
     MappedParameter,
     MappedParameters,
+    menuForCommand,
     Parameter,
     Parameters,
     Success,
 } from "@atomist/automation-client";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import {
-    buttonForCommand,
-    menuForCommand,
-} from "@atomist/automation-client/spi/message/MessageClient";
 import {
     bold,
     SlackMessage,

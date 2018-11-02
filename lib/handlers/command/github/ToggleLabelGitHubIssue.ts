@@ -15,8 +15,6 @@
  */
 
 import {
-    ConfigurableCommandHandler,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -27,6 +25,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as github from "./gitHubApi";
 
 @ConfigurableCommandHandler("Add label to or remove a label from a GitHub issue", {

@@ -15,8 +15,7 @@
  */
 
 import {
-    ConfigurableCommandHandler,
-    HandleCommand,
+    failure,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -27,7 +26,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { failure } from "@atomist/automation-client/HandlerResult";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
     getChatIds,
     loadGitHubIdByChatId,

@@ -1,0 +1,12 @@
+type Deployment @rootType {
+  commit(sha: [String], owner: [String], repo: [String]): DeploymentCommit
+    @compositeId
+  environment: String @compositeId
+  ts: Int
+}
+
+type DeploymentCommit {
+  owner: String @compositeId
+  repo: String @compositeId
+  sha: String @compositeId
+}

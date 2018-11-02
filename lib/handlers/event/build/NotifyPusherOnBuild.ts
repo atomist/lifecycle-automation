@@ -16,19 +16,19 @@
 
 import {
     EventFired,
-    EventHandler,
     Failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as graphql from "../../../typings/types";
 import { buildNotification } from "../../../util/notifications";
 
-@EventHandler("Notify pushers of failing builds in Slack", subscription("notifyPusherOnBuild"))
+@EventHandler("Notify pushers of failing builds in Slack", GraphQL.subscription("notifyPusherOnBuild"))
 @Tags("lifecycle", "build", "notification")
 export class NotifyPusherOnBuild implements HandleEvent<graphql.NotifyPusherOnBuild.Subscription> {
 
