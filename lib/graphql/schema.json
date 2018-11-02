@@ -100579,6 +100579,40 @@
               ]
             },
             {
+              "name": "kickUserFromSlackChannel",
+              "description": "Ask the bot to kick a user from a chat channel",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SlackChannel"
+              },
+              "args": [
+                {
+                  "name": "chatTeamId",
+                  "description": "The ID of the chat team",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "channelId",
+                  "description": "The id of the channel",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                },
+                {
+                  "name": "userId",
+                  "description": "The id of the user",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String"
+                  }
+                }
+              ]
+            },
+            {
               "name": "unlinkSlackChannelFromRepo",
               "description": "Unlink a channel from a repo",
               "type": {
@@ -116082,6 +116116,6 @@
     }
   },
   "extensions": {
-    "correlation_id": "9c070ced-2e06-4885-bbf6-93ab59b0471c"
+    "correlation_id": "240d967b-ea96-4f9a-a57a-2250cc772f56"
   }
 }
