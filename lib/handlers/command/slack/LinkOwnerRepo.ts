@@ -15,9 +15,7 @@
  */
 
 import {
-    CommandHandler,
     failure,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     logger,
@@ -29,6 +27,8 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as slack from "@atomist/slack-messages";
 import {
     DefaultGitHubApiUrl,

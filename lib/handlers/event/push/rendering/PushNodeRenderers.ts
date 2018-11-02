@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client/internal/util/logger";
+import { logger } from "@atomist/automation-client";
 import {
     Action,
     Attachment,

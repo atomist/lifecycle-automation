@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import { EventFired } from "@atomist/automation-client/HandleEvent";
-import { HandlerContext } from "@atomist/automation-client/HandlerContext";
 import {
     Destination,
+    EventFired,
+    HandlerContext,
     MessageOptions,
     SlackDestination,
-} from "@atomist/automation-client/spi/message/MessageClient";
-import { MessageClientSupport } from "@atomist/automation-client/spi/message/MessageClientSupport";
-import { SlackMessage } from "@atomist/slack-messages";
+} from "@atomist/automation-client";
 import "mocha";
 import * as assert from "power-assert";
 import { NotifyReviewerOnPush } from "../../../../lib/handlers/event/push/NotifyReviewerOnPush";

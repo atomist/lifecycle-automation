@@ -1,0 +1,32 @@
+type CommitIssueRelationship @rootType {
+  type: CommitIssueRelationshipType
+
+  commit(
+    sha: [String]
+    owner: [String]
+    repo: [String]
+  ): CommitIssueRelationshipCommit @compositeId
+
+  issue(
+    name: [String]
+    owner: [String]
+    repo: [String]
+  ): CommitIssueRelationshipIssue @compositeId
+}
+
+enum CommitIssueRelationshipType {
+  fixes
+  references
+}
+
+type CommitIssueRelationshipCommit {
+  owner: String @compositeId
+  repo: String @compositeId
+  sha: String @compositeId
+}
+
+type CommitIssueRelationshipIssue {
+  owner: String @compositeId
+  repo: String @compositeId
+  name: String @compositeId
+}

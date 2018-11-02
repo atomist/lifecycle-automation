@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { HandlerContext } from "@atomist/automation-client/HandlerContext";
 import {
     addressSlackUsers,
     buttonForCommand,
-} from "@atomist/automation-client/spi/message/MessageClient";
+    HandlerContext,
+} from "@atomist/automation-client";
 import {
     Action,
     bold,

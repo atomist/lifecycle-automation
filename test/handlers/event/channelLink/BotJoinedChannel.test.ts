@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import "mocha";
-import * as assert from "power-assert";
-
-import * as slack from "@atomist/slack-messages";
-import axios from "axios";
-
 import {
     Destination,
     MessageOptions,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
+import "mocha";
+import * as assert from "power-assert";
 import {
     RepoProvider,
 } from "../../../../lib/handlers/command/slack/LinkOwnerRepo";

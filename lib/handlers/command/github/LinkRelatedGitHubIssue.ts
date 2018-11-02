@@ -15,13 +15,15 @@
  */
 
 import {
-    ConfigurableCommandHandler,
+    addressEvent,
+    buttonForCommand,
     failure,
-    HandleCommand,
+    guid,
     HandlerContext,
     HandlerResult,
     MappedParameter,
     MappedParameters,
+    menuForCommand,
     Parameter,
     Parameters,
     Secret,
@@ -29,20 +31,15 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { commandHandlerFrom } from "@atomist/automation-client/onCommand";
-import {
-    addressEvent,
-    buttonForCommand,
-    menuForCommand,
-} from "@atomist/automation-client/spi/message/MessageClient";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { commandHandlerFrom } from "@atomist/automation-client/lib/onCommand";
 import * as slack from "@atomist/slack-messages";
 import {
     bold,
     SlackMessage,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
-import { IssueRelationship } from "../../../ingesters/issueRelationship";
 import * as types from "../../../typings/types";
 import { success } from "../../../util/messages";
 import * as github from "./gitHubApi";
@@ -98,7 +95,7 @@ export class LinkRelatedGitHubIssue implements HandleCommand {
             // Safe to ignore
         }
 
-        const issueRel: IssueRelationship = {
+        const issueRel = {
             relationshipId: guid(),
             type: "related",
             state: "open",

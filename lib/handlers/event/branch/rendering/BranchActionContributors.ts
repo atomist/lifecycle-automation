@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import { buttonForCommand } from "@atomist/automation-client";
 import { Action } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,

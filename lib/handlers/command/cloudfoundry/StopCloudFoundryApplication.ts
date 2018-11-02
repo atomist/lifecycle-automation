@@ -15,10 +15,10 @@
  */
 
 import {
-    CommandHandler,
+    HandlerContext,
     Tags,
 } from "@atomist/automation-client";
-import { HandlerContext } from "@atomist/automation-client/HandlerContext";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import * as cf from "cf-nodejs-client";
 import { AbstractCloudFoundryApplicationCommand } from "./AbstractCloudFoundryApplicationCommand";
 

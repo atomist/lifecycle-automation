@@ -17,8 +17,8 @@
 import {
     EventFired,
     HandlerContext,
+    logger,
 } from "@atomist/automation-client";
-import { logger } from "@atomist/automation-client/internal/util/logger";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

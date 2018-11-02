@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
+import { QueryOptions } from "@atomist/automation-client";
 import "mocha";
 import * as assert from "power-assert";
 
-import { LoggingConfig } from "@atomist/automation-client/internal/util/logger";
-
-import { QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import {
     extractImageUrls,
     getGitHubUsers,
@@ -32,8 +30,6 @@ import {
     repoSlackLink,
     truncateCommitMessage,
 } from "../../lib/util/helpers";
-
-LoggingConfig.format = "cli";
 
 describe("helpers", () => {
 

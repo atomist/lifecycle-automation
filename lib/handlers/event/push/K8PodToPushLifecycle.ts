@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -33,7 +33,7 @@ import {
  * Send a lifecycle message on K8Pod events.
  */
 @EventHandler("Send a lifecycle message on K8Pod events",
-    subscription("k8PodToPushLifecycle"))
+    GraphQL.subscription("k8PodToPushLifecycle"))
 @Tags("lifecycle", "push", "k8pod")
 export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
 
@@ -59,7 +59,7 @@ export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPu
  * Send a lifecycle card on K8Pod events.
  */
 @EventHandler("Send a lifecycle card on K8Pod events",
-    subscription("k8PodToPushLifecycle"))
+    GraphQL.subscription("k8PodToPushLifecycle"))
 @Tags("lifecycle", "push", "k8pod")
 export class K8PodToPushCardLifecycle extends PushCardLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
 

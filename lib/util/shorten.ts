@@ -16,21 +16,19 @@
 
 import {
     AutomationContextAware,
-    HandlerContext,
-} from "@atomist/automation-client/HandlerContext";
-import { logger } from "@atomist/automation-client/internal/util/logger";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { AutomationEventListenerSupport } from "@atomist/automation-client/server/AutomationEventListener";
-import {
+    AutomationEventListenerSupport,
     Destination,
+    guid,
+    HandlerContext,
     isSlackMessage,
+    logger,
     MessageClient,
     MessageOptions,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import {
     DefaultSlackMessageClient,
     MessageClientSupport,
-} from "@atomist/automation-client/spi/message/MessageClientSupport";
+} from "@atomist/automation-client/lib/spi/message/MessageClientSupport";
 import { SlackMessage } from "@atomist/slack-messages";
 import axios from "axios";
 import * as cluster from "cluster";

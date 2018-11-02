@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
+    GraphQL,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -29,7 +29,7 @@ import { ReviewLifecycleHandler } from "./ReviewLifecycle";
 /**
  * Send a lifecycle message on Review events.
  */
-@EventHandler("Send a lifecycle message on Review events", subscription("reviewToReview"))
+@EventHandler("Send a lifecycle message on Review events", GraphQL.subscription("reviewToReview"))
 @Tags("lifecycle", "review")
 export class ReviewToReviewLifecycle extends ReviewLifecycleHandler<graphql.ReviewToReviewLifecycle.Subscription> {
 

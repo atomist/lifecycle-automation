@@ -16,16 +16,14 @@
 
 import {
     failure,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     logger,
-    Success,
-} from "@atomist/automation-client";
-import {
     Parameter,
     Secret,
-} from "@atomist/automation-client/decorators";
+    Success,
+} from "@atomist/automation-client";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as cf from "cf-nodejs-client";
 import { CloudFoundryParameters } from "./parameters";
 

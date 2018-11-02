@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { EventFired } from "@atomist/automation-client/HandleEvent";
-import { HandlerContext } from "@atomist/automation-client/HandlerContext";
-import { guid } from "@atomist/automation-client/internal/util/string";
-import { QueryOptions } from "@atomist/automation-client/spi/graph/GraphClient";
 import {
     Destination,
+    EventFired,
+    guid,
+    HandlerContext,
     MessageOptions,
+    QueryOptions,
     SlackDestination,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";

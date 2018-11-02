@@ -16,14 +16,14 @@
 
 import {
     failure,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     Parameter,
     Parameters,
     Success,
 } from "@atomist/automation-client";
-import { commandHandlerFrom } from "@atomist/automation-client/onCommand";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { commandHandlerFrom } from "@atomist/automation-client/lib/onCommand";
 import { success } from "../../../util/messages";
 
 @Parameters()

@@ -1,0 +1,22 @@
+type IssueRelationship @rootType {
+  relationshipId: String @compositeId
+  type: String
+  state: String
+
+  source(
+    issue: [String]
+    owner: [String]
+    repo: [String]
+  ): IssueRelationshipIssue
+  target(
+    issue: [String]
+    owner: [String]
+    repo: [String]
+  ): IssueRelationshipIssue
+}
+
+type IssueRelationshipIssue {
+  owner: String
+  repo: String
+  issue: String
+}

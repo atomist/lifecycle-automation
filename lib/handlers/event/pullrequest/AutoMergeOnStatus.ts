@@ -16,9 +16,7 @@
 
 import {
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Secret,
@@ -26,12 +24,15 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { autoMerge } from "./autoMerge";
 
-@EventHandler("Auto merge reviewed and approved pull requests on Status events", subscription("autoMergeOnStatus"))
+@EventHandler("Auto merge reviewed and approved pull requests on Status events",
+    GraphQL.subscription("autoMergeOnStatus"))
 @Tags("lifecycle", "pr", "automerge")
 export class AutoMergeOnStatus implements HandleEvent<graphql.AutoMergeOnStatus.Subscription> {
 

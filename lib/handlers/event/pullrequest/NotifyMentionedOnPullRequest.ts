@@ -16,15 +16,15 @@
 
 import {
     EventFired,
-    EventHandler,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as graphql from "../../../typings/types";
 import {
     prAssigneeNotification,
@@ -33,7 +33,7 @@ import {
     prRevieweeNotification,
 } from "../../../util/notifications";
 
-@EventHandler("Notify mentioned user in slack", subscription("notifyMentionedOnPullRequest"))
+@EventHandler("Notify mentioned user in slack", GraphQL.subscription("notifyMentionedOnPullRequest"))
 @Tags("lifecycle", "pr", "notification")
 export class NotifyMentionedOnPullRequest implements HandleEvent<graphql.NotifyMentionedOnPullRequest.Subscription> {
 

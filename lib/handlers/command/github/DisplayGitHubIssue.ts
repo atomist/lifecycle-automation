@@ -15,9 +15,7 @@
  */
 
 import {
-    ConfigurableCommandHandler,
     failure,
-    HandleCommand,
     HandlerContext,
     HandlerResult,
     MappedParameter,
@@ -27,6 +25,8 @@ import {
     Secrets,
     Tags,
 } from "@atomist/automation-client";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import { Lifecycle } from "../../../lifecycle/Lifecycle";
 import * as graphql from "../../../typings/types";

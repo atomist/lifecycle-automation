@@ -16,10 +16,10 @@
 
 import {
     EventFired,
-    EventHandler,
     Tags,
 } from "@atomist/automation-client";
-import { subscription } from "@atomist/automation-client/graph/graphQL";
+import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
@@ -30,7 +30,7 @@ import { BranchLifecycle } from "./BranchLifecycle";
  * Send a lifecycle message on Branch events.
  */
 @EventHandler("Send a lifecycle message on Branch events",
-    subscription("branchToBranchLifecycle"))
+    GraphQL.subscription("branchToBranchLifecycle"))
 @Tags("lifecycle", "branch")
 export class BranchToBranchLifecycle
     extends BranchLifecycle<graphql.BranchToBranchLifecycle.Subscription> {

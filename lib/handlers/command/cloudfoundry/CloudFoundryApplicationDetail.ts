@@ -15,10 +15,10 @@
  */
 
 import {
-    CommandHandler,
     HandlerContext,
     Tags,
 } from "@atomist/automation-client";
+import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import {
     Attachment,
     SlackMessage,

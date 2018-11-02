@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
-import { ApolloGraphClient } from "@atomist/automation-client/graph/ApolloGraphClient";
-import { guid } from "@atomist/automation-client/internal/util/string";
 import {
     buttonForCommand,
+    guid,
+    logger,
     menuForCommand,
     MenuSpecification,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
+import { ApolloGraphClient } from "@atomist/automation-client/lib/graph/ApolloGraphClient";
 import { Action } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

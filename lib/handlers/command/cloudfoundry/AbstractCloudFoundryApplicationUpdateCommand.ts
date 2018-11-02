@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HandlerContext } from "@atomist/automation-client/HandlerContext";
+import { HandlerContext } from "@atomist/automation-client";
 import * as cf from "cf-nodejs-client";
 import { AbstractCloudFoundryApplicationCommand } from "./AbstractCloudFoundryApplicationCommand";
 

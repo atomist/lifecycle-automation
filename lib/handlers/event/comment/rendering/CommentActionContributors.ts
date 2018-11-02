@@ -18,7 +18,7 @@ import {
     buttonForCommand,
     menuForCommand,
     MenuSpecification,
-} from "@atomist/automation-client/spi/message/MessageClient";
+} from "@atomist/automation-client";
 import { Action } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,

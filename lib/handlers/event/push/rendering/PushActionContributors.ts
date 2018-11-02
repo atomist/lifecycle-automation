@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { ApolloGraphClient } from "@atomist/automation-client/graph/ApolloGraphClient";
-import { logger } from "@atomist/automation-client/internal/util/logger";
-import { QueryNoCacheOptions } from "@atomist/automation-client/spi/graph/GraphClient";
-import { buttonForCommand } from "@atomist/automation-client/spi/message/MessageClient";
+import {
+    buttonForCommand,
+    logger,
+    QueryNoCacheOptions,
+} from "@atomist/automation-client";
+import { ApolloGraphClient } from "@atomist/automation-client/lib/graph/ApolloGraphClient";
 import {
     Action,
     githubToSlack,

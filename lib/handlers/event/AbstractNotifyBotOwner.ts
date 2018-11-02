@@ -15,15 +15,15 @@
  */
 
 import {
+    addressSlackUsers,
     EventFired,
     failure,
-    HandleEvent,
     HandlerContext,
     HandlerResult,
     logger,
     Success,
 } from "@atomist/automation-client";
-import { addressSlackUsers } from "@atomist/automation-client/spi/message/MessageClient";
+import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as _ from "lodash";
 import { ChatTeam } from "../../lifecycle/Lifecycle";
 import * as graphql from "../../typings/types";
