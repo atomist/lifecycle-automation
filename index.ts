@@ -195,7 +195,7 @@ import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOn
 import { GitHubWebhookCreated } from "./lib/handlers/event/webhook/GitHubWebhookCreated";
 import { ShortenUrlAutomationEventListener } from "./lib/util/shorten";
 
-const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging";
+const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 const AdminTeam = "atomist-automation";
 
 export const configuration: any = {
