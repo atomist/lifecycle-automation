@@ -65,7 +65,7 @@ export class FooterNodeRenderer implements SlackNodeRenderer<any> {
             } else {
                 attachment.mrkdwn_in = ["footer"];
             }
-        }   
+        }
         return Promise.resolve(msg);
     }
 }
