@@ -23,7 +23,6 @@ import {
     Lifecycle,
     LifecycleHandler,
 } from "../../../lifecycle/Lifecycle";
-import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
 import { CommentActionContributor } from "./rendering/ReviewActionContributors";
@@ -70,8 +69,7 @@ export abstract class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
                     nodes,
                     renderers: [
                         new ReviewNodeRenderer(),
-                        new ReviewDetailNodeRenderer(),
-                        new FooterNodeRenderer((node: any) => node.pullRequest)],
+                        new ReviewDetailNodeRenderer()],
                     contributors: [
                         new CommentActionContributor(),
                     ],

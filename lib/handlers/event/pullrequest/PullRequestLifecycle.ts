@@ -31,7 +31,6 @@ import {
 } from "../../../lifecycle/Lifecycle";
 import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
 import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
-import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../typings/types";
 import { isGitHub } from "../../../util/helpers";
@@ -184,8 +183,7 @@ export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R>
                 new StatusNodeRenderer(),
                 new ReviewNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open"),
-                new FooterNodeRenderer(node => node.baseBranchName)],
+                new AttachImagesNodeRenderer(node => node.state === "open")],
             contributors: isGitHub(pullrequest.repo) ? [
                 new MergeActionContributor(),
                 new AssignReviewerActionContributor(),

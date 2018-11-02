@@ -34,7 +34,6 @@ import {
 } from "../../../lifecycle/Lifecycle";
 import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
 import { EventsCardNodeRenderer } from "../../../lifecycle/rendering/EventsCardNodeRenderer";
-import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../typings/types";
 import {
@@ -204,8 +203,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new BuildNodeRenderer(),
                     new ApplicationNodeRenderer(),
                     new K8PodNodeRenderer(),
-                    new BlackDuckFingerprintNodeRenderer(),
-                    new FooterNodeRenderer((node: any) => node.after)],
+                    new BlackDuckFingerprintNodeRenderer()],
                 contributors: isGitHub(push.repo) ? [
                     new TagPushActionContributor(),
                     new TagTagActionContributor(),

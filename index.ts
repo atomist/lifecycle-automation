@@ -193,7 +193,6 @@ import {
 } from "./lib/handlers/event/push/TagToPushLifecycle";
 import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOnReview";
 import { GitHubWebhookCreated } from "./lib/handlers/event/webhook/GitHubWebhookCreated";
-import { ShortenUrlAutomationEventListener } from "./lib/util/shorten";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 const AdminTeam = "atomist-automation";
@@ -375,9 +374,6 @@ export const configuration: any = {
         GraphQL.ingester({ path: "./lib/graphql/ingester/deployment" }),
         GraphQL.ingester({ path: "./lib/graphql/ingester/issueRelationship" }),
     ] : [],
-    listeners: [
-        new ShortenUrlAutomationEventListener(),
-    ],
     postProcessors: [
         configureDashboardNotifications,
         configureRaven,

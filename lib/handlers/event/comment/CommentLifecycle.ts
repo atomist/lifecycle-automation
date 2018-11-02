@@ -24,7 +24,6 @@ import {
     LifecycleHandler,
 } from "../../../lifecycle/Lifecycle";
 import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
-import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -94,8 +93,7 @@ export abstract class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
                             } else {
                                 return false;
                             }
-                        }),
-                        new FooterNodeRenderer(node => node.body && (node.issue || node.pullRequest))],
+                        })],
                     contributors: [
                         new AssignActionContributor(),
                         new CommentActionContributor(),

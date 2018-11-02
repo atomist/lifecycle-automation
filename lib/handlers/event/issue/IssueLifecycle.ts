@@ -31,7 +31,6 @@ import {
 } from "../../../lifecycle/Lifecycle";
 import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
 import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
-import { FooterNodeRenderer } from "../../../lifecycle/rendering/FooterNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -170,8 +169,7 @@ export abstract class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
                 new IssueNodeRenderer(),
                 new MoreNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open"),
-                new FooterNodeRenderer(node => node.title || node.body)],
+                new AttachImagesNodeRenderer(node => node.state === "open")],
             contributors: [
                 new CommentActionContributor(),
                 new LabelActionContributor(),
