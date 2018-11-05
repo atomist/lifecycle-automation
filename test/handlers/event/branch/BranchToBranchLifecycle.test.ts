@@ -318,7 +318,7 @@ describe("BranchToBranchLifecycle", () => {
 
     /* tslint:disable */
     const payloadFailure =
-        `{"data":{"Branch":[{"id":"T0434HFDT_github.release_branch_test","pullRequests":[],"commit":null,"name":"release_branch_test","deleted":true,"repo":{"name":"test","owner":"atomisthq","defaultBranch":"master","channels":[],"org":{"chatTeam":{"preferences":[{"name":"disable_bot_owner_on_github_activity_notification","value":"true"}]},"provider":null}},"timestamp":"2017-12-05T22:09:00.084Z"}]},"extensions":{"type":"READ_ONLY","operationName":"BranchToBranchLifecycle","team_id":"T0434HFDT","team_name":"atomisthq","correlation_id":"057f722f-7de9-4e8a-b877-8713ff1e8004"},"secrets":[{"name":"github://org_token","value":"7**************************************3"}]}`
+        `{"data":{"Branch":[{"id":"T0434HFDT_github.release_branch_test","pullRequests":[],"commit":null,"name":"release_branch_test","deleted":true,"repo":{"name":"test","owner":"atomisthq","defaultBranch":"master","channels":[],"org":{"chatTeam":{"preferences":[{"name":"disable_bot_owner_on_github_activity_notification","value":"true"}]},"provider":{"private":false}}},"timestamp":"2017-12-05T22:09:00.084Z"}]},"extensions":{"type":"READ_ONLY","operationName":"BranchToBranchLifecycle","team_id":"T0434HFDT","team_name":"atomisthq","correlation_id":"057f722f-7de9-4e8a-b877-8713ff1e8004"},"secrets":[{"name":"github://org_token","value":"7**************************************3"}]}`
     /* tslint:enable */
 
     it("don't fail for null commit", done => {

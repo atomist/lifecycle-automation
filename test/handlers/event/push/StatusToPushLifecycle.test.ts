@@ -260,7 +260,7 @@ describe("StatusToPushLifecycle", () => {
                         }],
                         "labels": [],
                         "org": {
-                            "provider": null,
+                            "provider": {"private": false},
                             "chatTeam": {
                                 "preferences": []
                             }

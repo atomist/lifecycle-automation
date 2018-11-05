@@ -443,7 +443,7 @@ describe("PushToPushLifecycle", () => {
                 }]
              }]
           },
-          "provider": null
+          "provider": {"private": false}
         },
         "owner": "cloudfoundry"
       },
