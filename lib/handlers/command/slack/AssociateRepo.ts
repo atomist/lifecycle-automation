@@ -32,7 +32,10 @@ import {
     codeLine,
     SlackMessage,
 } from "@atomist/slack-messages";
-import { InviteUserToSlackChannel } from "../../../typings/types";
+import {
+    InviteUserToSlackChannel,
+    KickUserFromSlackChannel,
+} from "../../../typings/types";
 import { warning } from "../../../util/messages";
 import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
@@ -93,6 +96,24 @@ export function inviteUserToSlackChannel(
                 userId,
             },
         });
+}
+
+export function kickUserFromSlackChannel(
+    ctx: HandlerContext,
+    teamId: string,
+    channelId: string,
+    userId: string,
+): Promise<InviteUserToSlackChannel.Mutation> {
+
+    return ctx.graphClient.mutate<KickUserFromSlackChannel.Mutation,
+        KickUserFromSlackChannel.Variables>({
+        name: "kickUserFromSlackChannel",
+        variables: {
+            teamId,
+            channelId,
+            userId,
+        },
+    });
 }
 
 @CommandHandler("Invite bot, link a repository, and invite user to channel")
