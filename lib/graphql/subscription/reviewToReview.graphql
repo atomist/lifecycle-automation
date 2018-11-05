@@ -30,6 +30,7 @@ subscription reviewToReviewLifecycle {
             apiUrl
             providerId
             providerType
+            private
           }
           team {
             id

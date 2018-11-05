@@ -106,7 +106,7 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
                 new ReviewCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => node.baseBranchName != null),
             ],
-            contributors: isGitHub(pullrequest.repo) ? [
+            contributors: !repo.org.provider.private ? [
                 new CardActionContributorWrapper(new MergeActionContributor()),
                 new CardActionContributorWrapper(new AssignReviewerActionContributor()),
                 new CardActionContributorWrapper(new AutoMergeActionContributor()),
@@ -114,8 +114,7 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
                 new CardActionContributorWrapper(new ThumbsUpActionContributor()),
                 new CardActionContributorWrapper(new ApproveActionContributor()),
                 new CardActionContributorWrapper(new DeleteActionContributor()),
-            ] : [
-            ],
+            ] : [],
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),
@@ -136,10 +135,10 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
     }
 
     protected abstract extractNodes(event: EventFired<R>):
-    [graphql.PullRequestToPullRequestLifecycle.PullRequest,
-        graphql.PullRequestFields.Repo,
-        string,
-        boolean];
+        [graphql.PullRequestToPullRequestLifecycle.PullRequest,
+            graphql.PullRequestFields.Repo,
+            string,
+            boolean];
 }
 
 export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
@@ -184,7 +183,7 @@ export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R>
                 new ReviewNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
                 new AttachImagesNodeRenderer(node => node.state === "open")],
-            contributors: isGitHub(pullrequest.repo) ? [
+            contributors: !repo.org.provider.private ? [
                 new MergeActionContributor(),
                 new AssignReviewerActionContributor(),
                 new AutoMergeActionContributor(),
@@ -192,8 +191,7 @@ export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R>
                 new ThumbsUpActionContributor(),
                 new ApproveActionContributor(),
                 new DeleteActionContributor(),
-            ] : [
-            ],
+            ] : [],
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),

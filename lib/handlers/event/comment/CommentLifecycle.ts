@@ -94,14 +94,14 @@ export abstract class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
                                 return false;
                             }
                         })],
-                    contributors: [
+                    contributors: !repo.org.provider.private ? [
                         new AssignActionContributor(),
                         new CommentActionContributor(),
                         new LabelActionContributor(),
                         new ReactionActionContributor(),
                         new CloseActionContributor(),
                         new DetailsActionContributor(),
-                    ],
+                    ] : [],
                     id: `comment_lifecycle/${repo.owner}/${repo.name}/${id}/${comment.gitHubId}`,
                     timestamp: Date.now().toString(),
                     post: updateOnly ? "update_only" : undefined,

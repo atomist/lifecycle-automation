@@ -70,9 +70,9 @@ export abstract class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
                     renderers: [
                         new ReviewNodeRenderer(),
                         new ReviewDetailNodeRenderer()],
-                    contributors: [
+                    contributors: !repo.org.provider.private ? [
                         new CommentActionContributor(),
-                    ],
+                    ] : [],
                     id: `review_lifecycle/${repo.owner}/${repo.name}/${review.pullRequest.number}/${review._id}`,
                     timestamp,
                     // #47 remove issue rewrite

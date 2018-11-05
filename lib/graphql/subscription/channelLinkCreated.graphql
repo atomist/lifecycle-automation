@@ -18,6 +18,7 @@ subscription channelLinkCreated {
           url
           providerId
           providerType
+          private
         }
       }
     }

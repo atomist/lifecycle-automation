@@ -10,6 +10,7 @@ subscription repoOnboarded {
           gitUrl
           providerId
           providerType
+          private
         }
         team {
           id

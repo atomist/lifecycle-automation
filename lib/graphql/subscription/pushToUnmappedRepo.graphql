@@ -16,6 +16,7 @@ subscription pushToUnmappedRepo {
           url
           apiUrl
           gitUrl
+          private
         }
         team {
           chatTeams {

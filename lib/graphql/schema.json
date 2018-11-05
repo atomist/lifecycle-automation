@@ -7638,6 +7638,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -7716,6 +7726,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -7867,6 +7891,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -7945,6 +7979,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -24538,6 +24586,26 @@
               "defaultValue": null
             },
             {
+              "name": "private",
+              "description": "private",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "private_not",
+              "description": "private_not",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "team",
               "description": "team",
               "type": {
@@ -28859,6 +28927,26 @@
                     "ofType": null
                   }
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "private",
+              "description": "private",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "private_not",
+              "description": "private_not",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -65623,6 +65711,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -65701,6 +65799,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -65852,6 +65964,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -65930,6 +66052,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -66300,6 +66436,18 @@
               "type": {
                 "kind": "ENUM",
                 "name": "ProviderType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "private",
+              "description": "private of  GitHubProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -66948,6 +67096,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -67026,6 +67184,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -67177,6 +67349,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -67255,6 +67437,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -68561,6 +68757,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -68639,6 +68845,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -68790,6 +69010,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -68868,6 +69098,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -69245,6 +69489,18 @@
               "description": "Descending sort for providerType",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "private_asc",
+              "description": "Ascending sort for private",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "private_desc",
+              "description": "Descending sort for private",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -69333,6 +69589,18 @@
               "type": {
                 "kind": "ENUM",
                 "name": "ProviderType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "private",
+              "description": "private of  SCMProvider",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -69673,6 +69941,18 @@
             {
               "name": "providerType_desc",
               "description": "Descending sort for providerType",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "private_asc",
+              "description": "Ascending sort for private",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "private_desc",
+              "description": "Descending sort for private",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -70093,6 +70373,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -70171,6 +70461,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -70274,6 +70578,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -70352,6 +70666,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -72727,6 +73055,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -72805,6 +73143,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -72956,6 +73308,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -73034,6 +73396,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -109501,6 +109877,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of GitHubProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of GitHubProvider",
                   "type": {
@@ -109579,6 +109965,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of GitHubProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -109730,6 +110130,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "private",
+                  "description": "private of SCMProvider",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "ids",
                   "description": "ids is list variant of id of SCMProvider",
                   "type": {
@@ -109808,6 +110218,20 @@
                     "ofType": {
                       "kind": "ENUM",
                       "name": "ProviderType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "privates",
+                  "description": "privates is list variant of private of SCMProvider",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Boolean",
                       "ofType": null
                     }
                   },
@@ -117212,6 +117636,6 @@
     }
   },
   "extensions": {
-    "correlation_id": "589c11b1-ce88-4d65-bf77-fa2a6d9daf8a"
+    "correlation_id": "37d44671-03e1-4356-86c1-bef5cb3fcd80"
   }
 }

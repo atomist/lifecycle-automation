@@ -54,6 +54,7 @@ fragment IssueFields on Issue {
         url
         providerId
         providerType
+        private
       }
       team {
         id

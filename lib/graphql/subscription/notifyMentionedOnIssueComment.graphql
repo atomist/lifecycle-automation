@@ -38,6 +38,7 @@ subscription notifyMentionedOnIssueComment {
             url
             providerId
             providerType
+            private
           }
         }
         channels {

@@ -20,6 +20,7 @@ subscription pullRequestToPullRequestCommentLifecycle {
           url
           providerId
           providerType
+          private
         }
         team {
           id

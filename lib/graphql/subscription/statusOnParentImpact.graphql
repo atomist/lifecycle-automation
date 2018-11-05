@@ -13,6 +13,7 @@ subscription statusOnParentImpact {
             apiUrl
             providerId
             providerType
+            private
           }
         }
       }

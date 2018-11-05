@@ -52,9 +52,9 @@ export abstract class BranchLifecycle<R> extends LifecycleHandler<R> {
                     nodes,
                     renderers: [
                         new BranchNodeRenderer()],
-                    contributors: [
+                    contributors: !repo.org.provider.private ? [
                         new RaisePrActionContributor(),
-                    ],
+                    ] : [],
                     id: `branch_lifecycle/${repo.owner}/${repo.name}/${branch.name}`,
                     // ttl: (1000 * 60 * 60).toString(),
                     timestamp: Date.now().toString(),

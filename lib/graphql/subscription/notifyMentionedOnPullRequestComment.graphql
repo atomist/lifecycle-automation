@@ -39,6 +39,7 @@ subscription notifyMentionedOnPullRequestComment {
             url
             providerId
             providerType
+            private
           }
         }
         channels {

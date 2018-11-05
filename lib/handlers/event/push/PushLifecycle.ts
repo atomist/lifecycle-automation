@@ -123,18 +123,16 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApplicationCardNodeRenderer(),
                     new CollaboratorCardNodeRenderer(node => node.after != null),
                 ],
-                contributors: isGitHub(push.repo) ? [
+                contributors: !push.repo.org.provider.private ? [
                     new CardActionContributorWrapper(new TagPushActionContributor()),
                     new CardActionContributorWrapper(new TagTagActionContributor()),
                     new CardActionContributorWrapper(new ReleaseActionContributor()),
                     new CardActionContributorWrapper(new BuildActionContributor()),
                     new CardActionContributorWrapper(new PullRequestActionContributor()),
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
-                    new CardActionContributorWrapper(new ApplicationActionContributor()),
                 ] : [
                     new CardActionContributorWrapper(new BuildActionContributor()),
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
-                    new CardActionContributorWrapper(new ApplicationActionContributor()),
                 ],
                 id: createId(push),
                 timestamp: Date.now().toString(),
@@ -204,18 +202,16 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApplicationNodeRenderer(),
                     new K8PodNodeRenderer(),
                     new BlackDuckFingerprintNodeRenderer()],
-                contributors: isGitHub(push.repo) ? [
+                contributors: !push.repo.org.provider.private ? [
                     new TagPushActionContributor(),
                     new TagTagActionContributor(),
                     new ReleaseActionContributor(),
                     new BuildActionContributor(),
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
-                    new ApplicationActionContributor(),
                 ] : [
                     new BuildActionContributor(),
                     new ApproveGoalActionContributor(),
-                    new ApplicationActionContributor(),
                 ],
                 id: createId(push),
                 timestamp: Date.now().toString(),

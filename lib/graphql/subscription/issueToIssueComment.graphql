@@ -19,6 +19,7 @@ subscription issueToIssueCommentLifecycle {
           url
           providerId
           providerType
+          private
         }
         team {
           id

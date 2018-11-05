@@ -167,6 +167,7 @@ fragment PullRequestFields on PullRequest {
         gitUrl
         providerId
         providerType
+        private
       }
       team {
         id

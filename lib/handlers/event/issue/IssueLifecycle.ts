@@ -99,7 +99,7 @@ export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
                 new ReferencedIssueCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => node.body != null),
             ],
-            contributors: [
+            contributors: !repo.org.provider.private ? [
                 new CardActionContributorWrapper(new CommentActionContributor()),
                 new CardActionContributorWrapper(new ReactionActionContributor()),
                 new CardActionContributorWrapper(new LabelActionContributor()),
@@ -107,7 +107,7 @@ export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
                 new CardActionContributorWrapper(new AssignActionContributor("issue")),
                 new CardActionContributorWrapper(new CloseActionContributor()),
                 new CardActionContributorWrapper(new ReopenActionContributor()),
-            ],
+            ] : [],
             id: `issue_lifecycle/${repo.owner}/${repo.name}/${issue.number}`,
             timestamp,
             channels: [{

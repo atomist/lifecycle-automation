@@ -84,6 +84,7 @@ subscription notifyMentionedOnPullRequest {
           url
           providerId
           providerType
+          private
         }
       }
     }

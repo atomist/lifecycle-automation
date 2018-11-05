@@ -41,6 +41,7 @@ subscription notifyAuthorOnReview {
             url
             providerId
             providerType
+            private
           }
         }
         channels {

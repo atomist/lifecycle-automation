@@ -36,6 +36,7 @@ fragment BranchFields on Branch {
         url
         providerId
         providerType
+        private
       }
     }
   }
