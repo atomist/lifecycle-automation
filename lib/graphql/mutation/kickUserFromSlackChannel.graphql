@@ -1,13 +1,13 @@
 mutation kickUserFromSlackChannel(
-$teamId: String!
-$channelId: String!
-$userId: String!
+  $teamId: String!
+  $channelId: String!
+  $userId: String!
 ) {
-    kickUserFromSlackChannel(
-        chatTeamId: $teamId
-        channelId: $channelId
-        userId: $userId
-    ) {
-        id
-    }
+  kickUserFromSlackChannel(
+    chatTeamId: $teamId
+    channelId: $channelId
+    userId: $userId
+  ) {
+    id
+  }
 }
