@@ -201,7 +201,7 @@ export function prUrl(repo: any, pr: any): string {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/pull/${pr.number}`;
     } else if (isBitBucket(repo)) {
         // https://bitbucket.org/slimslenderslacks/jimtest/pull-requests/1
-        return `${htmlUrl(repo)}/${repoSlug(repo)}/pull-requests/${pr.number}`;
+        return `${htmlUrl(repo)}/projects/${repo.owner}/repos/${repo.name}/pull-requests/${pr.number}`;
     } else if (isGitlab(repo)) {
         return `${htmlUrl(repo)}/${repo.owner}/${repo.name}/merge_requests/${pr.number}`;
     } else {
