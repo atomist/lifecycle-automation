@@ -23,7 +23,6 @@ import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
-import { PushFields } from "../../../typings/types";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -41,8 +40,9 @@ export class SdmGoalToPushLifecycle
 
     protected extractNodes(event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>):
         [graphql.PushToPushLifecycle.Push[], number] {
-        const goals = (_.get(event, "data.SdmGoal[0].push.goals") || []) as PushFields.Goals[];
-        return [[event.data.SdmGoal[0].push], _.maxBy(goals, "ts").ts];
+        // const goals = (_.get(event, "data.SdmGoal[0].push.goals") || []) as PushFields.Goals[];
+        // return [[event.data.SdmGoal[0].push], _.maxBy(goals, "ts").ts];
+        return [[event.data.SdmGoal[0].push], Date.now()];
     }
 
     protected extractPreferences(
