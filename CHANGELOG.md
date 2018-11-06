@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -   The URL for BitBucket pull requests is incorrect. [#253](https://github.com/atomist/lifecycle-automation/issues/253)
+-   Properly set timestamp for Push lifecycle. [66851b4](https://github.com/atomist/lifecycle-automation/commit/66851b4c146702c070afd0be7e772dfda0f01765)
 
 ## [0.11.1](https://github.com/atomist/lifecycle-automation/compare/0.11.0...0.11.1) - 2018-11-02
 
