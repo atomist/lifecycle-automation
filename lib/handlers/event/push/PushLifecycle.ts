@@ -40,10 +40,8 @@ import {
     PushToPushLifecycle,
     SdmGoalFields,
 } from "../../../typings/types";
-import { isGitHub } from "../../../util/helpers";
 import { LifecyclePreferences } from "../preferences";
 import {
-    ApplicationActionContributor,
     ApproveGoalActionContributor,
     BuildActionContributor,
     PullRequestActionContributor,
@@ -172,7 +170,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
-        const pushes = this.extractNodes(event);
+        const [pushes, timestamp] = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
 
         return pushes.filter(p => p && p.after).map(push => {
@@ -214,7 +212,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApproveGoalActionContributor(),
                 ],
                 id: createId(push),
-                timestamp: Date.now().toString(),
+                timestamp: timestamp.toString(),
                 channels,
                 extract: (type: string) => {
                     if (type === "repo") {
@@ -233,7 +231,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected abstract extractNodes(event: EventFired<R>): PushToPushLifecycle.Push[];
+    protected abstract extractNodes(event: EventFired<R>): [PushToPushLifecycle.Push[], number];
 
     private filterChannels(push: graphql.PushToPushLifecycle.Push,
                            preferences: { [teamId: string]: Preferences[] } = {})
