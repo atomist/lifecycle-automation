@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.5...HEAD)
 
+### Added
+
+-   Nicer rendering for canceled goals. [f50464b](https://github.com/atomist/lifecycle-automation/commit/f50464b074be8f58f256d6d4bcceaa35812aa5d6)
+
 ## [0.11.5](https://github.com/atomist/lifecycle-automation/compare/0.11.4...0.11.5) - 2018-11-07
 
 ## [0.11.4](https://github.com/atomist/lifecycle-automation/compare/0.11.3...0.11.4) - 2018-11-07
