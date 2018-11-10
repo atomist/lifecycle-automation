@@ -242,8 +242,9 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             const success = statuses.filter(s =>
                 ["success", "skipped", "canceled", "stopped", "waiting_for_approval",
                     "approved"].includes(s.state)).length;
+            const canceled = statuses.filter(s => s.state === "canceled");
             const error = statuses.length - pending - success;
-            const nonPlanned = statuses.some(s => s.state !== "planned" && s.state !== "skipped");
+            const nonPlanned = statuses.some(s => s.state !== "planned" && s.state !== "skipped" && s.state !== "canceled");
 
             // Now each one
             const lines = statuses.map(s => {
@@ -281,9 +282,10 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
             });
 
             const color =
-                pending > 0 ? "#cccc00" :
-                    error > 0 ? "#D94649" :
-                        "#45B254";
+                canceled ? "#9d9d9d" :
+                    pending > 0 ? "#cccc00" :
+                        error > 0 ? "#D94649" :
+                            "#45B254";
 
             if (ix === 0 || nonPlanned) {
                 const attachment: Attachment = {
