@@ -60,11 +60,12 @@ export class ChannelLinkCreated implements HandleEvent<graphql.ChannelLinkCreate
 
     public handle(event: EventFired<graphql.ChannelLinkCreated.Subscription>,
                   ctx: HandlerContext): Promise<HandlerResult> {
-        const msgId = guid();
+
         const channelName = event.data.ChannelLink[0].channel.name || event.data.ChannelLink[0].channel.normalizedName;
         const teamId = event.data.ChannelLink[0].channel.team.id;
         const repo = event.data.ChannelLink[0].repo;
         const repoLink = repoSlackLink(repo);
+        const msgId = `channel_link/${channelName}`;
 
         // provider might be null for cases when there are no webhooks currently installed
         const providerType = _.get(event.data, "ChannelLink[0].repo.org.provider.providerType") || "github_com";
