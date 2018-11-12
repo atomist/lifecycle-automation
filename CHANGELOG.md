@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.7...HEAD)
 
+### Added
+
+-   Set msgId on channelLink message. [aec6fce](https://github.com/atomist/lifecycle-automation/commit/aec6fce6d4e9e9111ed395a447aee2a33e57fbd3)
+
 ## [0.11.7](https://github.com/atomist/lifecycle-automation/compare/0.11.6...0.11.7) - 2018-11-10
 
 ## [0.11.6](https://github.com/atomist/lifecycle-automation/compare/0.11.5...0.11.6) - 2018-11-10
