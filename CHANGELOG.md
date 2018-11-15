@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.8...HEAD)
 
+### Changed
+
+-   Update slack-messages, remove test coverage. [#260](https://github.com/atomist/lifecycle-automation/issues/260)
+
 ## [0.11.8](https://github.com/atomist/lifecycle-automation/compare/0.11.7...0.11.8) - 2018-11-12
 
 ### Added
