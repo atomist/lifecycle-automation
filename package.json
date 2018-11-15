@@ -29,7 +29,7 @@
     "@atomist/automation-client-ext-eventlog": "1.0.0-master.20181015111229",
     "@atomist/automation-client-ext-logzio": "1.0.0-master.20181106234035",
     "@atomist/automation-client-ext-raven": "1.0.0-master.20181015111227",
-    "@atomist/slack-messages": "^1.0.0",
+    "@atomist/slack-messages": "^1.1.0",
     "@octokit/rest": "^14.0.9",
     "apollo-codegen": "^0.20.2",
     "base64-js": "^1.2.1",
@@ -56,11 +56,9 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
     "npm-run-all": "^4.1.1",
-    "nyc": "^13.0.1",
     "power-assert": "^1.4.4",
     "prettier": "^1.14.2",
     "rimraf": "^2.6.2",
-    "source-map-support": "^0.5.9",
     "supervisor": "^0.12.0",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
@@ -90,34 +88,17 @@
     "git:info": "atm-git-info",
     "gql:gen": "atm-gql-gen",
     "lint": "run-s lint:ts lint:gql",
-    "lint:ts": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
+    "lint:ts": "tslint --config tslint.json --format verbose --project .",
     "lint:gql": "prettier --list-different \"lib/graphql/**/*.graphql\"",
     "lint:fix": "run-s lint:ts:fix fmt:gql",
     "lint:ts:fix": "npm run lint:ts -- --fix",
     "start": "atm-start",
-    "test": "nyc mocha --require espower-typescript/guess --require source-map-support/register \"test/**/*.test.ts\"",
+    "test": "mocha --require espower-typescript/guess \"test/**/*.test.ts\"",
     "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.test.ts}\"",
     "typedoc": "npm run doc"
   },
   "engines": {
     "node": ">=8.1.0",
     "npm": ">=5.0.0"
-  },
-  "nyc": {
-    "include": [
-      "lib/**/*.*"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "lib/typings",
-      "**/*.d.ts"
-    ],
-    "reporter": [
-      "html",
-      "text-summary"
-    ],
-    "all": true
   }
 }
