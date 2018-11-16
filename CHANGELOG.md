@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.10...HEAD)
 
+### Added
+
+-   When creating a new message for a new goal set, do not render previous sets. [#259](https://github.com/atomist/lifecycle-automation/issues/259)
+
 ### Fixed
 
 -   Fix typo in parameter description. [#264](https://github.com/atomist/lifecycle-automation/issues/264)
