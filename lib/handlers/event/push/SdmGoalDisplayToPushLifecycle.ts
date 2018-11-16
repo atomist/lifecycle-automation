@@ -27,7 +27,7 @@ import * as graphql from "../../../typings/types";
 import { PushLifecycleHandler } from "./PushLifecycle";
 
 /**
- * Send a Push lifecycle message on SdmGoal events.
+ * Send a Push lifecycle message on SdmGoalDisplaytower  events.
  */
 @EventHandler("Send a lifecycle message on SdmGoalDisplay events",
     GraphQL.subscription("sdmGoalDisplayToPushLifecycle"))
