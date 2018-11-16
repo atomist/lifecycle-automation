@@ -912,6 +912,9 @@ describe("StatusToPushLifecycle", () => {
       "commit": {
         "pushes": [{
           "goals": ${goalsJson},
+          "goalsDisplayState": [{
+            "state": "show_all"
+          }],
           "after": {
             "author": {
               "login": "jessitron",
