@@ -73,7 +73,7 @@ export class AssignGitHubPullRequestReviewer implements HandleCommand {
         description: "the name(s) of reviewer to be assigned to Pull Request. Can be a Slack @-mention",
         pattern: /^.*$/,
         minLength: 2,
-        validInput: "an valid GitHub or Slack user name",
+        validInput: "a valid GitHub or Slack user name",
         required: true,
     })
     public reviewer: string;
