@@ -32,12 +32,17 @@ import {
     SlackActionContributor,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
-import { SdmGoalState } from "../../../../typings/types";
+import {
+    PushFields,
+    SdmGoalDisplayState,
+    SdmGoalState,
+} from "../../../../typings/types";
 import { lastGoalSet } from "../../../../util/goals";
 import { truncateCommitMessage } from "../../../../util/helpers";
 import { CreateGitHubRelease } from "../../../command/github/CreateGitHubRelease";
 import { CreateGitHubTag } from "../../../command/github/CreateGitHubTag";
 import { DefaultGitHubApiUrl } from "../../../command/github/gitHubApi";
+import { UpdateSdmGoalDisplayState } from "../../../command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "../../../command/sdm/UpdateSdmGoalState";
 import { LifecycleActionPreferences } from "../../preferences";
 import {
@@ -560,6 +565,70 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
             {
                 text: `${label} '${goal.name}'`,
                 role: "global",
+            },
+            handler));
+    }
+}
+
+export class DisplayGoalActionContributor extends AbstractIdentifiableContribution
+    implements SlackActionContributor<GoalSet> {
+
+    constructor() {
+        super(LifecycleActionPreferences.push.display_goals.id);
+    }
+
+    public supports(node: any): boolean {
+        return node.goals && node.goalSetId;
+    }
+
+    public async buttonsFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
+        const buttons = [];
+        const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
+        const push = context.lifecycle.extract("push") as PushFields.Fragment;
+        const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+        const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
+
+        if (context.rendererId === "goals" && goalSets.length > 1) {
+            const count = goalSets.length - 1;
+            if (displayState === SdmGoalDisplayState.show_current) {
+                // Show more button
+                this.createButton(
+                    SdmGoalDisplayState.show_all,
+                    `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C5`,
+                    push,
+                    buttons);
+            } else if (goalSetIndex === goalSets.length - 1) {
+                // Show hide button
+                this.createButton(SdmGoalDisplayState.show_current,
+                    `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C4`,
+                    push,
+                    buttons);
+            }
+        }
+
+        return Promise.resolve(buttons);
+    }
+
+    public menusFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
+        return Promise.resolve([]);
+    }
+
+    private createButton(state: SdmGoalDisplayState,
+                         label: string,
+                         push: PushFields.Fragment,
+                         buttons: any[]) {
+
+        const handler = new UpdateSdmGoalDisplayState();
+        handler.state = state;
+        handler.owner = push.repo.owner;
+        handler.name = push.repo.name;
+        handler.providerId = push.repo.org.provider.providerId;
+        handler.branch = push.branch;
+        handler.sha = push.after.sha;
+
+        buttons.push(buttonForCommand(
+            {
+                text: label,
             },
             handler));
     }

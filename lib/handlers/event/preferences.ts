@@ -100,8 +100,14 @@ export const LifecycleActionPreferences = {
         },
         approve_goal: {
             id: "approve_goal",
-            name: "Approve SDM Goal",
-            description: "Approves or continues a Atomist SDM goal",
+            name: "Approve or Start SDM Goal",
+            description: "Starts or approves an Atomist SDM goal",
+            enabled: true,
+        },
+        display_goals: {
+            id: "display_goals",
+            name: "Show all Goals",
+            description: "Show all goals and goal sets on a push; not just the most current one",
             enabled: true,
         },
     },

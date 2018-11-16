@@ -36,6 +36,8 @@ import {
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import {
+    PushToPushLifecycle,
+    SdmGoalDisplayState,
     SdmGoalsByCommit,
     SdmGoalState,
 } from "../../../../typings/types";
@@ -194,7 +196,7 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
-export class GoalNodeRenderer extends AbstractIdentifiableContribution
+export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<GoalSet> {
 
     public showOnPush: boolean;
@@ -223,7 +225,14 @@ export class GoalNodeRenderer extends AbstractIdentifiableContribution
                         context: RendererContext): Promise<SlackMessage> {
 
         const sortedGoals = [];
-        const goalSets = context.lifecycle.extract("goalSets");
+        const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
+        const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
+        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+        const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+
+        if (displayState === SdmGoalDisplayState.show_current && goalSetIndex !== 0) {
+            return Promise.resolve(msg);
+        }
 
         try {
             sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || [], goalSets));

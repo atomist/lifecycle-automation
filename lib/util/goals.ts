@@ -16,6 +16,7 @@
 
 import * as _ from "lodash";
 import * as toposort from "toposort";
+import { GoalSet } from "../handlers/event/push/PushLifecycle";
 import {
     PushFields,
     SdmGoalsByCommit,
@@ -44,7 +45,7 @@ export function lastGoalSet(allGoals: SdmGoalsByCommit.SdmGoal[] = []): SdmGoals
 }
 
 export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[],
-                          goalSets: PushFields.GoalSets[]): EnvironmentWithGoals[] {
+                          goalSets: GoalSet[]): EnvironmentWithGoals[] {
     // only maintain latest version of SdmGoals
     const goals = lastGoalSet(allGoals);
 

@@ -76,6 +76,7 @@ import {
 import { ConfigureLifecyclePreferences } from "./lib/handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./lib/handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./lib/handlers/command/preferences/SetUserPreference";
+import { UpdateSdmGoalDisplayState } from "./lib/handlers/command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "./lib/handlers/command/sdm/UpdateSdmGoalState";
 import { AddBotToChannel } from "./lib/handlers/command/slack/AddBotToChannel";
 import { AssociateRepo } from "./lib/handlers/command/slack/AssociateRepo";
@@ -179,6 +180,7 @@ import {
     ReleaseToPushCardLifecycle,
     ReleaseToPushLifecycle,
 } from "./lib/handlers/event/push/ReleaseToPushLifecycle";
+import { SdmGoalDisplayToPushLifecycle } from "./lib/handlers/event/push/SdmGoalDisplayToPushLifecycle";
 import {
     SdmGoalToPushCardLifecycle,
     SdmGoalToPushLifecycle,
@@ -250,6 +252,7 @@ export const configuration: any = {
 
         // sdm
         () => new UpdateSdmGoalState(),
+        () => new UpdateSdmGoalDisplayState(),
 
         // slack
         () => new AddBotToChannel(),
@@ -295,6 +298,7 @@ export const configuration: any = {
         () => new PushToUnmappedRepo(),
         () => new ReleaseToPushLifecycle(),
         () => new SdmGoalToPushLifecycle(),
+        () => new SdmGoalDisplayToPushLifecycle(),
         () => new StatusToPushLifecycle(),
         () => new TagToPushLifecycle(),
 

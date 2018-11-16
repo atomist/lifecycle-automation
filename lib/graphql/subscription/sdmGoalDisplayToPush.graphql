@@ -1,0 +1,14 @@
+subscription sdmGoalDisplayToPushLifecycle {
+  SdmGoalDisplay {
+    sha
+    branch
+    repo {
+      name
+      owner
+      providerId
+    }
+    push {
+      ...PushFields
+    }
+  }
+}

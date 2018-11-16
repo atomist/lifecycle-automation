@@ -44,6 +44,7 @@ import { LifecyclePreferences } from "../preferences";
 import {
     ApproveGoalActionContributor,
     BuildActionContributor,
+    DisplayGoalActionContributor,
     PullRequestActionContributor,
     ReleaseActionContributor,
     sortTagsByName,
@@ -72,7 +73,7 @@ import {
 } from "./rendering/PushNodeRenderers";
 import {
     GoalCardNodeRenderer,
-    GoalNodeRenderer,
+    GoalSetNodeRenderer,
     StatusesCardNodeRenderer,
     StatusesNodeRenderer,
 } from "./rendering/StatusesNodeRenderer";
@@ -190,7 +191,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new PushNodeRenderer(),
                     new CommitNodeRenderer(),
                     new StatusesNodeRenderer(),
-                    new GoalNodeRenderer(),
+                    new GoalSetNodeRenderer(),
                     new WorkflowNodeRenderer(),
                     new IssueNodeRenderer(),
                     new PullRequestNodeRenderer(),
@@ -207,6 +208,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new BuildActionContributor(),
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
+                    new DisplayGoalActionContributor(),
                 ] : [
                     new BuildActionContributor(),
                     new ApproveGoalActionContributor(),
@@ -222,7 +224,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     } else if (type === "domains") {
                         return extractDomains(push).sort((d1, d2) => d1.name.localeCompare(d2.name));
                     } else if (type === "goalSets") {
-                        return push.goalSets;
+                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts);
                     }
                     return null;
                 },

@@ -196,5 +196,9 @@ fragment PushFields on Push {
     goals {
       uniqueName
     }
+    ts
+  }
+  goalsDisplayState {
+    state
   }
 }
