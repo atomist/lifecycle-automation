@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.10...HEAD)
 
+### Fixed
+
+-   Fix typo in parameter description. [#264](https://github.com/atomist/lifecycle-automation/issues/264)
+
 ## [0.11.10](https://github.com/atomist/lifecycle-automation/compare/0.11.9...0.11.10) - 2018-11-16
 
 ## [0.11.9](https://github.com/atomist/lifecycle-automation/compare/0.11.8...0.11.9) - 2018-11-15
