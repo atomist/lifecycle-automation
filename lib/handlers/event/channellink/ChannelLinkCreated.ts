@@ -87,48 +87,48 @@ Please use one of the buttons below to install a Webhook in your repository or o
                 owner: repo.owner,
                 repo: repo.name,
             })
-            .then(result => {
-                return hookExists(result.data);
-            }, () => {
-                return false;
-            })
-            .then(exists => {
-                if (exists) {
-                    return true;
-                } else if (repo.org.ownerType === "organization") {
-                    return ctx.graphClient.query<graphql.Webhook.Query, graphql.Webhook.Variables>({
-                        name: "webhook",
-                        variables: { owner: repo.owner },
-                    })
-                        .then(result => {
-                            return _.get(result, "GitHubOrgWebhook[0].url") != null;
-                        })
-                        .catch(() => {
-                            return false;
-                        });
-                } else {
+                .then(result => {
+                    return hookExists(result.data);
+                }, () => {
                     return false;
-                }
-            })
-            .then(exists => {
-                if (exists) {
-                    return this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
-                } else {
-                    let text;
-                    if (repo.org.ownerType === "organization") {
-                        text = noHookMsg;
+                })
+                .then(exists => {
+                    if (exists) {
+                        return true;
+                    } else if (repo.org.ownerType === "organization") {
+                        return ctx.graphClient.query<graphql.Webhook.Query, graphql.Webhook.Variables>({
+                            name: "webhook",
+                            variables: { owner: repo.owner },
+                        })
+                            .then(result => {
+                                return _.get(result, "GitHubOrgWebhook[0].url") != null;
+                            })
+                            .catch(() => {
+                                return false;
+                            });
                     } else {
-                        text = noRepoHookMsg;
+                        return false;
                     }
-                    return ctx.messageClient.send(
-                        warning("Channel Linked", text, ctx,
-                            [...createActions(repo), createListRepoLinksAction(msgId)]),
-                        addressSlackChannels(teamId, channelName),
-                        { id: msgId, dashboard: false });
-                }
-            })
-            .then(() => showLastPush(repo, this.orgToken, ctx))
-            .then(success, failure);
+                })
+                .then(exists => {
+                    if (exists) {
+                        return this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
+                    } else {
+                        let text;
+                        if (repo.org.ownerType === "organization") {
+                            text = noHookMsg;
+                        } else {
+                            text = noRepoHookMsg;
+                        }
+                        return ctx.messageClient.send(
+                            warning("Channel Linked", text, ctx,
+                                [...createActions(repo), createListRepoLinksAction(msgId)]),
+                            addressSlackChannels(teamId, channelName),
+                            { id: msgId, dashboard: false });
+                    }
+                })
+                .then(() => showLastPush(repo, this.orgToken, ctx))
+                .then(success, failure);
         } else {
             return this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
         }
@@ -148,7 +148,14 @@ Please use one of the buttons below to install a Webhook in your repository or o
                 ],
             }],
         };
-        return ctx.messageClient.send(msg, addressSlackChannels(teamId, channelName), { id: msgId, dashboard: false });
+        return ctx.messageClient.send(
+            msg,
+            addressSlackChannels(teamId, channelName),
+            {
+                id: msgId,
+                dashboard: false,
+                ttl: 1000 * 60 * 5,
+            });
     }
 }
 
@@ -167,12 +174,12 @@ function createActions(repo: graphql.ChannelLinkCreated.Repo): Action[] {
     const repoHook = new InstallGitHubRepoWebhook();
     repoHook.owner = repo.owner;
     repoHook.repo = repo.name;
-    actions.push(buttonForCommand({ text: "Install Repository Webhook"}, repoHook));
+    actions.push(buttonForCommand({ text: "Install Repository Webhook" }, repoHook));
 
     if (repo.org.ownerType === "organization") {
         const orgHook = new InstallGitHubOrgWebhook();
         orgHook.owner = repo.owner;
-        actions.push(buttonForCommand({ text: "Install Organization Webhook"}, orgHook));
+        actions.push(buttonForCommand({ text: "Install Organization Webhook" }, orgHook));
     }
 
     return actions;
@@ -186,13 +193,13 @@ function createListRepoLinksAction(msgId: string): Action {
 
 function showLastPush(repo: graphql.ChannelLinkCreated.Repo, token: string, ctx: HandlerContext): Promise<any> {
     return ctx.graphClient.query<graphql.LastPushOnBranch.Query, graphql.LastPushOnBranch.Variables>({
-            name: "lastPushOnBranch",
-            variables: {
-                owner: repo.owner,
-                name: repo.name,
-                branch: repo.defaultBranch,
-            },
-        })
+        name: "lastPushOnBranch",
+        variables: {
+            owner: repo.owner,
+            name: repo.name,
+            branch: repo.defaultBranch,
+        },
+    })
         .then(result => {
             if (result) {
                 return _.get(result, "Repo[0].branches[0].commit.pushes[0].id");
