@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.12...HEAD)
 
+### Added
+
+-   New Branch Goal Rendering. [#265](https://github.com/atomist/lifecycle-automation/issues/265)
+
 ## [0.11.12](https://github.com/atomist/lifecycle-automation/compare/0.11.11...0.11.12) - 2018-11-20
 
 ## [0.11.11](https://github.com/atomist/lifecycle-automation/compare/0.11.10...0.11.11) - 2018-11-16
