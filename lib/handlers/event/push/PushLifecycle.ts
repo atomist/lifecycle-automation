@@ -296,8 +296,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
 function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
     // Verify that there is at least a push and repo node
-    if (!push || !push.repo || !push.commits || push.commits.length === 0) {
-        logger.debug(`Lifecycle event is missing push, commits and/or repo node`);
+    if (!push || !push.repo || !push.commits) {
+        logger.debug(`Lifecycle event is missing push and/or repo node`);
         return null;
     }
 
