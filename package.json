@@ -24,7 +24,7 @@
     "kubernetes"
   ],
   "dependencies": {
-    "@atomist/automation-client": "1.1.0-master.20181115131826",
+    "@atomist/automation-client": "1.1.0-master.20181121142425",
     "@atomist/automation-client-ext-dashboard": "^1.0.1",
     "@atomist/automation-client-ext-eventlog": "^1.0.1",
     "@atomist/automation-client-ext-logzio": "^1.0.1",
