@@ -171,7 +171,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
-        const [pushes, timestamp] = this.extractNodes(event);
+        const pushes = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
 
         return pushes.filter(p => p && p.after).map(push => {
@@ -183,6 +183,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                 logger.debug(`Lifecycle event is missing push, commits and/or repo node`);
                 return null;
             }
+
+            const timestamp = _.maxBy(push.goals || [{ ts: Date.now() }], "ts").ts;
 
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
@@ -233,7 +235,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected abstract extractNodes(event: EventFired<R>): [PushToPushLifecycle.Push[], number];
+    protected abstract extractNodes(event: EventFired<R>): PushToPushLifecycle.Push[];
 
     private filterChannels(push: graphql.PushToPushLifecycle.Push,
                            preferences: { [teamId: string]: Preferences[] } = {})

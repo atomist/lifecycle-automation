@@ -38,8 +38,8 @@ import {
 export class TagToPushLifecycle extends PushLifecycleHandler<graphql.TagToPushLifecycle.Subscription> {
 
     protected extractNodes(event: EventFired<graphql.TagToPushLifecycle.Subscription>):
-        [graphql.PushToPushLifecycle.Push[], number] {
-        return [event.data.Tag[0].commit.pushes, Date.now()];
+        graphql.PushToPushLifecycle.Push[] {
+        return event.data.Tag[0].commit.pushes;
     }
 
     protected extractPreferences(

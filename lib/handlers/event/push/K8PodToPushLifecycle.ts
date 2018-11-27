@@ -38,13 +38,13 @@ import {
 export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
 
     protected extractNodes(event: EventFired<graphql.K8PodToPushLifecycle.Subscription>):
-        [graphql.K8PodToPushLifecycle.Pushes[], number] {
+        graphql.K8PodToPushLifecycle.Pushes[] {
 
         const pushes = [];
         event.data.K8Pod[0].images
             .filter(i => i.commits && i.commits.length > 0)
             .forEach(i => pushes.push(...i.commits[0].pushes));
-        return [pushes, Date.now()];
+        return pushes;
     }
 
     protected extractPreferences(

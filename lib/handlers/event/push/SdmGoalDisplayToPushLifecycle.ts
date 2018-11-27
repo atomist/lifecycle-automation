@@ -36,8 +36,8 @@ export class SdmGoalDisplayToPushLifecycle
     extends PushLifecycleHandler<graphql.SdmGoalDisplayToPushLifecycle.Subscription> {
 
     protected extractNodes(event: EventFired<graphql.SdmGoalDisplayToPushLifecycle.Subscription>):
-        [graphql.PushToPushLifecycle.Push[], number] {
-        return [[event.data.SdmGoalDisplay[0].push], Date.now()];
+        graphql.PushToPushLifecycle.Push[] {
+        return [event.data.SdmGoalDisplay[0].push];
     }
 
     protected extractPreferences(
