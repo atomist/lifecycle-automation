@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.13...HEAD)
 
+### Changed
+
+-   Always use goal timestamp for push lifecycle. [7dfcc2e](https://github.com/atomist/lifecycle-automation/commit/7dfcc2e5a1c94be95a924f4c54df9a527c0accd0)
+
 ## [0.11.13](https://github.com/atomist/lifecycle-automation/compare/0.11.12...0.11.13) - 2018-11-22
 
 ### Added
