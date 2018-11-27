@@ -184,7 +184,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                 return null;
             }
 
-            const timestamp = _.maxBy(push.goals || [{ ts: Date.now() }], "ts").ts;
+            const mostCurrentGoal = _.maxBy(push.goals || [], "ts");
 
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
@@ -216,7 +216,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApproveGoalActionContributor(),
                 ],
                 id: createId(push),
-                timestamp: timestamp.toString(),
+                timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),
                 channels,
                 extract: (type: string) => {
                     if (type === "repo") {
