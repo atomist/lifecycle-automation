@@ -24,7 +24,10 @@ import * as _ from "lodash";
 import { Preferences } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
 import * as graphql from "../../../typings/types";
-import { PullRequestLifecycleHandler } from "./PullRequestLifecycle";
+import {
+    PullRequestCardLifecycleHandler,
+    PullRequestLifecycleHandler,
+} from "./PullRequestLifecycle";
 
 /**
  * Send a lifecycle message on Review events.
@@ -57,7 +60,7 @@ export class ReviewToPullRequestLifecycle
     GraphQL.subscription("reviewToPullRequestLifecycle"))
 @Tags("lifecycle", "pr", "review")
 export class ReviewToPullRequestCardLifecycle
-    extends PullRequestLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {
+    extends PullRequestCardLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {
 
     protected extractNodes(event: EventFired<graphql.ReviewToPullRequestLifecycle.Subscription>):
         [graphql.ReviewToPullRequestLifecycle.PullRequest, graphql.PullRequestFields.Repo,
