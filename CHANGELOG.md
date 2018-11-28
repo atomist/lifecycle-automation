@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.11.15...HEAD)
 
+### Fixed
+
+-   Render review card with a card lifecycle handler. [e3f4cd6](https://github.com/atomist/lifecycle-automation/commit/e3f4cd62685921e05319613bc637f1713bb0b663)
+
 ## [0.11.15](https://github.com/atomist/lifecycle-automation/compare/0.11.14...0.11.15) - 2018-11-27
 
 ## [0.11.14](https://github.com/atomist/lifecycle-automation/compare/0.11.13...0.11.14) - 2018-11-27
