@@ -403,6 +403,13 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                 if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
                     s.state === SdmGoalState.stopped) && s.phase) {
                     details += ` | ${s.phase}`;
+                } else {
+                    if (s.externalUrl) {
+                        details += ` | ${url(s.externalUrl, "Link")}`;
+                    }
+                    if (s.externalUrls) {
+                        details += s.externalUrls.map(eu => ` | ${url(eu.url, eu.label || "Link")}`).join("");
+                    }
                 }
                 if (s.preApproval && s.preApproval.userId) {
                     if (s.state === SdmGoalState.pre_approved) {
