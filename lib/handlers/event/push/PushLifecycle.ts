@@ -149,7 +149,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     } else if (type === "events") {
                         return null;
                     } else if (type === "goalSets") {
-                        return push.goalSets;
+                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts);
                     }
                     return null;
                 },

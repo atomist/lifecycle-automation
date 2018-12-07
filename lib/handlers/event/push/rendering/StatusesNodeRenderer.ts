@@ -327,10 +327,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const attachment = attachments.slice(-1)[0];
             attachment.actions = actions;
             attachment.ts = Math.floor(max / 1000);
+            const link =
+                `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
             if (creator) {
                 attachment.footer =
                     `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
-                        lastGoals[0].goalSetId.slice(0, 7)} | ${duration}`;
+                        url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
             } else {
                 attachment.footer = duration;
             }
