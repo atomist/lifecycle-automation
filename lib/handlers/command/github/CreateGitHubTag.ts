@@ -150,7 +150,7 @@ export class CreateGitHubTag implements HandleCommand {
                     return ctx.messageClient.respond(success(
                         "Create Tag",
                         `Successfully created new tag ${codeLine(this.tag)} on commit ${
-                            codeLine(this.sha.slice(0, 6))}`),
+                            codeLine(this.sha.slice(0, 7))}`),
                         { id: this.msgId });
                 }
             })
