@@ -656,27 +656,29 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                 sha: [push.after.sha],
             },
         });
-        for (const issueRel of result.CommitIssueRelationship) {
-            const key = `${repo.owner}/${repo.name}#${issueRel.issue.name}`;
-            if (issues.indexOf(key) < 0) {
-                const i = _.get(
-                    await loadIssueOrPullRequest(
-                        push.repo.owner,
-                        push.repo.name,
-                        [issueRel.issue.name],
-                        context.context),
-                    "repo[0].issue[0]");
-                if (i) {
-                    // tslint:disable-next-line:variable-name
-                    const author_name = `#${i.number}: ${truncateCommitMessage(i.title, repo)}`;
-                    const attachment: Attachment = {
-                        author_name,
-                        author_icon: `https://images.atomist.com/rug/issue-${i.state}.png`,
-                        author_link: issueUrl(repo, i),
-                        fallback: author_name,
-                    };
-                    msg.attachments.push(attachment);
-                    issues.push(key);
+        if (result && result.CommitIssueRelationship) {
+            for (const issueRel of result.CommitIssueRelationship) {
+                const key = `${repo.owner}/${repo.name}#${issueRel.issue.name}`;
+                if (issues.indexOf(key) < 0) {
+                    const i = _.get(
+                        await loadIssueOrPullRequest(
+                            push.repo.owner,
+                            push.repo.name,
+                            [issueRel.issue.name],
+                            context.context),
+                        "repo[0].issue[0]");
+                    if (i) {
+                        // tslint:disable-next-line:variable-name
+                        const author_name = `#${i.number}: ${truncateCommitMessage(i.title, repo)}`;
+                        const attachment: Attachment = {
+                            author_name,
+                            author_icon: `https://images.atomist.com/rug/issue-${i.state}.png`,
+                            author_link: issueUrl(repo, i),
+                            fallback: author_name,
+                        };
+                        msg.attachments.push(attachment);
+                        issues.push(key);
+                    }
                 }
             }
         }
