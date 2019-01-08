@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    logger,
+    QueryNoCacheOptions,
+} from "@atomist/automation-client";
 import {
     Action,
     Attachment,
@@ -655,6 +658,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                 repo: [push.repo.name],
                 sha: [push.after.sha],
             },
+            options: QueryNoCacheOptions,
         });
         if (result && result.CommitIssueRelationship) {
             for (const issueRel of result.CommitIssueRelationship) {
