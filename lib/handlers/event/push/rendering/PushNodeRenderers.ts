@@ -619,8 +619,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
     }
 
     public supports(node: any): boolean {
-        return node.after
-            && node.commits.some(c => c.resolves != null && c.resolves.length > 0);
+        return !!node.after;
     }
 
     public async render(push: graphql.PushToPushLifecycle.Push,
@@ -666,7 +665,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                         push.repo.name,
                         [issueRel.issue.name],
                         context.context),
-                    "issue.repo[0].issue[0]");
+                    "repo[0].issue[0]");
                 if (i) {
                     // tslint:disable-next-line:variable-name
                     const author_name = `#${i.number}: ${truncateCommitMessage(i.title, repo)}`;
