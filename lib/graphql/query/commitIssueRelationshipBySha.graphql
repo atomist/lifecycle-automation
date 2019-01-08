@@ -1,0 +1,18 @@
+query commitIssueRelationshipBySha(
+  $repo: [String]!
+  $owner: [String]!
+  $sha: [String]!
+) {
+  CommitIssueRelationship {
+    issue {
+      name
+      owner
+      repo
+    }
+    commit(owner: $owner, repo: $repo, sha: $sha) {
+      sha
+      owner
+      repo
+    }
+  }
+}

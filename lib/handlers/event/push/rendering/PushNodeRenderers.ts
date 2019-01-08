@@ -34,6 +34,7 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
+import { CommitIssueRelationshipBySha } from "../../../../typings/types";
 import {
     avatarUrl,
     branchUrl,
@@ -41,6 +42,7 @@ import {
     commitUrl,
     getAuthor,
     issueUrl,
+    loadIssueOrPullRequest,
     prUrl,
     repoSlug,
     repoUrl,
@@ -561,7 +563,9 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
         images.forEach(image => {
             const pods = image.pods;
             const envs: Environment[] = [];
-            if (_.isEmpty(pods)) { return; }
+            if (_.isEmpty(pods)) {
+                return;
+            }
             pods.forEach(pod => {
                 let env = envs.find(e => e.name
                     === `${pod.environment}${pod.namespace ? ":" + pod.namespace : ""}`);
@@ -585,22 +589,22 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
                 });
             });
             envs.sort((e1, e2) => e1.name.localeCompare(e2.name)).forEach(e => {
-                    const terminatedCountMsg = e.terminated > 0 ? ", " + e.terminated + " terminated" : "";
-                    const waitingCountMsg = e.waiting > 0 ? ", " + e.waiting + " waiting" : "";
-                    const stateOfContainers = `${e.running} running${waitingCountMsg}${terminatedCountMsg}`;
-                    const attachment: Attachment = {
-                        text: escape(`\`${e.name}\` ${stateOfContainers}`),
-                        fallback: escape(`${e.name} - ${stateOfContainers}`),
-                        mrkdwn_in: ["text"],
-                        footer: image.imageName,
-                        actions,
-                    };
-                    if (isInitialEnv) {
-                        isInitialEnv = false;
-                        attachment.author_name = `Containers`;
-                        attachment.author_icon = `https://images.atomist.com/rug/kubes.png`;
-                    }
-                    msg.attachments.push(attachment);
+                const terminatedCountMsg = e.terminated > 0 ? ", " + e.terminated + " terminated" : "";
+                const waitingCountMsg = e.waiting > 0 ? ", " + e.waiting + " waiting" : "";
+                const stateOfContainers = `${e.running} running${waitingCountMsg}${terminatedCountMsg}`;
+                const attachment: Attachment = {
+                    text: escape(`\`${e.name}\` ${stateOfContainers}`),
+                    fallback: escape(`${e.name} - ${stateOfContainers}`),
+                    mrkdwn_in: ["text"],
+                    footer: image.imageName,
+                    actions,
+                };
+                if (isInitialEnv) {
+                    isInitialEnv = false;
+                    attachment.author_name = `Containers`;
+                    attachment.author_icon = `https://images.atomist.com/rug/kubes.png`;
+                }
+                msg.attachments.push(attachment);
             });
         });
         return Promise.resolve(msg);
@@ -619,10 +623,14 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
             && node.commits.some(c => c.resolves != null && c.resolves.length > 0);
     }
 
-    public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
-                  context: RendererContext): Promise<SlackMessage> {
+    public async render(push: graphql.PushToPushLifecycle.Push,
+                        actions: Action[],
+                        msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
         const issues = [];
+
+        // Process directly connected issues
         push.commits.filter(c => c.resolves != null).forEach(c => c.resolves.forEach(i => {
             const key = `${repo.owner}/${repo.name}#${i.number}`;
             if (issues.indexOf(key) < 0 && i.title && i.state) {
@@ -638,6 +646,42 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                 issues.push(key);
             }
         }));
+
+        // Load commit->issue relationships
+        const result = await context.context.graphClient.query<
+            CommitIssueRelationshipBySha.Query, CommitIssueRelationshipBySha.Variables>({
+            name: "commitIssueRelationshipBySha",
+            variables: {
+                owner: [push.repo.owner],
+                repo: [push.repo.name],
+                sha: [push.after.sha],
+            },
+        });
+        for (const issueRel of result.CommitIssueRelationship) {
+            const key = `${repo.owner}/${repo.name}#${issueRel.issue.name}`;
+            if (issues.indexOf(key) < 0) {
+                const i = _.get(
+                    await loadIssueOrPullRequest(
+                        push.repo.owner,
+                        push.repo.name,
+                        [issueRel.issue.name],
+                        context.context),
+                    "issue.repo[0].issue[0]");
+                if (i) {
+                    // tslint:disable-next-line:variable-name
+                    const author_name = `#${i.number}: ${truncateCommitMessage(i.title, repo)}`;
+                    const attachment: Attachment = {
+                        author_name,
+                        author_icon: `https://images.atomist.com/rug/issue-${i.state}.png`,
+                        author_link: issueUrl(repo, i),
+                        fallback: author_name,
+                    };
+                    msg.attachments.push(attachment);
+                    issues.push(key);
+                }
+            }
+        }
+
         context.set("issues", issues);
         return Promise.resolve(msg);
     }
@@ -664,13 +708,13 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
         }
 
         return context.context.graphClient.query<graphql.OpenPr.Query, graphql.OpenPr.Variables>({
-                name: "openPr",
-                variables: {
-                    repo: repo.name,
-                    owner: repo.owner,
-                    branch: node.branch,
-                },
-            })
+            name: "openPr",
+            variables: {
+                repo: repo.name,
+                owner: repo.owner,
+                branch: node.branch,
+            },
+        })
             .then(result => {
                 const pr = _.get(result, "Repo[0].branches[0].pullRequests[0]") as graphql.OpenPr.PullRequests;
                 if (pr) {
