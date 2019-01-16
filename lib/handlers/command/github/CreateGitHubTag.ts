@@ -188,7 +188,7 @@ export class TagParameters extends OwnerParameters {
     @Parameter({
         displayName: "Tag",
         description: "tag to create",
-        pattern: /^\w(?:[-.\w/]*\w)*$/,
+        pattern: /^.*$/,
         validInput: "valid git tag, starting and ending with a alphanumeric character and containing alphanumeric,"
         + "_, -, ., and / characters",
         minLength: 1,
