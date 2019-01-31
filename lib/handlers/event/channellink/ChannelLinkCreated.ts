@@ -53,7 +53,7 @@ export class ChannelLinkCreated implements HandleEvent<graphql.ChannelLinkCreate
     public orgToken: string;
 
     public async handle(event: EventFired<graphql.ChannelLinkCreated.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
+                        ctx: HandlerContext): Promise<HandlerResult> {
 
         const channelName = event.data.ChannelLink[0].channel.name || event.data.ChannelLink[0].channel.normalizedName;
         const teamId = event.data.ChannelLink[0].channel.team.id;
