@@ -194,7 +194,6 @@ import {
     TagToPushLifecycle,
 } from "./lib/handlers/event/push/TagToPushLifecycle";
 import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOnReview";
-import { GitHubWebhookCreated } from "./lib/handlers/event/webhook/GitHubWebhookCreated";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 const AdminTeam = "atomist-automation";
@@ -344,7 +343,7 @@ export const configuration: any = {
         // () => new ReviewToReviewLifecycle(),
 
         // webhook
-        () => new GitHubWebhookCreated(),
+        // () => new GitHubWebhookCreated(),
 
         // add card handlers
 
@@ -384,6 +383,6 @@ export const configuration: any = {
         configureLogzio,
     ],
     ws: {
-        timeout: 20000,
+        timeout: 60000,
     },
 };
