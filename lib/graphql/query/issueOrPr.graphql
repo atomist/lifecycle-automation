@@ -1,9 +1,9 @@
-query issueOrPr($owner: String!, $repo: String!, $names: [String]!) {
+query issueOrPr($owner: String!, $repo: String!, $name: String!) {
   Org(owner: $owner) {
     repo(name: $repo) {
       name
       owner
-      pullRequest(names: $names) {
+      pullRequest(name: $name) {
         state
         merged
         number
@@ -26,7 +26,7 @@ query issueOrPr($owner: String!, $repo: String!, $names: [String]!) {
           login
         }
       }
-      issue(names: $names) {
+      issue(name: $name) {
         _id
         name
         title

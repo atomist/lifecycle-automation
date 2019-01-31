@@ -18,13 +18,12 @@ import {
     addressSlackChannels,
     buttonForCommand,
     EventFired,
-    failure,
     guid,
     HandlerContext,
     HandlerResult,
     Secret,
     Secrets,
-    success,
+    Success,
     Tags,
 } from "@atomist/automation-client";
 import { EventHandler } from "@atomist/automation-client/lib/decorators";
@@ -38,12 +37,7 @@ import {
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
-import {
-    apiUrl,
-    repoSlackLink,
-} from "../../../util/helpers";
-import { warning } from "../../../util/messages";
-import * as github from "../../command/github/gitHubApi";
+import { repoSlackLink } from "../../../util/helpers";
 import {
     InstallGitHubOrgWebhook,
     InstallGitHubRepoWebhook,
@@ -58,7 +52,7 @@ export class ChannelLinkCreated implements HandleEvent<graphql.ChannelLinkCreate
     @Secret(Secrets.OrgToken)
     public orgToken: string;
 
-    public handle(event: EventFired<graphql.ChannelLinkCreated.Subscription>,
+    public async handle(event: EventFired<graphql.ChannelLinkCreated.Subscription>,
                   ctx: HandlerContext): Promise<HandlerResult> {
 
         const channelName = event.data.ChannelLink[0].channel.name || event.data.ChannelLink[0].channel.normalizedName;
@@ -67,71 +61,11 @@ export class ChannelLinkCreated implements HandleEvent<graphql.ChannelLinkCreate
         const repoLink = repoSlackLink(repo);
         const msgId = `channel_link/${channelName}`;
 
-        // provider might be null for cases when there are no webhooks currently installed
-        const providerType = _.get(event.data, "ChannelLink[0].repo.org.provider.providerType") || "github_com";
-
         const linkMsg = `${repoLink} is now linked to this channel. I will send activity from that \
 repository here. To turn this off, type ${codeLine("@atomist repos")} and click the ${bold("Unlink")} button.`;
 
-        const noRepoHookMsg = `${repoLink} is now linked to this channel. Unfortunately I'm not able to send \
-activity from that repository here because there is no Webhook installed. \
-Please use the button below to install a Webhook in your repository.`;
-
-        const noHookMsg = `${repoLink} is now linked to this channel. Unfortunately I'm not able to send \
-activity from that repository here because there is no Webhook installed. \
-Please use one of the buttons below to install a Webhook in your repository or organization.`;
-
-        if (providerType === "github_com" || providerType === "ghe") {
-            const api = github.api(this.orgToken, apiUrl(repo));
-            return api.repos.getHooks({
-                owner: repo.owner,
-                repo: repo.name,
-            })
-                .then(result => {
-                    return hookExists(result.data);
-                }, () => {
-                    return false;
-                })
-                .then(exists => {
-                    if (exists) {
-                        return true;
-                    } else if (repo.org.ownerType === "organization") {
-                        return ctx.graphClient.query<graphql.Webhook.Query, graphql.Webhook.Variables>({
-                            name: "webhook",
-                            variables: { owner: repo.owner },
-                        })
-                            .then(result => {
-                                return _.get(result, "GitHubOrgWebhook[0].url") != null;
-                            })
-                            .catch(() => {
-                                return false;
-                            });
-                    } else {
-                        return false;
-                    }
-                })
-                .then(exists => {
-                    if (exists) {
-                        return this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
-                    } else {
-                        let text;
-                        if (repo.org.ownerType === "organization") {
-                            text = noHookMsg;
-                        } else {
-                            text = noRepoHookMsg;
-                        }
-                        return ctx.messageClient.send(
-                            warning("Channel Linked", text, ctx,
-                                [...createActions(repo), createListRepoLinksAction(msgId)]),
-                            addressSlackChannels(teamId, channelName),
-                            { id: msgId, dashboard: false });
-                    }
-                })
-                .then(() => showLastPush(repo, this.orgToken, ctx))
-                .then(success, failure);
-        } else {
-            return this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
-        }
+        await this.sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
+        return Success;
     }
 
     private sendLinkMessage(teamId: string, channelName: string, linkMsg: string, msgId, ctx: HandlerContext) {

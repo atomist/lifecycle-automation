@@ -174,6 +174,7 @@ export function avatarUrl(repo: any, login: string, url?: string): string {
     }
     return `https://github.com/identicons/${login}.png`;
 }
+
 export function commitUrl(repo: any, commit: any): string {
     if (isGitHub(repo)) {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/commit/${commit.sha}`;
@@ -403,29 +404,28 @@ export function extractLinkedIssues(body: string,
         });
 }
 
-export function loadIssueOrPullRequest(owner: string,
-                                       repo: string,
-                                       names: string[],
-                                       ctx: HandlerContext): Promise<graphql.IssueOrPr.Org> {
-    return ctx.graphClient.query<graphql.IssueOrPr.Query, graphql.IssueOrPr.Variables>({
-        name: "issueOrPr",
-        variables: {
-            owner,
-            repo,
-            names,
-        },
-    })
-        .then(result => {
-            if (result && result.Org && result.Org.length > 0) {
-                return result.Org[0];
-            } else {
-                return null;
-            }
-        })
-        .catch(err => {
-            logger.error("Error occurred running GraphQL query: %s", err);
-            return null;
+export async function loadIssueOrPullRequest(owner: string,
+                                             repo: string,
+                                             names: string[],
+                                             ctx: HandlerContext): Promise<graphql.IssueOrPr.Org> {
+    const result: graphql.IssueOrPr.Query = {};
+    for (const name of names) {
+        const issueOrPr = await ctx.graphClient.query<graphql.IssueOrPr.Query, graphql.IssueOrPr.Variables>({
+            name: "issueOrPr",
+            variables: {
+                owner,
+                repo,
+                name,
+            },
         });
+        _.merge(result, issueOrPr);
+    }
+
+    if (result && result.Org && result.Org.length > 0) {
+        return result.Org[0];
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -776,7 +776,8 @@ export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignee
 export class ReferencedIssues {
 
     constructor(public issues: graphql.IssueOrPr.Issue[],
-                public prs: graphql.IssueOrPr.PullRequest[]) { }
+                public prs: graphql.IssueOrPr.PullRequest[]) {
+    }
 }
 
 export function getAuthor(commit: PullRequestFields.Commits): string {

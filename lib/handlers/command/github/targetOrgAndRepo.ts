@@ -175,7 +175,7 @@ export const retrieveIssue = async (ctx: HandlerContext, params: IssueOwnerParam
         variables: {
             owner: params.owner,
             repo: params.repo,
-            names: [params.issue.toString()],
+            name: params.issue.toString(),
         },
     });
 
