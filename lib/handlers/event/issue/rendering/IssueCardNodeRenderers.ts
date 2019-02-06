@@ -121,23 +121,23 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
                     number: node.number,
                     content: "+1",
                 })
-                .then(result => {
-                    card.reactions = (result.data || []).map(r => ({
-                        avatar: r.user.avatar_url,
-                        login: r.user.login,
-                        reaction: "+1",
-                    }));
+                    .then(result => {
+                        card.reactions = (result.data || []).map(r => ({
+                            avatar: r.user.avatar_url,
+                            login: r.user.login,
+                            reaction: "+1",
+                        }));
 
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
-                            avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
 
-                    return card;
-                })
-                .catch(err => msg);
+                        return card;
+                    })
+                    .catch(err => msg);
             })
             .then(card => {
                 const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
@@ -146,24 +146,25 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
                     repo: repo.name,
                     number: node.number,
                 })
-                .then(result => {
-                    card.comments = (result.data || []).map(c => ({
-                        avatar: c.user.avatar_url,
-                        login: c.user.login,
-                        text: c.body,
-                    }));
-
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
+                    .then(result => {
+                        card.comments = (result.data || []).map(c => ({
                             avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                            login: c.user.login,
+                            text: c.body,
+                        }));
 
-                    return card;
-                })
-                .catch(err => msg);
-            });
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
+
+                        return card;
+                    })
+                    .catch(err => msg);
+            })
+            .catch(() => msg);
     }
 }
 
@@ -224,26 +225,26 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
                     number: issue.number,
                     content: "+1",
                 })
-                .then(result => {
-                    card.reactions = (result.data || []).map(r => ({
-                        avatar: r.user.avatar_url,
-                        login: r.user.login,
-                        reaction: "+1",
-                    }));
+                    .then(result => {
+                        card.reactions = (result.data || []).map(r => ({
+                            avatar: r.user.avatar_url,
+                            login: r.user.login,
+                            reaction: "+1",
+                        }));
 
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
-                            avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
 
-                    return card;
-                })
-                .catch(err => {
-                    logger.warn(err);
-                    return msg;
-                });
+                        return card;
+                    })
+                    .catch(err => {
+                        logger.warn(err);
+                        return msg;
+                    });
             })
             .then(card => {
                 const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
@@ -252,27 +253,28 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
                     repo: repo.name,
                     number: issue.number,
                 })
-                .then(result => {
-                    card.comments = (result.data || []).map(c => ({
-                        avatar: c.user.avatar_url,
-                        login: c.user.login,
-                        text: c.body,
-                    }));
-
-                    (result.data || []).forEach(c => addCollaborator(
-                        {
-                            login: c.user.login,
+                    .then(result => {
+                        card.comments = (result.data || []).map(c => ({
                             avatar: c.user.avatar_url,
-                            link: c.user.html_url,
-                        }, card));
+                            login: c.user.login,
+                            text: c.body,
+                        }));
 
-                    return card;
-                })
-                .catch(err => {
-                    logger.warn(err);
-                    return msg;
-                });
-            });
+                        (result.data || []).forEach(c => addCollaborator(
+                            {
+                                login: c.user.login,
+                                avatar: c.user.avatar_url,
+                                link: c.user.html_url,
+                            }, card));
+
+                        return card;
+                    })
+                    .catch(err => {
+                        logger.warn(err);
+                        return msg;
+                    });
+            })
+            .catch(() => msg);
     }
 }
 
@@ -287,10 +289,10 @@ export class CorrelationsCardNodeRenderer extends AbstractIdentifiableContributi
         return node.title;
     }
 
-    public render(issue: graphql.IssueToIssueLifecycle.Issue,
-                  actions: Action[],
-                  msg: CardMessage,
-                  context: RendererContext): Promise<CardMessage> {
+    public async render(issue: graphql.IssueToIssueLifecycle.Issue,
+                        actions: Action[],
+                        msg: CardMessage,
+                        context: RendererContext): Promise<CardMessage> {
         const repo = context.lifecycle.extract("repo");
 
         msg.comments = [];
@@ -329,13 +331,13 @@ export class CorrelationsCardNodeRenderer extends AbstractIdentifiableContributi
             })),
         });
 
-        const api = github.api(context.orgToken);
-        return api.issues.getEventsTimeline({
-            owner: repo.owner,
-            repo: repo.name,
-            issue_number: issue.number,
-        })
-        .then(result => {
+        try {
+            const api = github.api(context.orgToken);
+            const result = await api.issues.getEventsTimeline({
+                owner: repo.owner,
+                repo: repo.name,
+                issue_number: issue.number,
+            });
             result.data.forEach(e => {
                 switch (e.event) {
                     case "assigned":
@@ -397,12 +399,10 @@ export class CorrelationsCardNodeRenderer extends AbstractIdentifiableContributi
                     }
                 }
             });
-            return msg;
-        })
-        .catch(err => {
-            logger.warn(err);
-            return msg;
-        });
+        } catch (e) {
+            // intentionally left empty
+        }
+        return msg;
     }
 }
 

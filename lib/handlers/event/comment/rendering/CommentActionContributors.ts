@@ -265,39 +265,38 @@ export class ReactionActionContributor extends AbstractCommentActionContributor
         super(LifecycleActionPreferences.comment.thumps_up.id, true, true);
     }
 
-    protected createButton(comment: graphql.CommentToIssueCommentLifecycle.Comment,
-                           id: number,
-                           repo: graphql.CommentToIssueCommentLifecycle.Repo,
-                           context: RendererContext): Promise<Action[]> {
-        const api = github.api(context.orgToken);
-        return api.reactions.getForIssueComment({
-            owner: repo.owner,
-            repo: repo.name,
-            id: comment.gitHubId,
-            content: "+1",
-        })
-            .then(result =>
-                [buttonForCommand(
-                    { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
-                    "ReactGitHubIssueComment",
-                    {
-                        comment: comment.gitHubId,
-                        repo: repo.name,
-                        owner: repo.owner,
-                        reaction: "+1",
-                    })],
-            )
-            .catch(() =>
-                [buttonForCommand(
-                    { text: `:+1:`, role: "react" },
-                    "ReactGitHubIssueComment",
-                    {
-                        comment: comment.gitHubId,
-                        repo: repo.name,
-                        owner: repo.owner,
-                        reaction: "+1",
-                    })],
-            );
+    protected async createButton(comment: graphql.CommentToIssueCommentLifecycle.Comment,
+                                 id: number,
+                                 repo: graphql.CommentToIssueCommentLifecycle.Repo,
+                                 context: RendererContext): Promise<Action[]> {
+        try {
+            const api = github.api(context.orgToken);
+            const result = await api.reactions.getForIssueComment({
+                owner: repo.owner,
+                repo: repo.name,
+                id: comment.gitHubId,
+                content: "+1",
+            });
+            return [buttonForCommand(
+                { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
+                "ReactGitHubIssueComment",
+                {
+                    comment: comment.gitHubId,
+                    repo: repo.name,
+                    owner: repo.owner,
+                    reaction: "+1",
+                })];
+        } catch (e) {
+            return [buttonForCommand(
+                { text: `:+1:`, role: "react" },
+                "ReactGitHubIssueComment",
+                {
+                    comment: comment.gitHubId,
+                    repo: repo.name,
+                    owner: repo.owner,
+                    reaction: "+1",
+                })];
+        }
     }
 
     protected createMenu(comment: graphql.CommentToIssueCommentLifecycle.Comment,

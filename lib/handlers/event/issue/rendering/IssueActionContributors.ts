@@ -280,9 +280,9 @@ export class AssignActionContributor extends AbstractIdentifiableContribution
                 { Authorization: `bearer ${context.orgToken}` });
 
             return client.query<any, any>({
-                    query: SuggestedAssigneeQuery,
-                    variables: { owner: repo.owner, name: repo.name },
-                })
+                query: SuggestedAssigneeQuery,
+                variables: { owner: repo.owner, name: repo.name },
+            })
                 .then(result => {
                     const assignees = issue.assignees.map(a => a.login);
                     const suggestedAssignees = (_.get(result, "repository.assignableUsers.nodes") || [])
@@ -299,7 +299,7 @@ export class AssignActionContributor extends AbstractIdentifiableContribution
                             },
                             {
                                 text: "Assign",
-                                options: suggestedAssignees.map(l => ({ text: l, value: l})),
+                                options: suggestedAssignees.map(l => ({ text: l, value: l })),
                             },
                         ],
                     };
@@ -413,28 +413,26 @@ export class ReactionActionContributor extends AbstractIssueActionContributor
         super(LifecycleActionPreferences.issue.thumps_up.id);
     }
 
-    protected createButton(issue: graphql.IssueToIssueLifecycle.Issue,
-                           repo: graphql.IssueFields.Repo,
-                           context: RendererContext): Promise<Action[]> {
-
-        const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
-        return api.reactions.getForIssue({
-            owner: repo.owner,
-            repo: repo.name,
-            number: issue.number,
-            content: "+1",
-        })
-        .then(result =>
-            [buttonForCommand(
+    protected async createButton(issue: graphql.IssueToIssueLifecycle.Issue,
+                                 repo: graphql.IssueFields.Repo,
+                                 context: RendererContext): Promise<Action[]> {
+        try {
+            const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+            const result = await api.reactions.getForIssue({
+                owner: repo.owner,
+                repo: repo.name,
+                number: issue.number,
+                content: "+1",
+            });
+            return [buttonForCommand(
                 { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
                 "ReactGitHubIssue",
-                { issue: issue.number, repo: repo.name, owner: repo.owner, reaction: "+1" })],
-        )
-        .catch(() =>
-                [buttonForCommand({ text: `:+1:`, role: "react" },
-                    "ReactGitHubIssue",
-                    { issue: issue.number, repo: repo.name, owner: repo.owner, reaction: "+1" })],
-        );
+                { issue: issue.number, repo: repo.name, owner: repo.owner, reaction: "+1" })];
+        } catch (e) {
+            return [buttonForCommand({ text: `:+1:`, role: "react" },
+                "ReactGitHubIssue",
+                { issue: issue.number, repo: repo.name, owner: repo.owner, reaction: "+1" })];
+        }
     }
 }
 

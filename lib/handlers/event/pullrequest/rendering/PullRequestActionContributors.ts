@@ -72,7 +72,7 @@ export class MergeActionContributor extends AbstractIdentifiableContribution
             const mergeButtons = this.mergePRActions(pr, repo);
 
             const commits = pr.commits.filter(c => c.statuses != null && c.statuses.length > 0)
-                    .sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
+                .sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
             if (commits.length > 0) {
                 const commit = commits[0];
                 if (!commit.statuses.some(s => s.state !== "success")) {
@@ -338,31 +338,30 @@ export class ThumbsUpActionContributor extends AbstractIdentifiableContribution
         }
     }
 
-    public buttonsFor(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest, context: RendererContext):
+    public async buttonsFor(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest, context: RendererContext):
         Promise<Action[]> {
         const repo = context.lifecycle.extract("repo");
 
         if (context.rendererId === "pull_request") {
 
-            const api = github.api(context.orgToken);
-            return api.reactions.getForIssue({
-                owner: repo.owner,
-                repo: repo.name,
-                number: pr.number,
-                content: "+1",
-            })
-            .then(result =>
-                [buttonForCommand(
+            try {
+                const api = github.api(context.orgToken);
+                const result = await api.reactions.getForIssue({
+                    owner: repo.owner,
+                    repo: repo.name,
+                    number: pr.number,
+                    content: "+1",
+                });
+                return [buttonForCommand(
                     { text: `:+1:${result.data.length > 0 ? " " + result.data.length : ""}`, role: "react" },
                     "ReactGitHubIssue",
-                    { reaction: "+1", issue: pr.number, repo: repo.name, owner: repo.owner })],
-            )
-            .catch(() =>
-                [buttonForCommand(
+                    { reaction: "+1", issue: pr.number, repo: repo.name, owner: repo.owner })];
+            } catch (e) {
+                return [buttonForCommand(
                     { text: ":+1:", role: "react" },
                     "ReactGitHubIssue",
-                    { reaction: "+1", issue: pr.number, repo: repo.name, owner: repo.owner })],
-            );
+                    { reaction: "+1", issue: pr.number, repo: repo.name, owner: repo.owner })];
+            }
         }
 
         return Promise.resolve([]);
@@ -420,13 +419,13 @@ export class AssignReviewerActionContributor extends AbstractIdentifiableContrib
             { Authorization: `bearer ${orgToken}` });
 
         return client.query<any, any>({
-                query: SuggestedReviewersQuery,
-                variables: {
-                    owner: repo.owner,
-                    name: repo.name,
-                    number: pr.number,
-                },
-            })
+            query: SuggestedReviewersQuery,
+            variables: {
+                owner: repo.owner,
+                name: repo.name,
+                number: pr.number,
+            },
+        })
             .then(result => {
                 const reviewers = _.get(result, "repository.pullRequest.suggestedReviewers");
 
@@ -440,13 +439,13 @@ export class AssignReviewerActionContributor extends AbstractIdentifiableContrib
                                 return { text: l, value: l };
                             }),
                         },
-                            { text: "Everybody", options: [{ text: "request different reviewer", value: "_"}]},
+                            { text: "Everybody", options: [{ text: "request different reviewer", value: "_" }] },
                         ],
                         role: "global",
                     };
-                    return [ menuForCommand(menu,
+                    return [menuForCommand(menu,
                         "AssignGitHubPullRequestReviewer", "reviewer",
-                        { issue: pr.number, repo: repo.name, owner: repo.owner }) ];
+                        { issue: pr.number, repo: repo.name, owner: repo.owner })];
 
                 } else {
                     return this.assignReviewButton(pr, repo);
@@ -460,7 +459,7 @@ export class AssignReviewerActionContributor extends AbstractIdentifiableContrib
 
     private assignReviewButton(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest,
                                repo: graphql.PullRequestFields.Repo): Action[] {
-        return [ buttonForCommand({ text: "Request Review" }, "AssignGitHubPullRequestReviewer",
-            { issue: pr.number, repo: repo.name, owner: repo.owner }) ];
+        return [buttonForCommand({ text: "Request Review" }, "AssignGitHubPullRequestReviewer",
+            { issue: pr.number, repo: repo.name, owner: repo.owner })];
     }
 }
