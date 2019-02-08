@@ -15,7 +15,13 @@
  */
 
 import { logger } from "@atomist/automation-client";
-import { url } from "@atomist/slack-messages";
+import {
+    Attachment,
+    codeLine,
+    escape,
+    SlackMessage,
+    url,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
     Action,
@@ -26,6 +32,7 @@ import {
     AbstractIdentifiableContribution,
     CardNodeRenderer,
     RendererContext,
+    SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import {
@@ -306,6 +313,76 @@ export class ApplicationCardNodeRenderer extends AbstractIdentifiableContributio
 
         msg.actions.push(...actions);
 
+        return Promise.resolve(msg);
+    }
+}
+
+interface Environment {
+    name: string;
+    running: number;
+    waiting: number;
+    terminated: number;
+}
+
+export class K8PodCardNodeRenderer extends AbstractIdentifiableContribution
+    implements CardNodeRenderer<graphql.K8PodToPushLifecycle.Pushes> {
+
+    constructor() {
+        super("k8pod");
+    }
+
+    public supports(node: any): boolean {
+        return node.after && node.after.images && node.after.images.length > 0;
+    }
+
+    public render(push: graphql.K8PodToPushLifecycle.Pushes, actions: Action[],
+                  msg: CardMessage,
+                  context: RendererContext): Promise<CardMessage> {
+        const images = push.after.images;
+        images.forEach(image => {
+            const pods = image.pods;
+            const envs: Environment[] = [];
+            if (_.isEmpty(pods)) {
+                return;
+            }
+            pods.forEach(pod => {
+                let env = envs.find(e => e.name
+                    === `${pod.environment}${pod.namespace ? ":" + pod.namespace : ""}`);
+                if (_.isUndefined(env)) {
+                    env = {
+                        name: `${pod.environment}${pod.namespace ? ":" + pod.namespace : ""}`,
+                        running: 0,
+                        waiting: 0,
+                        terminated: 0,
+                    };
+                    envs.push(env);
+                }
+                pod.containers.forEach(c => {
+                    if (c.state === "running") {
+                        env.running++;
+                    } else if (c.state === "waiting") {
+                        env.waiting++;
+                    } else if (c.state === "terminated") {
+                        env.terminated++;
+                    }
+                });
+            });
+            envs.sort((e1, e2) => e1.name.localeCompare(e2.name)).forEach(e => {
+                const terminatedCountMsg = e.terminated > 0 ? ", " + e.terminated + " terminated" : "";
+                const waitingCountMsg = e.waiting > 0 ? ", " + e.waiting + " waiting" : "";
+                const stateOfContainers = `${codeLine(image.imageName)} ${e.running} running${waitingCountMsg}${terminatedCountMsg}`;
+
+                msg.correlations.push({
+                    type: `application-${e.name}`,
+                    icon: "css://icon-servers",
+                    title: `${e.name.split("_").join(":")}`,
+                    shortTitle: `${e.name.split("_").join(":")}`,
+                    body: [{
+                        text: stateOfContainers,
+                    }],
+                });
+            });
+        });
         return Promise.resolve(msg);
     }
 }

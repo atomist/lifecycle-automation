@@ -56,6 +56,7 @@ import {
     BuildCardNodeRenderer,
     CommitCardNodeRenderer,
     IssueCardNodeRenderer,
+    K8PodCardNodeRenderer,
     PullRequestCardNodeRenderer,
     PushCardNodeRenderer,
     TagCardNodeRenderer,
@@ -120,6 +121,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     new IssueCardNodeRenderer(),
                     new PullRequestCardNodeRenderer(),
                     new ApplicationCardNodeRenderer(),
+                    new K8PodCardNodeRenderer(),
                     new CollaboratorCardNodeRenderer(node => node.after != null),
                 ],
                 contributors: !push.repo.org.provider.private ? [
