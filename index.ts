@@ -282,9 +282,6 @@ export const configuration: any = {
         () => new BotJoinedChannel(),
         () => new ChannelLinkCreated(),
 
-        // parentimpact
-        // () => new StatusOnParentImpact(),
-
         // push
         () => new ApplicationToPushLifecycle(),
         () => new BuildToPushLifecycle(),
