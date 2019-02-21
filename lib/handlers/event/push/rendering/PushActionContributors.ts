@@ -65,65 +65,6 @@ const RepositoryTagsQuery = `query RepositoryTags($name: String!, $owner: String
 }
 `;
 
-export class BuildActionContributor extends AbstractIdentifiableContribution
-    implements SlackActionContributor<graphql.PushFields.Builds> {
-
-    constructor() {
-        super(LifecycleActionPreferences.push.restart_build.id);
-    }
-
-    public supports(node: any): boolean {
-        return node.buildUrl;
-    }
-
-    public buttonsFor(build: graphql.PushFields.Builds, context: RendererContext): Promise<Action[]> {
-        const repo = context.lifecycle.extract("repo");
-        const buttons = [];
-        if (build.provider === "travis") {
-            if (["failed", "broken", "canceled"].includes(build.status)) {
-                // Travis restart
-                buttons.push(this.travisRestartAction(build, repo));
-            } else if (build.status === "started") {
-                // Travis cancel
-                buttons.push(this.travisCancelAction(build, repo));
-            }
-        }
-        return Promise.resolve(buttons);
-    }
-
-    public menusFor(build: any, context: RendererContext): Promise<Action[]> {
-        return Promise.resolve([]);
-    }
-
-    private travisRestartAction(build: graphql.PushFields.Builds, repo: any): Action {
-        return buttonForCommand(
-            {
-                text: "Restart",
-                role: "global",
-             },
-            "RestartTravisBuild",
-            {
-                buildId: build.buildId,
-                repo: repo.name,
-                org: repo.owner,
-            });
-    }
-
-    private travisCancelAction(build: graphql.PushFields.Builds, repo: any): Action {
-        return buttonForCommand(
-            {
-                text: "Cancel",
-                role: "global",
-             },
-            "CancelTravisBuild",
-            {
-                buildId: build.buildId,
-                repo: repo.name,
-                org: repo.owner,
-            });
-    }
-}
-
 export class ReleaseActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.PushFields.Tags> {
 

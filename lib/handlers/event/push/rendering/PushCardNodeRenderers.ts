@@ -16,10 +16,7 @@
 
 import { logger } from "@atomist/automation-client";
 import {
-    Attachment,
     codeLine,
-    escape,
-    SlackMessage,
     url,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
@@ -32,7 +29,6 @@ import {
     AbstractIdentifiableContribution,
     CardNodeRenderer,
     RendererContext,
-    SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import {
@@ -370,7 +366,8 @@ export class K8PodCardNodeRenderer extends AbstractIdentifiableContribution
             envs.sort((e1, e2) => e1.name.localeCompare(e2.name)).forEach(e => {
                 const terminatedCountMsg = e.terminated > 0 ? ", " + e.terminated + " terminated" : "";
                 const waitingCountMsg = e.waiting > 0 ? ", " + e.waiting + " waiting" : "";
-                const stateOfContainers = `${codeLine(image.imageName)} ${e.running} running${waitingCountMsg}${terminatedCountMsg}`;
+                const stateOfContainers = `${codeLine(image.imageName)} ${e.running} running${
+                    waitingCountMsg}${terminatedCountMsg}`;
 
                 msg.correlations.push({
                     type: `application-${e.name}`,

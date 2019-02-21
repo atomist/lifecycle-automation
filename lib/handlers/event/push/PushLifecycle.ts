@@ -43,7 +43,6 @@ import {
 import { LifecyclePreferences } from "../preferences";
 import {
     ApproveGoalActionContributor,
-    BuildActionContributor,
     DisplayGoalActionContributor,
     PullRequestActionContributor,
     ReleaseActionContributor,
@@ -128,11 +127,9 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     new CardActionContributorWrapper(new TagPushActionContributor()),
                     new CardActionContributorWrapper(new TagTagActionContributor()),
                     new CardActionContributorWrapper(new ReleaseActionContributor()),
-                    new CardActionContributorWrapper(new BuildActionContributor()),
                     new CardActionContributorWrapper(new PullRequestActionContributor()),
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                 ] : [
-                    new CardActionContributorWrapper(new BuildActionContributor()),
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                 ],
                 id: createId(push),
@@ -209,12 +206,10 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new TagPushActionContributor(),
                     new TagTagActionContributor(),
                     new ReleaseActionContributor(),
-                    new BuildActionContributor(),
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
                     new DisplayGoalActionContributor(),
                 ] : [
-                    new BuildActionContributor(),
                     new ApproveGoalActionContributor(),
                 ],
                 id: createId(push),

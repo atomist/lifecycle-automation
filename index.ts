@@ -17,14 +17,7 @@
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureLogzio } from "@atomist/automation-client-ext-logzio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
-import {
-    GraphQL,
-    secured,
-} from "@atomist/automation-client/index";
-import { CloudFoundryApplicationDetail } from "./lib/handlers/command/cloudfoundry/CloudFoundryApplicationDetail";
-import { ScaleCloudFoundryApplication } from "./lib/handlers/command/cloudfoundry/ScaleCloudFoundryApplication";
-import { StartCloudFoundryApplication } from "./lib/handlers/command/cloudfoundry/StartCloudFoundryApplication";
-import { StopCloudFoundryApplication } from "./lib/handlers/command/cloudfoundry/StopCloudFoundryApplication";
+import { GraphQL } from "@atomist/automation-client/index";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
 import { ApproveGitHubCommit } from "./lib/handlers/command/github/ApproveGitHubCommit";
 import { AssignGitHubPullRequestReviewer } from "./lib/handlers/command/github/AssignGitHubPullRequestReviewer";
@@ -46,11 +39,6 @@ import { DeleteGitHubBranch } from "./lib/handlers/command/github/DeleteGitHubBr
 import { DisplayGitHubIssue } from "./lib/handlers/command/github/DisplayGitHubIssue";
 import { DisplayGitHubPullRequest } from "./lib/handlers/command/github/DisplayGitHubPullRequest";
 import { EnableGitHubPullRequestAutoMerge } from "./lib/handlers/command/github/EnableGitHubPullRequestAutoMerge";
-import {
-    InstallGitHubOrgWebhook,
-    InstallGitHubReposWebhook,
-    InstallGitHubRepoWebhook,
-} from "./lib/handlers/command/github/InstallGitHubWebhook";
 import {
     LinkRelatedGitHubIssue,
     linkRelatedGitHubIssueTargetIssueSelection,
@@ -88,8 +76,6 @@ import { ListRepoLinks } from "./lib/handlers/command/slack/ListRepoLinks";
 import { NoLinkRepo } from "./lib/handlers/command/slack/NoLinkRepo";
 import { ToggleCustomEmojiEnablement } from "./lib/handlers/command/slack/ToggleCustomEmojiEnablement";
 import { UnlinkRepo } from "./lib/handlers/command/slack/UnlinkRepo";
-import { CancelTravisBuild } from "./lib/handlers/command/travis/CancelTravisBuild";
-import { RestartTravisBuild } from "./lib/handlers/command/travis/RestartTravisBuild";
 import { BranchToBranchLifecycle } from "./lib/handlers/event/branch/BranchToBranchLifecycle";
 import { DeletedBranchToBranchLifecycle } from "./lib/handlers/event/branch/DeletedBranchToBranchLifecycle";
 import { PullRequestToBranchLifecycle } from "./lib/handlers/event/branch/PullRequestToBranchLifecycle";
@@ -168,10 +154,6 @@ import {
 import { NotifyBotOwnerOnPush } from "./lib/handlers/event/push/NotifyBotOwnerOnPush";
 import { NotifyReviewerOnPush } from "./lib/handlers/event/push/NotifyReviewerOnPush";
 import {
-    ParentImpactToPushCardLifecycle,
-    ParentImpactToPushLifecycle,
-} from "./lib/handlers/event/push/ParentImpactToPushLifecycle";
-import {
     PushToPushCardLifecycle,
     PushToPushLifecycle,
 } from "./lib/handlers/event/push/PushToPushLifecycle";
@@ -196,16 +178,9 @@ import {
 import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOnReview";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
-const AdminTeam = "atomist-automation";
 
 export const configuration: any = {
     commands: [
-        // cloudfoundry
-        secured.githubTeam(() => new CloudFoundryApplicationDetail(), AdminTeam),
-        secured.githubTeam(() => new ScaleCloudFoundryApplication(), AdminTeam),
-        secured.githubTeam(() => new StartCloudFoundryApplication(), AdminTeam),
-        secured.githubTeam(() => new StopCloudFoundryApplication(), AdminTeam),
-
         // github
         () => new AddGitHubPullRequestAutoMergeLabels(),
         () => new ApproveGitHubCommit(),
@@ -224,9 +199,6 @@ export const configuration: any = {
         () => new DisplayGitHubIssue(),
         () => new DisplayGitHubPullRequest(),
         () => new EnableGitHubPullRequestAutoMerge(),
-        () => new InstallGitHubOrgWebhook(),
-        () => new InstallGitHubRepoWebhook(),
-        () => new InstallGitHubReposWebhook(),
         () => new LinkRelatedGitHubIssue(),
         () => linkRelatedGitHubIssueTargetOwnerSelection(),
         () => linkRelatedGitHubIssueTargetRepoSelection(),
@@ -264,10 +236,6 @@ export const configuration: any = {
         () => new NoLinkRepo(),
         () => new ToggleCustomEmojiEnablement(),
         () => new UnlinkRepo(),
-
-        // travis
-        () => new CancelTravisBuild(),
-        () => new RestartTravisBuild(),
     ],
     events: [
         // branch
@@ -289,7 +257,6 @@ export const configuration: any = {
         () => new K8PodToPushLifecycle(),
         () => new NotifyBotOwnerOnPush(),
         () => new NotifyReviewerOnPush(),
-        () => new ParentImpactToPushLifecycle(),
         () => new PushToPushLifecycle(),
         () => new PushToUnmappedRepo(),
         () => new ReleaseToPushLifecycle(),
@@ -339,9 +306,6 @@ export const configuration: any = {
         // () => new PullRequestToReviewLifecycle(),
         // () => new ReviewToReviewLifecycle(),
 
-        // webhook
-        // () => new GitHubWebhookCreated(),
-
         // add card handlers
 
         // push
@@ -349,7 +313,6 @@ export const configuration: any = {
         () => new BuildToPushCardLifecycle(),
         () => new IssueToPushCardLifecycle(),
         () => new K8PodToPushCardLifecycle(),
-        () => new ParentImpactToPushCardLifecycle(),
         () => new PushToPushCardLifecycle(),
         () => new ReleaseToPushCardLifecycle(),
         () => new SdmGoalToPushCardLifecycle(),
