@@ -28,10 +28,10 @@ import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import { SdmGoalDisplayState } from "../../../typings/types";
 
 /**
- * Update SDM goal.
+ * Update SDM goal set display status.
  */
-@CommandHandler("Update SDM goal", "update goal")
-@Tags("sdm goal", "update")
+@CommandHandler("Update SDM goal set display status")
+@Tags("sdm")
 export class UpdateSdmGoalDisplayState implements HandleCommand {
 
     @Parameter({ description: "sha", pattern: /^.*$/, required: true })

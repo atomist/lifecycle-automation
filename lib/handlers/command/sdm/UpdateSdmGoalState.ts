@@ -36,8 +36,8 @@ import {
 /**
  * Update SDM goal.
  */
-@CommandHandler("Update SDM goal", "update goal")
-@Tags("sdm goal", "update")
+@CommandHandler("Update SDM goal")
+@Tags("sdm")
 export class UpdateSdmGoalState implements HandleCommand {
 
     @Parameter({ description: "id", pattern: /^.*$/, required: true })
