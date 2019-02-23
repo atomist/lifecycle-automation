@@ -40,7 +40,7 @@ import { supportLink } from "../../../util/messages";
 
 export const LifecyclePreferencesName = "lifecycle_preferences";
 
-@CommandHandler("Toggle the enablement of the custom lifecycle emojis", "toggle lifecycle emojis")
+@CommandHandler("Toggle the enablement of the custom lifecycle emojis")
 @Tags("slack", "emoji")
 export class ToggleCustomEmojiEnablement implements HandleCommand {
 

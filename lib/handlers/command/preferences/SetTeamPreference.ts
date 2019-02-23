@@ -36,7 +36,7 @@ import * as graphql from "../../../typings/types";
 /**
  * Merge preference for the invoking user.
  */
-@CommandHandler("Merge preference for the team", "set team preference")
+@CommandHandler("Merge preference for the team")
 @Tags("preferences", "set")
 export class SetTeamPreference implements HandleCommand {
 

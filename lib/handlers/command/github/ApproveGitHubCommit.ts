@@ -34,7 +34,7 @@ import * as github from "./gitHubApi";
  * Approve GitHub status on commit.
  */
 @CommandHandler("Approve GitHub status on commit", "approve commit", "approve github commit")
-@Tags("fingerprint", "approve")
+@Tags("fingerprint")
 export class ApproveGitHubCommit implements HandleCommand {
 
     @MappedParameter(MappedParameters.GitHubRepository)
