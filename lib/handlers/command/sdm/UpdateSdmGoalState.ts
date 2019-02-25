@@ -107,7 +107,7 @@ export class UpdateSdmGoalState implements HandleCommand {
         delete goal.id;
 
         if (!!this.gsc) {
-            await signGoal(goal, this.gsc);
+            await signGoal(goal as any, this.gsc);
         }
 
         return ctx.messageClient.send(goal, addressEvent("SdmGoal"));
