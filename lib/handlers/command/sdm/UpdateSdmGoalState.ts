@@ -24,9 +24,12 @@ import {
     Parameter,
     QueryNoCacheOptions,
     Tags,
+    Value,
 } from "@atomist/automation-client";
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { GoalSigningConfiguration } from "@atomist/sdm";
+import { signGoal } from "@atomist/sdm-core/lib/internal/signing/goalSigning";
 import * as _ from "lodash";
 import {
     SdmGoalById,
@@ -57,6 +60,9 @@ export class UpdateSdmGoalState implements HandleCommand {
 
     @MappedParameter(MappedParameters.SlackChannel, false)
     public channel: string;
+
+    @Value({ path: "sdm.goalSigning", required: false })
+    public gsc: GoalSigningConfiguration;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
 
@@ -99,6 +105,10 @@ export class UpdateSdmGoalState implements HandleCommand {
         goal.ts = Date.now();
         goal.version = (goal.version || 0) + 1;
         delete goal.id;
+
+        if (!!this.gsc) {
+            await signGoal(goal, this.gsc);
+        }
 
         return ctx.messageClient.send(goal, addressEvent("SdmGoal"));
     }
