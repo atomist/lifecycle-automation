@@ -237,7 +237,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
     private renderCommitMessage(commitNode: graphql.PushFields.Commits, push: any,
                                 repo: any): string {
         // Cut commit to 50 chars of first line
-        let m = truncateCommitMessage(commitNode.message, repo);
+        const m = truncateCommitMessage(commitNode.message, repo);
         return "`" + url(commitUrl(repo, commitNode), commitNode.sha.substring(0, 7)) + "` " + m;
     }
 }
