@@ -150,10 +150,6 @@ fragment PushFields on Push {
         login
       }
     }
-    impact {
-      data
-      url
-    }
     apps {
       state
       host

@@ -183,10 +183,8 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             .forEach(cgba => {
                 const a = cgba.author;
 
-                // TODO this should use reduce here
                 const message = cgba.commits.map(c => {
-                    const [m, fp] = this.renderCommitMessage(c, push, repo);
-                    return m;
+                    return this.renderCommitMessage(c, push, repo);
                 }).join("\n");
 
                 const fallback = `${cgba.commits.length} ${(cgba.commits.length > 1 ? "commits" : "commit")}` +
@@ -237,116 +235,10 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
     }
 
     private renderCommitMessage(commitNode: graphql.PushFields.Commits, push: any,
-                                repo: any): [string, boolean] {
+                                repo: any): string {
         // Cut commit to 50 chars of first line
         let m = truncateCommitMessage(commitNode.message, repo);
-        let foundFingerprints = false;
-        // Verify that fingerprints aren't displayed for the first commit after the "initial commit"
-        if ((push.before != null && push.before.message !== "Initial commit" || push.before == null)
-            && (commitNode as any).impact != null) {
-
-            const impact = (commitNode as any).impact;
-            // [[["plugins",0],["rest",1],["deps",0]]]
-            const data = JSON.parse(impact.data);
-
-            if (data != null) {
-                if (this.style === "fingerprint-multi-line") {
-                    const changedFingerprints: string[] = [];
-                    data.forEach(i => i.filter(f => f[1] > 0).forEach(f => {
-                        if (changedFingerprints.indexOf(f[0]) < 0) {
-                            m = `${m}${this.renderFingerprintMessageMultiLine(f[0], impact)}`;
-                            foundFingerprints = true;
-                        }
-                    }));
-                } else if (this.style === "fingerprint-inline") {
-                    const fm = [];
-                    data.filter(i => i.filter(f => f[1] > 0).length > 0).forEach(i => {
-                        const fpv = [];
-                        // Filter the relevant fingerprints and map to their group names
-                        i.filter(f => this.renderUnchangedFingerprints
-                            || (!this.renderUnchangedFingerprints && f[1] === 1))
-                            .map(f => [this.getGroup(f[0]), f[1]]).forEach(f => {
-                            const fpvf = fpv.filter(fp => fp[0] === f[0]);
-                            if (fpvf.length > 0) {
-                                fpvf.forEach(fp => fp[1] += f[1]);
-                            } else {
-                                fpv.push(f);
-                            }
-                        });
-
-                        const max = fpv.reduce((a, b) => (a[0].length > b[0].length ? a : b))[0].length;
-                        fpv.sort((f1, f2) => f1[0].localeCompare(f2[0])).forEach(f => {
-                            // tslint:disable-next-line:max-line-length
-                            fm.push(`${(f[1] > 0 ? EMOJI_SCHEME[this.emojiStyle].impact[this.getFingerprintLevel(f[0])]
-                                : EMOJI_SCHEME[this.emojiStyle].impact.noChange)} ${this.pad(max, f[0], " ")}`);
-                        });
-                    });
-
-                    // box drawing light vertical: \u2502
-                    // box drawings light up and right: \u2514
-                    // box drawings light vertical and right: \u251c
-                    if (fm.length > 6) {
-                        const groups = this.groups(fm, 5);
-                        for (let i = 0; i < groups.length; i++) {
-                            if (i < groups.length - 1) {
-                                m += "\n\u251c " + groups[i].join(" \t ");
-                            } else {
-                                m += "\n\u2514 " + groups[i].join(" \t ");
-                            }
-                        }
-                    } else if (fm.length > 0) {
-                        m += "\n\u2514 " + fm.join(" \t ");
-                    }
-
-                    if (fm.length > 0) {
-                        foundFingerprints = true;
-                    }
-                }
-            }
-        }
-        return ["`" + url(commitUrl(repo, commitNode), commitNode.sha.substring(0, 7)) + "` " + m, foundFingerprints];
-    }
-
-    private renderFingerprintMessageMultiLine(fingerprint: string, impact: graphql.PushFields.Impact): string {
-        return `\n┗ ${EMOJI_SCHEME[this.emojiStyle].impact[this.getFingerprintLevel(fingerprint)]}`
-            + ` ${this.getFingerprintDescription(fingerprint)} ${url(impact.url, "more...")}`;
-    }
-
-    private getFingerprintDescription(fingerprint: string): string {
-        if (this.fingerprints[fingerprint] != null) {
-            return this.fingerprints[fingerprint].description;
-        } else {
-            return `Fingerprint ${fingerprint} changed`;
-        }
-    }
-
-    private getFingerprintLevel(fingerprint: string): string {
-        if (this.fingerprints[fingerprint] != null) {
-            return this.fingerprints[fingerprint].level;
-        } else {
-            return "warning";
-        }
-    }
-
-    private getGroup(fingerprint: string): string {
-        if (this.fingerprints[fingerprint] != null && this.fingerprints[fingerprint].group != null) {
-            return this.fingerprints[fingerprint].group;
-        } else {
-            return fingerprint;
-        }
-    }
-
-    private groups(msgs: string[], size: number = 5) {
-        const sets = [];
-        const chunks = msgs.length / size;
-        for (let i = 0, j = 0; i < chunks; i++ , j += size) {
-            sets[i] = msgs.slice(j, j + size);
-        }
-        return sets;
-    }
-
-    private pad(width: number, str: string, padding: string) {
-        return (width <= str.length) ? str : this.pad(width, str + padding, padding);
+        return "`" + url(commitUrl(repo, commitNode), commitNode.sha.substring(0, 7)) + "` " + m;
     }
 }
 
