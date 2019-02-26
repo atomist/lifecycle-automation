@@ -132,7 +132,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                 ] : [
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                 ],
-                id: createId(push),
+                id:  `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
                 timestamp: Date.now().toString(),
                 channels: [{
                     name: "atomist:dashboard",
