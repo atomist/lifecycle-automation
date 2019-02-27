@@ -504,7 +504,7 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
 
         buttons.push(buttonForCommand(
             {
-                text: `${label} '${goal.name}'`,
+                text: `${label} _${goal.name}_`,
                 role: "global",
             },
             handler));
