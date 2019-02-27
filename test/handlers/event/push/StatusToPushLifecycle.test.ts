@@ -1114,8 +1114,8 @@ describe("StatusToPushLifecycle", () => {
                 assert(sm.attachments.length === 7);
                 assert(sm.attachments[1].author_name === "Goals");
                 assert(sm.attachments[3].actions.length === 2);
-                assert(sm.attachments[3].actions[0].text === "Restart 'build'");
-                assert(sm.attachments[3].actions[1].text === "Approve 'deploy to prod'");
+                assert(sm.attachments[3].actions[0].text === "Restart _build_");
+                assert(sm.attachments[3].actions[1].text === "Approve _deploy to prod_");
                 messageSent = true;
                 return Promise.resolve();
             }
