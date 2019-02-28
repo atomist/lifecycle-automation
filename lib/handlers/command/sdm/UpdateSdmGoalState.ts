@@ -84,7 +84,6 @@ export class UpdateSdmGoalState implements HandleCommand {
             return Success;
         }
 
-
         const goal = _.cloneDeep(goalResult.SdmGoal[0]);
         const actx = ctx as any as AutomationContextAware;
 
