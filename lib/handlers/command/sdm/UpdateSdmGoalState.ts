@@ -23,12 +23,16 @@ import {
     MappedParameters,
     Parameter,
     QueryNoCacheOptions,
+    Success,
     Tags,
     Value,
 } from "@atomist/automation-client";
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
-import { GoalSigningConfiguration } from "@atomist/sdm";
+import {
+    GoalSigningConfiguration,
+    slackErrorMessage,
+} from "@atomist/sdm";
 import { signGoal } from "@atomist/sdm-core/lib/internal/signing/goalSigning";
 import * as _ from "lodash";
 import {
@@ -73,6 +77,13 @@ export class UpdateSdmGoalState implements HandleCommand {
             },
             options: QueryNoCacheOptions,
         });
+
+        if (!goalResult || !goalResult.SdmGoal[0]) {
+            await ctx.messageClient.respond(
+                slackErrorMessage(`Update Goal State`, "Provided goal does not exist", ctx));
+            return Success;
+        }
+
 
         const goal = _.cloneDeep(goalResult.SdmGoal[0]);
         const actx = ctx as any as AutomationContextAware;
