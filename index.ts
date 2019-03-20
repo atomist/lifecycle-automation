@@ -15,7 +15,7 @@
  */
 
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
-import { configureLogzio } from "@atomist/automation-client-ext-logzio";
+import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
 import { GraphQL } from "@atomist/automation-client/index";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
@@ -340,7 +340,7 @@ export const configuration: any = {
     postProcessors: [
         configureDashboardNotifications,
         configureRaven,
-        configureLogzio,
+        configureHumio,
     ],
     ws: {
         timeout: 60000,
