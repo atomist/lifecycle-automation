@@ -18,7 +18,6 @@ import * as _ from "lodash";
 import * as toposort from "toposort";
 import { GoalSet } from "../handlers/event/push/PushLifecycle";
 import {
-    PushFields,
     SdmGoalsByCommit,
 } from "../typings/types";
 
