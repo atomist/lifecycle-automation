@@ -18,6 +18,7 @@ import { configureDashboardNotifications } from "@atomist/automation-client-ext-
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
 import { GraphQL } from "@atomist/automation-client/index";
+import { configureSdm } from "@atomist/sdm-core";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
 import { ApproveGitHubCommit } from "./lib/handlers/command/github/ApproveGitHubCommit";
 import { AssignGitHubPullRequestReviewer } from "./lib/handlers/command/github/AssignGitHubPullRequestReviewer";
@@ -102,10 +103,6 @@ import {
 import { NotifyMentionedOnIssue } from "./lib/handlers/event/issue/NotifyMentionedOnIssue";
 import { DeploymentOnK8Pod } from "./lib/handlers/event/k8container/DeploymentOnK8Pod";
 import { RepositoryOnboarded } from "./lib/handlers/event/onboarded/RepositoryOnboarded";
-import { AutoMergeOnBuild } from "./lib/handlers/event/pullrequest/AutoMergeOnBuild";
-import { AutoMergeOnPullRequest } from "./lib/handlers/event/pullrequest/AutoMergeOnPullRequest";
-import { AutoMergeOnReview } from "./lib/handlers/event/pullrequest/AutoMergeOnReview";
-import { AutoMergeOnStatus } from "./lib/handlers/event/pullrequest/AutoMergeOnStatus";
 import {
     BranchToPullRequestCardLifecycle,
     BranchToPullRequestLifecycle,
@@ -176,6 +173,7 @@ import {
     TagToPushLifecycle,
 } from "./lib/handlers/event/push/TagToPushLifecycle";
 import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOnReview";
+import { machine } from "./lib/machine/machine";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 
@@ -277,10 +275,10 @@ export const configuration: any = {
         () => new RepositoryOnboarded(),
 
         // pullRequest
-        () => new AutoMergeOnBuild(),
-        () => new AutoMergeOnPullRequest(),
-        () => new AutoMergeOnReview(),
-        () => new AutoMergeOnStatus(),
+        // () => new AutoMergeOnBuild(),
+        // () => new AutoMergeOnPullRequest(),
+        // () => new AutoMergeOnReview(),
+        // () => new AutoMergeOnStatus(),
         () => new BranchToPullRequestLifecycle(),
         () => new CommentToPullRequestLifecycle(),
         () => new CommitToPullRequestLifecycle(),
@@ -341,6 +339,7 @@ export const configuration: any = {
         configureDashboardNotifications,
         configureRaven,
         configureHumio,
+        configureSdm(machine),
     ],
     ws: {
         timeout: 60000,
