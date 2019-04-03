@@ -184,7 +184,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         msg.attachments.push({
             title: "Compact Goal Rendering Format",
             fallback: "Configure Goal Rendering Format",
-            text: `Render SDM Goals more compact.`,
+            text: `Render SDM Goals more compact`,
             actions: [
                 buttonForCommand(
                     {

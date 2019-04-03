@@ -535,7 +535,7 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const push = context.lifecycle.extract("push") as PushFields.Fragment;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
-        const displayFormat = _.get(push, "goalsDisplayState[0].format") || SdmGoalDisplayFormat.full;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.goalStyle;
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
 
         if (context.rendererId === "goals") {
