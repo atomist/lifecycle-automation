@@ -291,6 +291,24 @@ export const LifecycleRendererPreferences = {
             description: "Render an updating chart of a Circle CI Workflow",
             enabled: false,
         },
+        tag: {
+            id: "tags",
+            name: "Tag and Releases",
+            description: "Render Git tags and GitHub Releases",
+            enabled: true,
+        },
+        application: {
+            id: "application",
+            name: "Application Services",
+            description: "Render information about running application service instances",
+            enabled: true,
+        },
+        container: {
+            id: "container",
+            name: "Application Containers",
+            description: "Render information about running application containers",
+            enabled: true,
+        },
     },
 
     comment: {

@@ -444,7 +444,7 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.K8PodToPushLifecycle.Pushes> {
 
     constructor() {
-        super("k8pod");
+        super("container");
     }
 
     public supports(node: any): boolean {
