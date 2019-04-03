@@ -417,13 +417,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             } else {
                 const inProcessCount = lastGoals.filter(s => s.state !== SdmGoalState.planned).length;
                 const totalCount = lastGoals.length;
+                const p = this.progress({ value: inProcessCount, length: 10, vmax: totalCount });
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
+
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
                 if (creator) {
                     attachment.footer =
-                        `${creator.registration}:${creator.version} | ${url(link, gsid.slice(0, 7))} | ${gl}`;
+                        `${creator.registration}:${creator.version} | ${codeLine(p)} ${url(link, gl)}`;
                 } else {
-                    attachment.footer = `${url(link, gsid.slice(0, 7))} | ${gl}`;
+                    attachment.footer = `${codeLine(p)} ${url(link, gl)}`;
                 }
             }
         }
@@ -457,6 +459,29 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             default:
                 return EMOJI_SCHEME[this.emojiStyle].build.failed;
         }
+    }
+
+    private progress({
+                         value,
+                         length = 40,
+                         vmin = 0.0,
+                         vmax = 1.0,
+                         progressive = false,
+                     }) {
+        // Block progression is 1/8
+        const blocks = ["", "▏", "▎", "▍", "▋", "▊", "▉"];
+        const lsep = "";
+        const rsep = "";
+
+        // Normalize value
+        const normalized_value = (Math.min(Math.max(value, vmin), vmax) - vmin) / Number(vmax - vmin);
+        const v = normalized_value * length;
+        const x = Math.floor(v); // integer part
+        const y = v - x;         // fractional part
+        const i = Math.round(y * 8);
+        const bar = Array(x).fill("▉").join("") + blocks[i];
+        const remaining = Array(length - bar.length).fill(" ").join("");
+        return `${lsep}${bar}${!progressive ? remaining : ""}${rsep}`;
     }
 }
 
