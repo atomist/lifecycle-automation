@@ -294,7 +294,7 @@ export const LifecycleRendererPreferences = {
         tag: {
             id: "tag",
             name: "Tag and Releases",
-            description: "Render Git tags and GitHub Releases",
+            description: "Render Git tags and GitHub releases",
             enabled: true,
         },
         application: {
