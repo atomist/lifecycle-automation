@@ -474,7 +474,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const v = normalized_value * length;
         const x = Math.floor(v); // integer part
         const y = v - x;         // fractional part
-        const i = Math.round(y * 7);
+        const i = Math.round(y * 6);
         const bar = Array(x).fill("▉").join("") + blocks[i];
         const remaining = Array(length - bar.length).fill(" ").join("");
         return `${lsep}${bar}${!progressive ? remaining : ""}${rsep}`;
