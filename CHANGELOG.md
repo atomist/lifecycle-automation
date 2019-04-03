@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.12...HEAD)
 
+### Added
+
+-   Add configuration support for more push renderers. [f6f8609](https://github.com/atomist/lifecycle-automation/commit/f6f8609e36968d92256219325d7a33b82933181c)
+
 ## [0.12.12](https://github.com/atomist/lifecycle-automation/compare/0.12.11...0.12.12) - 2019-04-03
 
 ## [0.12.11](https://github.com/atomist/lifecycle-automation/compare/0.12.10...0.12.11) - 2019-04-03
