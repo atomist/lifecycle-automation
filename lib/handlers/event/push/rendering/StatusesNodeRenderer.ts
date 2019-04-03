@@ -415,8 +415,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     attachment.footer = `${url(link, gsid.slice(0, 7))} | ${duration}`;
                 }
             } else {
-                const inProcessCount = goalSet.goals.filter(s => s.state !== SdmGoalState.planned).length;
-                const totalCount = goalSet.goals.length;
+                const inProcessCount = lastGoals.filter(s => s.state !== SdmGoalState.planned).length;
+                const totalCount = lastGoals.length;
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
                 if (creator) {
