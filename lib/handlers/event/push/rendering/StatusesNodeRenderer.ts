@@ -417,7 +417,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             } else {
                 const inProcessCount = goalSet.goals.filter(s => s.state !== SdmGoalState.planned).length;
                 const totalCount = goalSet.goals.length;
-                const gl = `${inProcessCount} of ${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
+                const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
                 if (creator) {
                     attachment.footer =
