@@ -314,8 +314,9 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             if (lines.length === 0 && displayFormat === SdmGoalDisplayFormat.compact) {
                 const lastGoals = lastGoalSet(goalSet.goals);
+                const gsid = lastGoals[0].goalSetId;
                 const link =
-                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
+                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
                 let state: SdmGoalState;
                 let label: string;
                 if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
@@ -352,7 +353,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     state = SdmGoalState.success;
                     label = "completed";
                 }
-                lines.push(`${this.emoji(state)} ${url(link, `${codeLine(lastGoals[0].goalSetId.slice(0, 7))} ${label}`)}`);
+                lines.push(
+                    `${this.emoji(state)} ${url(link, `${codeLine(gsid.slice(0, 7))} ${label}`)}`);
             }
 
             const color =
@@ -363,8 +365,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             if (ix === 0 || nonPlanned) {
                 const attachment: Attachment = {
-                    author_name: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ? (lines.length > 1 ? "Goals" : "Goal") : undefined,
-                    author_icon: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ? "https://images.atomist.com/rug/goals.png" : undefined,
+                    author_name: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ?
+                        (lines.length > 1 ? "Goals" : "Goal") : undefined,
+                    author_icon: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ?
+                        "https://images.atomist.com/rug/goals.png" : undefined,
                     color,
                     fallback: `${sg.goals[0].goalSet} Goals`,
                     text: lines.join("\n"),
@@ -379,6 +383,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             if (displayFormat === SdmGoalDisplayFormat.full) {
                 const lastGoals = lastGoalSet(goalSet.goals);
+                const gsid = lastGoals[0].goalSetId;
                 const ts = lastGoals.map(g => g.ts);
                 const min = _.min(ts);
                 const max = _.max(ts);
@@ -390,12 +395,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
 
                 const creator = _.minBy(
-                    _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
-
+                    _.flatten<SdmGoalsByCommit.Provenance>(
+                        lastGoals.map(g => (g.provenance || []))), "ts");
 
                 attachment.ts = Math.floor(max / 1000);
                 const link =
-                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
+                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
                 if (creator) {
                     attachment.footer =
                         `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${

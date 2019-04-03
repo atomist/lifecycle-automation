@@ -69,16 +69,22 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
     @MappedParameter(MappedParameters.SlackTeam)
     public teamId: string;
 
-    @Parameter({ description: "lifecycle to configure", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "lifecycle to configure", pattern: /^.*$/,
+        required: false, displayable: false,
+    })
     public lifecycle: string;
 
-    @Parameter({ description: "id of the message to use for confirmation", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "id of the message to use for confirmation", pattern: /^.*$/,
+        required: false, displayable: false,
+    })
     public msgId: string;
 
-    @Parameter({ description: "cancel configuration", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "cancel configuration", pattern: /^.*$/,
+        required: false, displayable: false,
+    })
     public cancel: string;
 
     public async handle(ctx: HandlerContext): Promise<HandlerResult> {
@@ -108,7 +114,10 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                 })
                 .then(([preferences, emojisEnabled, compactStyleEnabled]) => {
                     return ctx.messageClient.respond(
-                        this.createMessage(preferences, emojisEnabled as any, compactStyleEnabled as any), { id: this.msgId, dashboard: false });
+                        this.createMessage(preferences, emojisEnabled as any, compactStyleEnabled as any), {
+                            id: this.msgId,
+                            dashboard: false,
+                        });
                 })
                 .then(success, failure);
         } else {
@@ -138,14 +147,18 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
                 if (!this.isLifecycleEnabled(preferences, lifecycleType.id)) {
                     channelPreferences[type] = true;
-                    actions.push(buttonForCommand({text: "Enable", style: "primary" }, "SetTeamPreference",
-                        { msgId: this.msgId, key: LifecyclePreferences.key, name: this.channelName,
-                            value: JSON.stringify(channelPreferences), label: `'${lifecycleType.name}' enabled` }));
+                    actions.push(buttonForCommand({ text: "Enable", style: "primary" }, "SetTeamPreference",
+                        {
+                            msgId: this.msgId, key: LifecyclePreferences.key, name: this.channelName,
+                            value: JSON.stringify(channelPreferences), label: `'${lifecycleType.name}' enabled`,
+                        }));
                 } else {
                     channelPreferences[type] = false;
                     actions.push(buttonForCommand({ text: "Disable", style: "danger" }, "SetTeamPreference",
-                        { msgId: this.msgId, key: LifecyclePreferences.key, name: this.channelName,
-                            value: JSON.stringify(channelPreferences), label: `'${lifecycleType.name}' disabled` }));
+                        {
+                            msgId: this.msgId, key: LifecyclePreferences.key, name: this.channelName,
+                            value: JSON.stringify(channelPreferences), label: `'${lifecycleType.name}' disabled`,
+                        }));
                 }
 
                 // Add the configure option
@@ -236,13 +249,14 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
                 if (!this.isLifecycleActionEnabled(actionPreferences, actionType.id)) {
                     _.set(channelPreferences, `${this.lifecycle}.${type}`, true);
-                    actions.push(buttonForCommand({text: "Enable Action", style: "primary" }, "SetTeamPreference",
+                    actions.push(buttonForCommand({ text: "Enable Action", style: "primary" }, "SetTeamPreference",
                         {
                             msgId: this.msgId,
                             key: LifecycleActionPreferences.key,
                             name: this.channelName,
                             value: JSON.stringify(channelPreferences),
-                            label: `'${actionType.name}' action of '${lifecycle.name}' enabled` }));
+                            label: `'${actionType.name}' action of '${lifecycle.name}' enabled`,
+                        }));
                 } else {
                     _.set(channelPreferences, `${this.lifecycle}.${type}`, false);
                     actions.push(buttonForCommand({ text: "Disable Action", style: "danger" }, "SetTeamPreference",
@@ -251,7 +265,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                             key: LifecycleActionPreferences.key,
                             name: this.channelName,
                             value: JSON.stringify(channelPreferences),
-                            label: `'${actionType.name}' action of '${lifecycle.name}' disabled` }));
+                            label: `'${actionType.name}' action of '${lifecycle.name}' disabled`,
+                        }));
                 }
 
                 const attachment: Attachment = {
@@ -280,7 +295,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                             key: LifecycleRendererPreferences.key,
                             name: this.channelName,
                             value: JSON.stringify(channelPreferences),
-                            label: `'${actionType.name}' renderer of '${lifecycle.name}' enabled` }));
+                            label: `'${actionType.name}' renderer of '${lifecycle.name}' enabled`,
+                        }));
                 } else {
                     _.set(channelPreferences, `${this.lifecycle}.${type}`, false);
                     actions.push(buttonForCommand({ text: "Disable Renderer", style: "danger" }, "SetTeamPreference",
@@ -289,7 +305,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                             key: LifecycleRendererPreferences.key,
                             name: this.channelName,
                             value: JSON.stringify(channelPreferences),
-                            label: `'${actionType.name}' renderer of '${lifecycle.name}' disabled` }));
+                            label: `'${actionType.name}' renderer of '${lifecycle.name}' disabled`,
+                        }));
                 }
 
                 const attachment: Attachment = {
@@ -348,12 +365,12 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     private loadPreferences(ctx: HandlerContext, key: string): Promise<graphql.ChatTeamPreferences.Preferences[]> {
         return ctx.graphClient.query<graphql.ChatTeamPreferences.Query, graphql.ChatTeamPreferences.Variables>({
-                name: "chatTeamPreferences",
-                variables: {
-                    teamId: this.teamId,
-                },
-                options: QueryNoCacheOptions,
-            })
+            name: "chatTeamPreferences",
+            variables: {
+                teamId: this.teamId,
+            },
+            options: QueryNoCacheOptions,
+        })
             .then(result => {
                 const preferences =
                     _.get(result, "ChatTeam[0].preferences") as graphql.ChatTeamPreferences.Preferences[];

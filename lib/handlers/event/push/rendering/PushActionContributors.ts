@@ -537,7 +537,7 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
         const displayFormat = _.get(push, "goalsDisplayState[0].format") || SdmGoalDisplayFormat.full;
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
-        
+
         if (context.rendererId === "goals") {
             if (this.goalStyle === SdmGoalDisplayFormat.compact) {
                 if (displayFormat === SdmGoalDisplayFormat.full) {

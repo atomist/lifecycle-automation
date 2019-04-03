@@ -24,7 +24,8 @@ import {
     convergeGitHub,
 } from "@atomist/sdm-pack-rcca-github";
 
-export async function machine(configuration: LocalSoftwareDeliveryMachineConfiguration): Promise<SoftwareDeliveryMachine> {
+export async function machine(configuration: LocalSoftwareDeliveryMachineConfiguration)
+    : Promise<SoftwareDeliveryMachine> {
 
     const sdm = createSoftwareDeliveryMachine({
         name: "Lifecycle Software Delivery Machine",

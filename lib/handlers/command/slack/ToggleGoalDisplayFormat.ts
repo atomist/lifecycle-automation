@@ -59,7 +59,8 @@ export class ToggleGoalDisplayFormat implements HandleCommand {
                 const preferences =
                     _.cloneDeep(preferencesState.preferences) as graphql.ChatTeamPreferences.Preferences;
 
-                const enabled: SdmGoalDisplayFormat = preferencesState.enabled ? SdmGoalDisplayFormat.full : SdmGoalDisplayFormat.compact;
+                const enabled: SdmGoalDisplayFormat = preferencesState.enabled ?
+                    SdmGoalDisplayFormat.full : SdmGoalDisplayFormat.compact;
 
                 _.set(preferences, "push.configuration['goal-style']", enabled);
 
