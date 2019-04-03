@@ -386,32 +386,43 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const attachment = attachments.slice(-1)[0];
             attachment.actions = actions;
 
+            const lastGoals = lastGoalSet(goalSet.goals);
+            const gsid = lastGoals[0].goalSetId;
+            const ts = lastGoals.map(g => g.ts);
+            const min = _.min(ts);
+            const max = _.max(ts);
+
+            const moment = require("moment");
+            // The following require is needed to initialize the format function
+            require("moment-duration-format");
+
+            const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
+
+            const creator = _.minBy(
+                _.flatten<SdmGoalsByCommit.Provenance>(
+                    lastGoals.map(g => (g.provenance || []))), "ts");
+
+            attachment.ts = Math.floor(max / 1000);
+            const link =
+                `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
+
             if (displayFormat === SdmGoalDisplayFormat.full) {
-                const lastGoals = lastGoalSet(goalSet.goals);
-                const gsid = lastGoals[0].goalSetId;
-                const ts = lastGoals.map(g => g.ts);
-                const min = _.min(ts);
-                const max = _.max(ts);
-
-                const moment = require("moment");
-                // The following require is needed to initialize the format function
-                require("moment-duration-format");
-
-                const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
-
-                const creator = _.minBy(
-                    _.flatten<SdmGoalsByCommit.Provenance>(
-                        lastGoals.map(g => (g.provenance || []))), "ts");
-
-                attachment.ts = Math.floor(max / 1000);
-                const link =
-                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
                 if (creator) {
                     attachment.footer =
                         `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
                             url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
                 } else {
-                    attachment.footer = duration;
+                    attachment.footer = `${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
+                }
+            } else {
+                const inProcessCount = goalSet.goals.filter(s => s.state !== SdmGoalState.planned).length;
+                const totalCount = goalSet.goals.length;
+                const gl = `${inProcessCount} of ${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
+                if (creator) {
+                    attachment.footer =
+                        `${creator.registration}:${creator.version} | ${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${gl}`;
+                } else {
+                    attachment.footer = `${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${gl}`;
                 }
             }
         }
