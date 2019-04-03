@@ -196,5 +196,6 @@ fragment PushFields on Push {
   }
   goalsDisplayState {
     state
+    format
   }
 }

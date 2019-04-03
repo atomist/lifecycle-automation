@@ -25,7 +25,10 @@ import {
 } from "@atomist/automation-client";
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
-import { SdmGoalDisplayState } from "../../../typings/types";
+import {
+    SdmGoalDisplayFormat,
+    SdmGoalDisplayState,
+} from "../../../typings/types";
 
 /**
  * Update SDM goal set display status.
@@ -42,6 +45,9 @@ export class UpdateSdmGoalDisplayState implements HandleCommand {
 
     @Parameter({ description: "state", pattern: /^.*$/, required: true })
     public state: SdmGoalDisplayState;
+
+    @Parameter({ description: "format", pattern: /^.*$/, required: true })
+    public format: SdmGoalDisplayFormat;
 
     @MappedParameter(MappedParameters.GitHubRepository)
     public name: string;
@@ -64,6 +70,7 @@ export class UpdateSdmGoalDisplayState implements HandleCommand {
             },
             ts: Date.now(),
             state: this.state,
+            format: this.format,
         };
 
         return ctx.messageClient.send(sdmGoalDisplay, addressEvent("SdmGoalDisplay"));

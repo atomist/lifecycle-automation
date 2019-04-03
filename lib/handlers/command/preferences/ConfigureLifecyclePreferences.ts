@@ -48,6 +48,10 @@ import {
     isCustomEmojisEnabled,
     ToggleCustomEmojiEnablement,
 } from "../slack/ToggleCustomEmojiEnablement";
+import {
+    isCompactStyleEnabled,
+    ToggleGoalDisplayFormat,
+} from "../slack/ToggleGoalDisplayFormat";
 
 /**
  * Configure DM preferences for the invoking user.
@@ -77,7 +81,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         required: false, displayable: false })
     public cancel: string;
 
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+    public async handle(ctx: HandlerContext): Promise<HandlerResult> {
 
         if (!this.msgId) {
             this.msgId = guid();
@@ -97,14 +101,14 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                 .then(success, failure);
         } else if (!this.lifecycle) {
             return this.loadPreferences(ctx, LifecyclePreferences.key)
-                .then(preferences => {
-                    return isCustomEmojisEnabled(this.teamId, ctx)
-                        .then(emojisEnabled => [preferences, emojisEnabled.enabled])
-                        .catch(err => null);
+                .then(async preferences => {
+                    const emojisEnabled = await isCustomEmojisEnabled(this.teamId, ctx);
+                    const compactStyleEnabled = await isCompactStyleEnabled(this.teamId, ctx);
+                    return [preferences, emojisEnabled.enabled, compactStyleEnabled.enabled];
                 })
-                .then(([preferences, emojisEnabled]) => {
+                .then(([preferences, emojisEnabled, compactStyleEnabled]) => {
                     return ctx.messageClient.respond(
-                        this.createMessage(preferences, emojisEnabled), { id: this.msgId, dashboard: false });
+                        this.createMessage(preferences, emojisEnabled as any, compactStyleEnabled as any), { id: this.msgId, dashboard: false });
                 })
                 .then(success, failure);
         } else {
@@ -119,7 +123,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         }
     }
 
-    private createMessage(preferences: any, emojisEnabled: boolean): SlackMessage {
+    private createMessage(preferences: any, emojisEnabled: boolean, compactGoalFormatEnabled: boolean): SlackMessage {
         const msg: SlackMessage = {
             text: `Configure Lifecycle for ${channel(this.channelId)}:`,
             attachments: [],
@@ -160,6 +164,24 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                 msg.attachments.push(configureAttachment);
             }
         }
+
+        // Add the emoji attachment
+        const goalFormatHandler = new ToggleGoalDisplayFormat();
+        goalFormatHandler.msgId = this.msgId;
+        msg.attachments.push({
+            title: "Compact Goal Rendering Format",
+            fallback: "Configure Goal Rendering Format",
+            text: `Render SDM Goals more compact.`,
+            actions: [
+                buttonForCommand(
+                    {
+                        text: `${compactGoalFormatEnabled ? "Disable" : "Enable"}`,
+                        style: compactGoalFormatEnabled ? "danger" : "primary",
+                    },
+                    goalFormatHandler),
+            ],
+            mrkdwn_in: ["text"],
+        });
 
         // Add the emoji attachment
         const emojiHandler = new ToggleCustomEmojiEnablement();

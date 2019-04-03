@@ -76,6 +76,7 @@ import { LinkRepo } from "./lib/handlers/command/slack/LinkRepo";
 import { ListRepoLinks } from "./lib/handlers/command/slack/ListRepoLinks";
 import { NoLinkRepo } from "./lib/handlers/command/slack/NoLinkRepo";
 import { ToggleCustomEmojiEnablement } from "./lib/handlers/command/slack/ToggleCustomEmojiEnablement";
+import { ToggleGoalDisplayFormat } from "./lib/handlers/command/slack/ToggleGoalDisplayFormat";
 import { UnlinkRepo } from "./lib/handlers/command/slack/UnlinkRepo";
 import { BranchToBranchLifecycle } from "./lib/handlers/event/branch/BranchToBranchLifecycle";
 import { DeletedBranchToBranchLifecycle } from "./lib/handlers/event/branch/DeletedBranchToBranchLifecycle";
@@ -233,6 +234,7 @@ export const configuration: any = {
         () => new ListRepoLinks(),
         () => new NoLinkRepo(),
         () => new ToggleCustomEmojiEnablement(),
+        () => new ToggleGoalDisplayFormat(),
         () => new UnlinkRepo(),
     ],
     events: [

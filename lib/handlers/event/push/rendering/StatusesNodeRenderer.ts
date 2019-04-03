@@ -18,6 +18,7 @@ import { logger } from "@atomist/automation-client";
 import {
     Action,
     Attachment,
+    codeLine,
     SlackMessage,
     url,
 } from "@atomist/slack-messages";
@@ -37,6 +38,7 @@ import {
 import * as graphql from "../../../../typings/types";
 import {
     PushToPushLifecycle,
+    SdmGoalDisplayFormat,
     SdmGoalDisplayState,
     SdmGoalsByCommit,
     SdmGoalState,
@@ -201,6 +203,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
     public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
+    public goalStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super("goals");
@@ -209,6 +212,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
     public configure(configuration: LifecycleConfiguration) {
         this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
+        this.goalStyle = configuration.configuration["goal-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -224,11 +228,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
-        const sortedGoals = [];
+        let sortedGoals = [];
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
         const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.goalStyle;
 
         if (displayState === SdmGoalDisplayState.show_current && goalSetIndex !== 0) {
             return Promise.resolve(msg);
@@ -238,6 +243,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             sortedGoals.push(...sortGoals((goalSet ? goalSet.goals : []) || [], goalSets));
         } catch (err) {
             logger.warn(`Goal sorting failed with error: '%s'`, err.message);
+        }
+
+        if (displayFormat === SdmGoalDisplayFormat.compact) {
+            sortedGoals = [{ goals: _.flatten(sortedGoals.map(sg => sg.goals)) }];
         }
 
         const attachments: Attachment[] = [];
@@ -257,7 +266,19 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 s => s.state !== "planned" && s.state !== "skipped" && s.state !== "canceled");
 
             // Now each one
-            const lines = statuses.map(s => {
+            const lines = statuses.filter(s => {
+                if (displayFormat === SdmGoalDisplayFormat.full) {
+                    return true;
+                } else {
+                    const np = statuses.some(g => g.state !== SdmGoalState.planned);
+                    if (s.state === SdmGoalState.planned && np) {
+                        return false;
+                    }
+                    return ![SdmGoalState.success,
+                        SdmGoalState.skipped,
+                        SdmGoalState.canceled].includes(s.state);
+                }
+            }).map(s => {
                 let details = "";
                 if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
                     s.state === SdmGoalState.stopped) && s.phase) {
@@ -291,6 +312,49 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
             });
 
+            if (lines.length === 0 && displayFormat === SdmGoalDisplayFormat.compact) {
+                const lastGoals = lastGoalSet(goalSet.goals);
+                const link =
+                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
+                let state: SdmGoalState;
+                let label: string;
+                if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
+                    state = SdmGoalState.failure;
+                    label = "failed";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+                    state = SdmGoalState.waiting_for_approval;
+                    label = "is waiting for approval";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
+                    state = SdmGoalState.approved;
+                    label = "is approved";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+                    state = SdmGoalState.waiting_for_pre_approval;
+                    label = "is waiting to be started";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
+                    state = SdmGoalState.pre_approved;
+                    label = "is started";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
+                    state = SdmGoalState.stopped;
+                    label = "is stopped";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
+                    state = SdmGoalState.canceled;
+                    label = "is canceled";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
+                    state = SdmGoalState.in_process;
+                    label = "is in process";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
+                    state = SdmGoalState.requested;
+                    label = "is requested";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
+                    state = SdmGoalState.planned;
+                    label = "is planned";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
+                    state = SdmGoalState.success;
+                    label = "completed";
+                }
+                lines.push(`${this.emoji(state)} ${url(link, `${codeLine(lastGoals[0].goalSetId.slice(0, 7))} ${label}`)}`);
+            }
+
             const color =
                 canceled ? "#9d9d9d" :
                     pending > 0 ? "#cccc00" :
@@ -299,8 +363,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             if (ix === 0 || nonPlanned) {
                 const attachment: Attachment = {
-                    author_name: ix === 0 ? (lines.length > 1 ? "Goals" : "Goal") : undefined,
-                    author_icon: ix === 0 ? "https://images.atomist.com/rug/goals.png" : undefined,
+                    author_name: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ? (lines.length > 1 ? "Goals" : "Goal") : undefined,
+                    author_icon: ix === 0 && displayFormat === SdmGoalDisplayFormat.full ? "https://images.atomist.com/rug/goals.png" : undefined,
                     color,
                     fallback: `${sg.goals[0].goalSet} Goals`,
                     text: lines.join("\n"),
@@ -310,31 +374,35 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         });
 
         if (attachments.length > 0) {
-            const lastGoals = lastGoalSet(goalSet.goals);
-            const ts = lastGoals.map(g => g.ts);
-            const min = _.min(ts);
-            const max = _.max(ts);
-
-            const moment = require("moment");
-            // The following require is needed to initialize the format function
-            require("moment-duration-format");
-
-            const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
-
-            const creator = _.minBy(
-                _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
-
             const attachment = attachments.slice(-1)[0];
             attachment.actions = actions;
-            attachment.ts = Math.floor(max / 1000);
-            const link =
-                `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
-            if (creator) {
-                attachment.footer =
-                    `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
-                        url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
-            } else {
-                attachment.footer = duration;
+
+            if (displayFormat === SdmGoalDisplayFormat.full) {
+                const lastGoals = lastGoalSet(goalSet.goals);
+                const ts = lastGoals.map(g => g.ts);
+                const min = _.min(ts);
+                const max = _.max(ts);
+
+                const moment = require("moment");
+                // The following require is needed to initialize the format function
+                require("moment-duration-format");
+
+                const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
+
+                const creator = _.minBy(
+                    _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
+
+
+                attachment.ts = Math.floor(max / 1000);
+                const link =
+                    `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${lastGoals[0].goalSetId}`;
+                if (creator) {
+                    attachment.footer =
+                        `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
+                            url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
+                } else {
+                    attachment.footer = duration;
+                }
             }
         }
 

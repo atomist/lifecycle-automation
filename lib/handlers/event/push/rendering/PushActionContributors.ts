@@ -28,12 +28,14 @@ import * as _ from "lodash";
 import * as semver from "semver";
 import {
     AbstractIdentifiableContribution,
+    LifecycleConfiguration,
     RendererContext,
     SlackActionContributor,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
 import {
     PushFields,
+    SdmGoalDisplayFormat,
     SdmGoalDisplayState,
     SdmGoalState,
 } from "../../../../typings/types";
@@ -190,9 +192,9 @@ export class TagPushActionContributor extends AbstractIdentifiableContribution
                 { Authorization: `bearer ${context.orgToken}` });
 
             return client.query<any, any>({
-                    query: RepositoryTagsQuery,
-                    variables: { owner: repo.owner, name: repo.name },
-                })
+                query: RepositoryTagsQuery,
+                variables: { owner: repo.owner, name: repo.name },
+            })
                 .then(result => {
                     const lastTag = _.get(result, "repository.refs.nodes[0].name");
                     if (lastTag && semver.valid(lastTag)) {
@@ -253,14 +255,14 @@ export class TagTagActionContributor extends AbstractIdentifiableContribution
         const version = this.versionPrefix(tag.name);
         if (version) {
             return ctx.context.graphClient.query<graphql.TagByName.Query, graphql.TagByName.Variables>({
-                    name: "tagByName",
-                    variables: {
-                        repo: repo.name,
-                        owner: repo.owner,
-                        name: version,
-                    },
-                    options: QueryNoCacheOptions,
-                })
+                name: "tagByName",
+                variables: {
+                    repo: repo.name,
+                    owner: repo.owner,
+                    name: version,
+                },
+                options: QueryNoCacheOptions,
+            })
                 .then(result => {
                     const et = _.get(result, "Tag[0].name");
                     if (!et) {
@@ -315,8 +317,8 @@ export class PullRequestActionContributor extends AbstractIdentifiableContributi
             const push = node as graphql.PushToPushLifecycle.Push;
             return push.branch !== (push.repo.defaultBranch || "master")
                 && push.branch !== "gh-pages";
-                // && (!push.builds || !push.builds.some(b => b.status !== "passed")
-                // && (!push.goals || !lastGoalSet(push.goals || []).some(g => g.state !== SdmGoalState.success)));
+            // && (!push.builds || !push.builds.some(b => b.status !== "passed")
+            // && (!push.goals || !lastGoalSet(push.goals || []).some(g => g.state !== SdmGoalState.success)));
         } else {
             return false;
         }
@@ -327,14 +329,14 @@ export class PullRequestActionContributor extends AbstractIdentifiableContributi
             const repo = ctx.lifecycle.extract("repo");
 
             return ctx.context.graphClient.query<graphql.Branch.Query, graphql.Branch.Variables>({
-                    name: "branch",
-                    variables: {
-                        repo: repo.name,
-                        owner: repo.owner,
-                        branch: node.branch,
-                    },
-                    options: QueryNoCacheOptions,
-                })
+                name: "branch",
+                variables: {
+                    repo: repo.name,
+                    owner: repo.owner,
+                    branch: node.branch,
+                },
+                options: QueryNoCacheOptions,
+            })
                 .then(result => {
                     let showButton = true;
                     const buttons = [];
@@ -514,8 +516,14 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
 export class DisplayGoalActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<GoalSet> {
 
+    public goalStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super(LifecycleActionPreferences.push.display_goals.id);
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.goalStyle = configuration.configuration["goal-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -527,23 +535,48 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const push = context.lifecycle.extract("push") as PushFields.Fragment;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || SdmGoalDisplayFormat.full;
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
+        
+        if (context.rendererId === "goals") {
+            if (this.goalStyle === SdmGoalDisplayFormat.compact) {
+                if (displayFormat === SdmGoalDisplayFormat.full) {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.compact,
+                        `-`,
+                        push,
+                        buttons);
+                } else {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.full,
+                        `+`,
+                        push,
+                        buttons);
+                }
+            }
 
-        if (context.rendererId === "goals" && goalSets.length > 1) {
-            const count = goalSets.length - 1;
-            if (displayState === SdmGoalDisplayState.show_current) {
-                // Show more button
-                this.createButton(
-                    SdmGoalDisplayState.show_all,
-                    `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C5`,
-                    push,
-                    buttons);
-            } else if (goalSetIndex === goalSets.length - 1) {
-                // Show hide button
-                this.createButton(SdmGoalDisplayState.show_current,
-                    `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C4`,
-                    push,
-                    buttons);
+            if (goalSets.length > 1) {
+                const count = goalSets.length - 1;
+
+                if (displayState === SdmGoalDisplayState.show_current) {
+                    // Show more button
+                    this.createButton(
+                        SdmGoalDisplayState.show_all,
+                        displayFormat,
+                        `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C5`,
+                        push,
+                        buttons);
+                } else if (goalSetIndex === goalSets.length - 1) {
+                    // Show hide button
+                    this.createButton(
+                        SdmGoalDisplayState.show_current,
+                        displayFormat,
+                        `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C4`,
+                        push,
+                        buttons);
+                }
             }
         }
 
@@ -555,12 +588,14 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
     }
 
     private createButton(state: SdmGoalDisplayState,
+                         format: SdmGoalDisplayFormat,
                          label: string,
                          push: PushFields.Fragment,
                          buttons: any[]) {
 
         const handler = new UpdateSdmGoalDisplayState();
         handler.state = state;
+        handler.format = format;
         handler.owner = push.repo.owner;
         handler.name = push.repo.name;
         handler.providerId = push.repo.org.provider.providerId;
