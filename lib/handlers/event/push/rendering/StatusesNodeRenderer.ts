@@ -410,19 +410,20 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 if (creator) {
                     attachment.footer =
                         `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
-                            url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
+                            url(link, gsid.slice(0, 7))} | ${duration}`;
                 } else {
-                    attachment.footer = `${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${duration}`;
+                    attachment.footer = `${url(link, gsid.slice(0, 7))} | ${duration}`;
                 }
             } else {
                 const inProcessCount = goalSet.goals.filter(s => s.state !== SdmGoalState.planned).length;
                 const totalCount = goalSet.goals.length;
                 const gl = `${inProcessCount} of ${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
+                attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
                 if (creator) {
                     attachment.footer =
-                        `${creator.registration}:${creator.version} | ${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${gl}`;
+                        `${creator.registration}:${creator.version} | ${url(link, gsid.slice(0, 7))} | ${gl}`;
                 } else {
-                    attachment.footer = `${url(link, lastGoals[0].goalSetId.slice(0, 7))} | ${gl}`;
+                    attachment.footer = `${url(link, gsid.slice(0, 7))} | ${gl}`;
                 }
             }
         }
