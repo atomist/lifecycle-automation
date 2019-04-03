@@ -421,12 +421,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
-                if (creator) {
-                    attachment.footer =
-                        `${creator.registration}:${creator.version} | ${codeLine(p)} ${url(link, gl)}`;
-                } else {
-                    attachment.footer = `${codeLine(p)} ${url(link, gl)}`;
-                }
+                attachment.footer = `${codeLine(p)} | ${gl} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
             }
         }
 
