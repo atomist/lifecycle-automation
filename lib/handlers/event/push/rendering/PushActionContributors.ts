@@ -544,14 +544,14 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
                     this.createButton(
                         displayState,
                         SdmGoalDisplayFormat.compact,
-                        `-`,
+                        `...`,
                         push,
                         buttons);
                 } else {
                     this.createButton(
                         displayState,
                         SdmGoalDisplayFormat.full,
-                        `+`,
+                        `...`,
                         push,
                         buttons);
                 }
