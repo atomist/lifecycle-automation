@@ -19,6 +19,7 @@ import {
     Action,
     Attachment,
     codeLine,
+    italic,
     SlackMessage,
     url,
 } from "@atomist/slack-messages";
@@ -315,6 +316,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             if (lines.length === 0 && displayFormat === SdmGoalDisplayFormat.compact) {
                 const lastGoals = lastGoalSet(goalSet.goals);
                 const gsid = lastGoals[0].goalSetId;
+                let gs = lastGoals[0].goalSet;
+                if (gs.length > 20) {
+                    gs = gs.slice(0, 20) + "...";
+                }
                 const link =
                     `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
                 let state: SdmGoalState;
@@ -348,13 +353,13 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     label = "is requested";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
                     state = SdmGoalState.planned;
-                    label = "is planned";
+                    label = "is being planned";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
                     state = SdmGoalState.success;
                     label = "completed";
                 }
                 lines.push(
-                    `${this.emoji(state)} ${url(link, `${codeLine(gsid.slice(0, 7))} ${label}`)}`);
+                    `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${codeLine(gsid.slice(0, 7))} ${label}`)}`);
             }
 
             const color =
