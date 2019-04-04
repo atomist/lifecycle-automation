@@ -473,7 +473,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const y = v - x;         // fractional part
         const i = Math.round(y * 6);
         const bar = Array(x).fill("▉").join("") + blocks[i];
-        const remaining = Array(length - bar.length).fill(" ").join("");
+        const remaining = Array(length - bar.length).fill("-").join("");
         return `${bar}${remaining}`;
     }
 }
