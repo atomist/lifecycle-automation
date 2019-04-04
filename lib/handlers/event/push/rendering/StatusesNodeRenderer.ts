@@ -423,8 +423,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
-                attachment.footer =
-                    `${codeLine(p)} | ${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
+                if (inProcessCount > 0) {
+                    attachment.footer =
+                        `${codeLine(p)} | ${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
+                } else {
+                    attachment.footer = `${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
+                }
             }
         }
 
@@ -473,7 +477,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const y = v - x;         // fractional part
         const i = Math.round(y * 6);
         const bar = Array(x).fill("▉").join("") + blocks[i];
-        const remaining = Array(length - bar.length).fill("-").join("");
+        const remaining = Array(length - bar.length).fill(" ").join("");
         return `${bar}${remaining}`;
     }
 }
