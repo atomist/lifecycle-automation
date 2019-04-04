@@ -416,7 +416,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
             } else {
                 const inProcessCount = lastGoals.filter(
-                    s => s.state === SdmGoalState.success || s.state === SdmGoalState.waiting_for_approval ||
+                    s => s.state === SdmGoalState.success ||
                         s.state === SdmGoalState.approved || s.state === SdmGoalState.stopped).length;
                 const totalCount = lastGoals.length;
                 const p = this.progress({ value: inProcessCount, length: 10, vmax: totalCount });
