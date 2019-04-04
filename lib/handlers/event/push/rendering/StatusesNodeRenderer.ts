@@ -317,8 +317,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 const lastGoals = lastGoalSet(goalSet.goals);
                 const gsid = lastGoals[0].goalSetId;
                 let gs = lastGoals[0].goalSet;
-                if (gs.length > 20) {
-                    gs = gs.slice(0, 20) + "...";
+                if (gs.length > 40) {
+                    gs = gs.slice(0, 40) + "...";
                 }
                 const link =
                     `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${gsid}`;
