@@ -415,7 +415,9 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     attachment.footer = `${url(link, gsid.slice(0, 7))} | ${duration}`;
                 }
             } else {
-                const inProcessCount = lastGoals.filter(s => s.state !== SdmGoalState.planned).length;
+                const inProcessCount = lastGoals.filter(
+                    s => s.state === SdmGoalState.success || s.state === SdmGoalState.waiting_for_approval ||
+                        s.state === SdmGoalState.approved).length;
                 const totalCount = lastGoals.length;
                 const p = this.progress({ value: inProcessCount, length: 10, vmax: totalCount });
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
@@ -462,14 +464,9 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                          length = 40,
                          vmin = 0.0,
                          vmax = 1.0,
-                         progressive = false,
                      }) {
-        // Block progression is 1/8
         const blocks = ["", "▏", "▎", "▍", "▋", "▊", "▉"];
-        const lsep = "";
-        const rsep = "";
 
-        // Normalize value
         const normalized_value = (Math.min(Math.max(value, vmin), vmax) - vmin) / Number(vmax - vmin);
         const v = normalized_value * length;
         const x = Math.floor(v); // integer part
@@ -477,7 +474,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const i = Math.round(y * 6);
         const bar = Array(x).fill("▉").join("") + blocks[i];
         const remaining = Array(length - bar.length).fill(" ").join("");
-        return `${lsep}${bar}${!progressive ? remaining : ""}${rsep}`;
+        return `${bar}${remaining}`;
     }
 }
 
