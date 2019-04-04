@@ -419,16 +419,37 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     s => s.state === SdmGoalState.success ||
                         s.state === SdmGoalState.approved || s.state === SdmGoalState.stopped).length;
                 const totalCount = lastGoals.length;
-                const p = this.progress({ value: inProcessCount, length: 10, vmax: totalCount });
                 const gl = `${inProcessCount}/${totalCount} ${totalCount > 1 ? "goals" : "goal"}`;
+                let state;
+                if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
+                    state = SdmGoalState.failure;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
+                    state = SdmGoalState.success;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
+                    state = SdmGoalState.canceled;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
+                    state = SdmGoalState.success;
+                }
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
-                if (inProcessCount > 0) {
-                    attachment.footer =
-                        `${codeLine(p)} | ${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
-                } else {
-                    attachment.footer = `${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
-                }
+                attachment.footer =
+                    `${gl} | ${lastGoals[0].goalSet} | ${url(link, gsid.slice(0, 7))} | ${duration}`;
+                attachment.thumb_url =
+                    `https://badge.atomist.com/progress/${state}/${(inProcessCount / totalCount).toFixed(2)}`;
             }
         }
 
@@ -461,24 +482,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             default:
                 return EMOJI_SCHEME[this.emojiStyle].build.failed;
         }
-    }
-
-    private progress({
-                         value,
-                         length = 40,
-                         vmin = 0.0,
-                         vmax = 1.0,
-                     }) {
-        const blocks = ["", "▏", "▎", "▍", "▋", "▊", "▉"];
-
-        const normalized_value = (Math.min(Math.max(value, vmin), vmax) - vmin) / Number(vmax - vmin);
-        const v = normalized_value * length;
-        const x = Math.floor(v); // integer part
-        const y = v - x;         // fractional part
-        const i = Math.round(y * 6);
-        const bar = Array(x).fill("▉").join("") + blocks[i];
-        const remaining = Array(length - bar.length).fill(" ").join("");
-        return `${bar}${remaining}`;
     }
 }
 
