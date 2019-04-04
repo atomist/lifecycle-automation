@@ -309,6 +309,18 @@ export const LifecycleRendererPreferences = {
             description: "Render information about running application containers",
             enabled: true,
         },
+        issue: {
+            id: "issue",
+            name: "Referenced Issues",
+            description: "Render referenced issues",
+            enabled: true,
+        },
+        pullrequest: {
+            id: "pullrequest",
+            name: "Referenced Pull Request",
+            description: "Render referenced pull requests",
+            enabled: true,
+        }
     },
 
     comment: {
