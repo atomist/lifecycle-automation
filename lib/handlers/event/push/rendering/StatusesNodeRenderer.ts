@@ -423,6 +423,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 let state;
                 if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
                     state = SdmGoalState.failure;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
+                    state = SdmGoalState.in_process;
+                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
+                    state = SdmGoalState.requested;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
                     state = SdmGoalState.waiting_for_approval;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
@@ -435,10 +439,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     state = SdmGoalState.stopped;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
                     state = SdmGoalState.canceled;
-                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
-                    state = SdmGoalState.in_process;
-                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
-                    state = SdmGoalState.requested;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
                     state = SdmGoalState.planned;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
