@@ -364,7 +364,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             const color =
                 canceled ? "#9d9d9d" :
-                    pending > 0 ? "#cccc00" :
+                    pending > 0 ? "#D0BB3A" :
                         error > 0 ? "#D94649" :
                             "#45B254";
 
@@ -424,23 +424,23 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
                     state = SdmGoalState.failure;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.waiting_for_approval;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.approved;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.waiting_for_pre_approval;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.pre_approved;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
-                    state = SdmGoalState.success;
+                    state = SdmGoalState.stopped;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
                     state = SdmGoalState.canceled;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
                     state = SdmGoalState.in_process;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.requested;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
-                    state = SdmGoalState.in_process;
+                    state = SdmGoalState.planned;
                 } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
                     state = SdmGoalState.success;
                 }
