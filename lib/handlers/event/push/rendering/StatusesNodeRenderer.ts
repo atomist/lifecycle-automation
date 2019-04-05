@@ -313,8 +313,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
             });
 
+            const lastGoals = lastGoalSet(goalSet.goals);
             if (lines.length === 0 && displayFormat === SdmGoalDisplayFormat.compact) {
-                const lastGoals = lastGoalSet(goalSet.goals);
                 const gsid = lastGoals[0].goalSetId;
                 let gs = lastGoals[0].goalSet;
                 if (gs.length > 40) {
@@ -362,11 +362,38 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${codeLine(gsid.slice(0, 7))} ${label}`)}`);
             }
 
-            const color =
-                canceled ? "#9d9d9d" :
-                    pending > 0 ? "#D0BB3A" :
-                        error > 0 ? "#D94649" :
-                            "#45B254";
+            let color;
+            if (displayFormat === SdmGoalDisplayFormat.full) {
+                color =
+                    canceled ? "#9d9d9d" :
+                        pending > 0 ? "#D0BB3A" :
+                            error > 0 ? "#D94649" :
+                                "#45B254";
+            } else {
+                if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
+                    color = "#D94649";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+                    color = "#45B254";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
+                    color = "#45B254";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
+                    color = "#9d9d9d";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
+                    color = "#45B254";
+                }
+            }
 
             if (ix === 0 || nonPlanned) {
                 const attachment: Attachment = {
