@@ -539,24 +539,6 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
 
         if (context.rendererId === "goals") {
-            if (this.goalStyle === SdmGoalDisplayFormat.compact && goalSetIndex === goalSets.length - 1) {
-                if (displayFormat === SdmGoalDisplayFormat.full) {
-                    this.createButton(
-                        displayState,
-                        SdmGoalDisplayFormat.compact,
-                        `\u02C4`,
-                        push,
-                        buttons);
-                } else {
-                    this.createButton(
-                        displayState,
-                        SdmGoalDisplayFormat.full,
-                        `\u02C5`,
-                        push,
-                        buttons);
-                }
-            }
-
             if (goalSets.length > 1) {
                 const count = goalSets.length - 1;
 
@@ -574,6 +556,23 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
                         SdmGoalDisplayState.show_current,
                         displayFormat,
                         `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C4`,
+                        push,
+                        buttons);
+                }
+            }
+            if (this.goalStyle === SdmGoalDisplayFormat.compact && goalSetIndex === goalSets.length - 1) {
+                if (displayFormat === SdmGoalDisplayFormat.full) {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.compact,
+                        `\u02C4`,
+                        push,
+                        buttons);
+                } else {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.full,
+                        `\u02C5`,
                         push,
                         buttons);
                 }
