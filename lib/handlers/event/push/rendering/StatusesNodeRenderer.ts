@@ -372,6 +372,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             } else {
                 if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
                     color = "#D94649";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
+                    color = "#D0BB3A";
+                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
+                    color = "#D0BB3A";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
                     color = "#45B254";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
@@ -384,10 +388,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     color = "#D0BB3A";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
                     color = "#9d9d9d";
-                } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
-                    color = "#D0BB3A";
-                } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
-                    color = "#D0BB3A";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
                     color = "#D0BB3A";
                 } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
