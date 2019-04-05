@@ -539,7 +539,7 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
 
         if (context.rendererId === "goals") {
-            if (this.goalStyle === SdmGoalDisplayFormat.compact) {
+            if (this.goalStyle === SdmGoalDisplayFormat.compact && goalSetIndex === goalSets.length - 1) {
                 if (displayFormat === SdmGoalDisplayFormat.full) {
                     this.createButton(
                         displayState,
