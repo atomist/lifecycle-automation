@@ -17,10 +17,7 @@
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
-import {
-    Configuration,
-    GraphQL,
-} from "@atomist/automation-client";
+import { GraphQL } from "@atomist/automation-client";
 import { configureSdm } from "@atomist/sdm-core";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
 import { ApproveGitHubCommit } from "./lib/handlers/command/github/ApproveGitHubCommit";
@@ -181,7 +178,7 @@ import { machine } from "./lib/machine/machine";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 
-export const configuration: Configuration = {
+export const configuration: any = {
     commands: [
         // github
         () => new AddGitHubPullRequestAutoMergeLabels(),
