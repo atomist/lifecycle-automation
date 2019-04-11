@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.26...HEAD)
 
+### Changed
+
+-   Render new push lifecycle when command adds goals. [f0e2589](https://github.com/atomist/lifecycle-automation/commit/f0e2589d0447c5f3362a30c98b682a69f9f8715a)
+
 ## [0.12.26](https://github.com/atomist/lifecycle-automation/compare/0.12.25...0.12.26) - 2019-04-09
 
 ## [0.12.25](https://github.com/atomist/lifecycle-automation/compare/0.12.24...0.12.25) - 2019-04-08
