@@ -193,6 +193,12 @@ fragment PushFields on Push {
       uniqueName
     }
     ts
+    provenance {
+      name
+      registration
+      version
+
+    }
   }
   goalsDisplayState {
     state

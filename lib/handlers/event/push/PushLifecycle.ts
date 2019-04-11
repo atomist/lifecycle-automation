@@ -368,8 +368,12 @@ function matches(pattern: string, target: string): boolean {
 
 function createId(push: graphql.PushToPushLifecycle.Push): string {
     const id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
-    if (push.goalSets && push.goalSets.length > 1) {
-        return `${id}/${push.goalSets.length}`;
+    if (!!push.goalSets) {
+        if (push.goalSets.length > 1) {
+            return `${id}/${push.goalSets.length}`;
+        } else if (push.goalSets.length === 1 && push.goalSets[0].provenance.name !== "SetGoalsOnPush") {
+            return `${id}/${push.goalSets.length}`;
+        }
     }
     return id;
 }
