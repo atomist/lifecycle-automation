@@ -20,8 +20,8 @@ import {
     LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
 import {
-    autoMerge,
-    convergeGitHub,
+    githubAutoMergeSupport,
+    githubConvergeSupport,
 } from "@atomist/sdm-pack-rcca-github";
 
 export async function machine(configuration: LocalSoftwareDeliveryMachineConfiguration)
@@ -33,8 +33,8 @@ export async function machine(configuration: LocalSoftwareDeliveryMachineConfigu
     });
 
     sdm.addExtensionPacks(
-        autoMerge(),
-        convergeGitHub({
+        githubAutoMergeSupport(),
+        githubConvergeSupport({
             events: { repoGenerated: true },
         }));
 
