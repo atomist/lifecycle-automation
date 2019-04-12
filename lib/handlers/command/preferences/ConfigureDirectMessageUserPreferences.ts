@@ -74,7 +74,7 @@ export class ConfigureDirectMessageUserPreferences implements HandleCommand {
                     author_name: "Configuration",
                     title: "Direct Message",
                     fallback: "Configuration",
-                    color: "#45B254",
+                    color: "#37A745",
                 }],
             };
             return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false })

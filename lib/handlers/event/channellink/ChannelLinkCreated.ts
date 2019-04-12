@@ -75,7 +75,7 @@ repository here. To turn this off, type ${codeLine("@atomist repos")} and click 
                 author_name: "Channel Linked",
                 text: linkMsg,
                 fallback: linkMsg,
-                color: "#45B254",
+                color: "#37A745",
                 mrkdwn_in: ["text"],
                 actions: [
                     createListRepoLinksAction(msgId),

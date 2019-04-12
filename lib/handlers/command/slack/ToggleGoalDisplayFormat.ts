@@ -86,7 +86,7 @@ export class ToggleGoalDisplayFormat implements HandleCommand {
                         author_name: "Successfully updated your preferences",
                         text,
                         fallback: text,
-                        color: "#45B254",
+                        color: "#37A745",
                         mrkdwn_in: [ "text" ],
                     }],
                 };

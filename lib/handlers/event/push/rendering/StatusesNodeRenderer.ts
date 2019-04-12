@@ -364,7 +364,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
             let color;
             if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
-                color = "#D94649";
+                color = "#BC3D33";
             } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
                 color = "#2A7D7D";
             } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {

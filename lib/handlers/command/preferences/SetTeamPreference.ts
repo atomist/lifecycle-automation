@@ -141,7 +141,7 @@ export class SetTeamPreference implements HandleCommand {
                         author_name: "Successfully updated your preferences",
                         fallback: "Successfully updated your preferences",
                         title: this.label ? this.label : undefined,
-                        color: "#45B254",
+                        color: "#37A745",
                     }],
                 };
                 return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false });

@@ -107,7 +107,7 @@ export class ListRepoLinks implements HandleCommand {
                             text,
                             fallback: text,
                             mrkdwn_in: ["text"],
-                            color: "#ffcc00",
+                            color: "#B5B5B5",
                         }],
                     };
 

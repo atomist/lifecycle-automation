@@ -145,7 +145,7 @@ export class SetUserPreference implements HandleCommand {
                         author_name: "Successfully updated your preferences",
                         fallback: "Successfully updated your preferences",
                         title: this.label ? this.label : undefined,
-                        color: "#45B254",
+                        color: "#37A745",
                         actions: [
                             buttonForCommand({ text: "Configure DMs" }, "ConfigureDirectMessageUserPreferences",
                                 { id: this.id }),

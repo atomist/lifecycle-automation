@@ -100,7 +100,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                     author_name: "Configuration",
                     title: "Lifecycle",
                     fallback: "Configuration",
-                    color: "#45B254",
+                    color: "#37A745",
                 }],
             };
             return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false })
