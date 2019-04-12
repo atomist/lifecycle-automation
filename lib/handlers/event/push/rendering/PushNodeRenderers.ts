@@ -196,7 +196,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                     author_icon: avatarUrl(repo, a, cgba.avatar),
                     text: message,
                     mrkdwn_in: ["text"],
-                    color: "#00a5ff",
+                    color: "#20344A",
                     fallback,
                     actions: [],
                 };
@@ -210,7 +210,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                 author_link: branchUrl(repo, push.branch),
                 author_name: "Show more...",
                 mrkdwn_in: ["text"],
-                color: "#00a5ff",
+                color: "#20344A",
                 fallback: `Show more...`,
                 actions: [],
             };
@@ -281,7 +281,7 @@ export function renderDecorator(build: graphql.PushFields.Builds,
     // For now we only render the last build as decorator
     builds = builds.sort((b1, b2) => b2.timestamp.localeCompare(b1.timestamp));
     if (builds[0].buildId !== build.buildId) {
-        return [message, "#00a5ff"];
+        return [message, "#20344A"];
     }
 
     let color;
@@ -323,10 +323,10 @@ export function renderDecorator(build: graphql.PushFields.Builds,
             // Colorize the push to indicate something might be wrong for builds
             return [message, color];
         } else {
-            return [message, "#00a5ff"];
+            return [message, "#20344a"];
         }
     }
-    return [message, "#00a5ff"];
+    return [message, "#20344A"];
 }
 
 export class TagNodeRenderer extends AbstractIdentifiableContribution

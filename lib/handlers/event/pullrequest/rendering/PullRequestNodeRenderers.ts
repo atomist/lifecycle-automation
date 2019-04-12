@@ -167,7 +167,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         commitsGroupedByAuthor
             .forEach(cgba => {
                 const a = cgba.author;
-                let color = "#00a5ff";
+                let color = "#20344A";
                 const message = cgba.commits.map(c => {
                     const [m, cl] = this.renderCommitMessage(pr, c, repo);
                     if (cl) {
