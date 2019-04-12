@@ -79,11 +79,11 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
             msg.text = `${url(userUrl(repo, pr.author.login),
                 `@${pr.author.login}`)} wants to merge ${commitText} from ${url(branchUrl(repo, branchName),
                 branchName)} to ${url(branchUrl(repo, baseBranchName), baseBranchName)}`;
-            color = "#6FC44C";
+            color = "#37A745";
             ts = pr.createdAt;
         } else if (state === "closed") {
             msg.text = "Closed pull request";
-            color = "#BD2C00";
+            color = "#BC3D33";
             ts = pr.mergedAt;
         } else if (state === "merged") {
             msg.text = `${url(userUrl(repo, pr.merger.login),
@@ -247,15 +247,15 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
 
             if (pending > 0) {
                 author_icon = `https://images.atomist.com/rug/pulsating-circle.gif?${guid()}`;
-                color = "#cccc00";
+                color = "#2A7D7D";
                 message = "Some checks haven't completed yet";
             } else if (error > 0) {
                 author_icon = "https://images.atomist.com/rug/error-circle.png";
-                color = "#D94649";
+                color = "#BC3D33";
                 message = "Some checks were not successful";
             } else {
                 author_icon = "https://images.atomist.com/rug/check-circle.png";
-                color = "#45B254";
+                color = "#37A745";
                 message = "All checks have passed";
             }
 
@@ -275,7 +275,7 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
                 author_name: "No checks",
                 author_link: prUrl(repo, pr),
                 author_icon: "https://images.atomist.com/rug/check-circle.png",
-                color: "#45B254",
+                color: "#37A745",
                 fallback: "No checks",
                 actions,
             };
@@ -326,15 +326,15 @@ export class ReviewNodeRenderer extends AbstractIdentifiableContribution
 
         if (pending > 0) {
             author_icon = `https://images.atomist.com/rug/pulsating-circle.gif?${guid()}`;
-            color = "#cccc00";
+            color = "#2A7D7D";
             message = "Some reviews are pending";
         } else if (changesRequested > 0) {
             author_icon = "https://images.atomist.com/rug/error-circle.png";
-            color = "#D94649";
+            color = "#BC3D33";
             message = "Some reviews requested changes";
         } else {
             author_icon = "https://images.atomist.com/rug/check-circle.png";
-            color = "#45B254";
+            color = "#37A745";
             message = "All reviews were approved";
         }
 
@@ -420,13 +420,13 @@ export class BuildNodeRenderer extends AbstractIdentifiableContribution
         let color;
         if (build.status === "passed") {
             icon = "https://images.atomist.com/rug/check-circle.png";
-            color = "#45B254";
+            color = "#37A745";
         } else if (build.status === "started") {
             icon = `https://images.atomist.com/rug/pulsating-circle.gif?${guid()}`;
-            color = "#cccc00";
+            color = "#2A7D7D";
         } else {
             icon = "https://images.atomist.com/rug/cross-circle.png";
-            color = "#D94649";
+            color = "#BC3D33";
         }
 
         const attachment: Attachment = {

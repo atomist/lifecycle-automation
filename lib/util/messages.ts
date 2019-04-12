@@ -32,7 +32,7 @@ export function success(title: string, text: string, actions?: Action[]): SlackM
             author_name: title,
             text,
             fallback: text,
-            color: "#45B254",
+            color: "#37A745",
             mrkdwn_in: [ "text" ],
             actions,
         }],

@@ -90,10 +90,10 @@ export class ReviewDetailNodeRenderer extends AbstractIdentifiableContribution
         let title;
         if (review.state === "approved") {
             title = "Approved";
-            color = "#45B254";
+            color = "#37A745";
         } else if (review.state === "changes_requested") {
             title = "Changes requested";
-            color = "#D94649";
+            color = "#BC3D33";
         } else {
             title = _.upperFirst(review.state);
             // color = "#cccc00";

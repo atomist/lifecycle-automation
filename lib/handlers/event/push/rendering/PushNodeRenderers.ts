@@ -86,15 +86,15 @@ export const EMOJI_SCHEME = {
             error: slackEmoji("atomist_impact_error_line"),
         },
         build: {
-            started: slackEmoji("atomist_build_started"),
-            failed: slackEmoji("atomist_build_failed"),
-            passed: slackEmoji("atomist_build_passed"),
-            approval: slackEmoji("atomist_build_approval"),
-            preapproval: slackEmoji("atomist_build_preapproval"),
-            requested: slackEmoji("atomist_build_requested"),
-            skipped: slackEmoji("atomist_build_skipped"),
-            canceled: slackEmoji("atomist_build_canceled"),
-            stopped: slackEmoji("atomist_build_stopped"),
+            started: slackEmoji("atomist_sdm_started"),
+            failed: slackEmoji("atomist_sdm_failed"),
+            passed: slackEmoji("atomist_sdm_passed"),
+            approval: slackEmoji("atomist_sdm_approval"),
+            preapproval: slackEmoji("atomist_sdm_preapproval"),
+            requested: slackEmoji("atomist_sdm_requested"),
+            skipped: slackEmoji("atomist_sdm_skipped"),
+            canceled: slackEmoji("atomist_sdm_canceled"),
+            stopped: slackEmoji("atomist_sdm_stopped"),
         },
     },
 };
@@ -287,16 +287,16 @@ export function renderDecorator(build: graphql.PushFields.Builds,
     let color;
     let emoji;
     if (build.status === "passed") {
-        color = "#45B254";
+        color = "#37A745";
         emoji = EMOJI_SCHEME[emojiStyle].build.passed;
     } else if (build.status === "started") {
-        color = "#cccc00";
+        color = "#2A7D7D";
         emoji = EMOJI_SCHEME[emojiStyle].build.started;
     } else if (build.status === "canceled") {
-        color = "#45B254";
+        color = "#37A745";
         emoji = EMOJI_SCHEME[emojiStyle].build.skipped;
     } else {
-        color = "#D94649";
+        color = "#BC3D33";
         emoji = EMOJI_SCHEME[emojiStyle].build.failed;
     }
 

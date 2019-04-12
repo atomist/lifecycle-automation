@@ -58,7 +58,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
 
         const title = `${bold(url(issueUrl(repo, node), `#${node.number.toString()}: ${node.title}`))}`;
         if (node.state === "open") {
-            color = "#6cc644";
+            color = "#37A745";
             footer_icon = "https://images.atomist.com/rug/issue-open.png";
             if (node.createdAt === node.updatedAt) {
                 pretext = `New issue ${title}`;
@@ -68,7 +68,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                 fallback = `Updated issue #${node.number.toString()}: ${node.title}`;
             }
         } else if (node.state === "closed") {
-            color = "#bd2c00";
+            color = "#BC3D33";
             footer_icon = "https://images.atomist.com/rug/issue-closed.png";
             if (node.closedAt === node.updatedAt) {
                 if (node.closedBy != null && node.closedBy.login != null) {

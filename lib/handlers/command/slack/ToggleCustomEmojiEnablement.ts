@@ -80,7 +80,7 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
                 /* tslint:disable */
-                const instructions = `Please download the ${url("https://images.atomist.com/atomist-emojis-2.0.1.zip", 
+                const instructions = `Please download the ${url("https://images.atomist.com/atomist-emojis-3.0.0.zip", 
                     "emoji archive")}, open the ${codeLine("README.md")} and follow the instructions to install the custom emojis into this Slack team.`;
                 const text = `${bold(`'Custom Lifecycle Emojis' ${enabled ? "enabled" : "disabled"}`)}`;
 
