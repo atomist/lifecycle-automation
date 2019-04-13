@@ -504,9 +504,11 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
         handler.state = state;
         (handler as any).__atomist_github_owner = goal.repo.owner;
 
+        const name = goal.name.replace(/`/g, "");
+
         buttons.push(buttonForCommand(
             {
-                text: `${label} _${goal.name}_`,
+                text: `${label} _${name}_`,
                 role: "global",
             },
             handler));
