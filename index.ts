@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
+import { GraphQL } from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
-import { GraphQL } from "@atomist/automation-client";
 import { configureSdm } from "@atomist/sdm-core";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
 import { ApproveGitHubCommit } from "./lib/handlers/command/github/ApproveGitHubCommit";
@@ -348,5 +348,5 @@ export const configuration: any = {
     },
     cluster: {
         maxConcurrentPerWorker: 5,
-    }
+    },
 };

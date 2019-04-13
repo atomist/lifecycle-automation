@@ -320,7 +320,7 @@ export const LifecycleRendererPreferences = {
             name: "Referenced Pull Request",
             description: "Render referenced pull requests",
             enabled: true,
-        }
+        },
     },
 
     comment: {

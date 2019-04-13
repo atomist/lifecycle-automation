@@ -132,7 +132,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                 ] : [
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                 ],
-                id:  `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
+                id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
                 timestamp: Date.now().toString(),
                 channels: [{
                     name: "atomist:dashboard",
@@ -211,7 +211,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new DisplayGoalActionContributor(),
                 ] : [
                     new ApproveGoalActionContributor(),
-                    new DisplayGoalActionContributor()
+                    new DisplayGoalActionContributor(),
                 ],
                 id: createId(push),
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),

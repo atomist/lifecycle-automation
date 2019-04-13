@@ -359,7 +359,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     label = "completed";
                 }
                 lines.push(
-                    `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${codeLine(gsid.slice(0, 7))} ${label}`)}`);
+                    `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${
+                        codeLine(gsid.slice(0, 7))} ${label}`)}`);
             }
 
             let color;

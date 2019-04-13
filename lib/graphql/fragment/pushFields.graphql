@@ -197,7 +197,6 @@ fragment PushFields on Push {
       name
       registration
       version
-
     }
   }
   goalsDisplayState {
