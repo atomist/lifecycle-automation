@@ -211,6 +211,7 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new DisplayGoalActionContributor(),
                 ] : [
                     new ApproveGoalActionContributor(),
+                    new DisplayGoalActionContributor()
                 ],
                 id: createId(push),
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),
