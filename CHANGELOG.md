@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.36...HEAD)
 
+### Changed
+
+-   Update Atomist emojis instructions. [#275](https://github.com/atomist/lifecycle-automation/issues/275)
+
 ## [0.12.36](https://github.com/atomist/lifecycle-automation/compare/0.12.35...0.12.36) - 2019-04-16
 
 ## [0.12.35](https://github.com/atomist/lifecycle-automation/compare/0.12.34...0.12.35) - 2019-04-16
