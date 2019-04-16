@@ -225,7 +225,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             const lastAttachment = attachments[attachments.length - 1];
             lastAttachment.actions = actions;
             lastAttachment.footer_icon = commitIcon(repo);
-            if (lastAttachment.footer != null) {
+            if (!!lastAttachment.footer) {
                 lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} \u00B7 ${lastAttachment.footer}`;
             } else {
                 lastAttachment.footer = url(repoUrl(repo), repoSlug(repo));
@@ -233,6 +233,11 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             lastAttachment.ts = Math.floor(Date.parse(push.timestamp) / 1000);
         }
 
+        let present = 0;
+        if (context.has("attachment_count")) {
+            present = context.get("attachment_count");
+        }
+        context.set("attachment_count", present + attachments.length);
         msg.attachments = msg.attachments.concat(attachments);
 
         return Promise.resolve(msg);
@@ -338,15 +343,12 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 
     public emojiStyle: "default" | "atomist";
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("tag");
     }
 
     public configure(configuration: LifecycleConfiguration) {
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -355,10 +357,6 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 
     public render(tag: graphql.PushFields.Tags, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
-
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
 
         const repo = context.lifecycle.extract("repo");
         const push = context.lifecycle.extract("push");
@@ -400,14 +398,8 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 export class ApplicationNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<Domain> {
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("application");
-    }
-
-    public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -416,10 +408,6 @@ export class ApplicationNodeRenderer extends AbstractIdentifiableContribution
 
     public render(domain: Domain, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
-
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
 
         const domains = context.lifecycle.extract("domains") as Domain[];
         const running = domain.apps.filter(a => a.state === "started" || a.state === "healthy").length;
@@ -465,14 +453,8 @@ interface Environment {
 export class K8PodNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.K8PodToPushLifecycle.Pushes> {
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("container");
-    }
-
-    public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -481,10 +463,6 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
 
     public render(push: graphql.K8PodToPushLifecycle.Pushes, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
-
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
 
         const images = push.after.images;
         let isInitialEnv = true;
@@ -542,14 +520,8 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
 export class IssueNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("issue");
-    }
-
-    public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -561,15 +533,11 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
-
         const repo = context.lifecycle.extract("repo");
         const issues = [];
 
         // Process directly connected issues
-        push.commits.filter(c => c.resolves != null).forEach(c => c.resolves.forEach(i => {
+        push.commits.filter(c => c.resolves != undefined).forEach(c => c.resolves.forEach(i => {
             const key = `${repo.owner}/${repo.name}#${i.number}`;
             if (issues.indexOf(key) < 0 && i.title && i.state) {
                 // tslint:disable-next-line:variable-name
@@ -630,14 +598,8 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
 export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("pullrequest");
-    }
-
-    public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -646,10 +608,6 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
 
     public render(node: graphql.PushToPushLifecycle.Push, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
-
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
 
         const repo = context.lifecycle.extract("repo") as graphql.PushFields.Repo;
 
@@ -695,14 +653,8 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
 export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
-    private renderingStyle: SdmGoalDisplayFormat;
-
     constructor() {
         super("blackduck");
-    }
-
-    public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -711,10 +663,6 @@ export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContri
 
     public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
-
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
 
         const riskProfileFingerprint = push.after.fingerprints.find(f => f.name === "BlackDuckRiskProfile");
         if (riskProfileFingerprint) {
@@ -763,6 +711,17 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
     public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            if (context.has("attachment_count")) {
+                const count = context.get("attachment_count");
+                if (msg.attachments.length === count) {
+                    return msg;
+                } else {
+                    msg.attachments = msg.attachments.slice(0, count);
+                }
+            }
+        }
+
         const lastAttachment = msg.attachments.slice(-1)[0];
         if (!!lastAttachment.actions) {
             lastAttachment.actions = [...lastAttachment.actions, ...actions];
@@ -770,7 +729,7 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
             lastAttachment.actions = actions;
         }
 
-        return Promise.resolve(msg);
+        return msg;
     }
 }
 

@@ -51,7 +51,6 @@ import {
 import { GoalSet } from "../PushLifecycle";
 import {
     EMOJI_SCHEME,
-    isFullRenderingEnabled,
 } from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
@@ -59,7 +58,6 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
     public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
-    private renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super("statuses");
@@ -68,7 +66,6 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     public configure(configuration: LifecycleConfiguration) {
         this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -84,10 +81,6 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
 
-        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
-            return Promise.resolve(msg);
-        }
-
         // List all the statuses on the after commit
         const commit = push.after;
         // exclude build statuses already displayed
@@ -102,7 +95,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
         // Now each one
         const lines = statuses.sort((s1, s2) => s1.context.localeCompare(s2.context)).map(s => {
-            if (s.targetUrl != null && s.targetUrl.length > 0) {
+            if (s.targetUrl != undefined && s.targetUrl.length > 0) {
                 return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
                 return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.context}`;
@@ -184,7 +177,7 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
             }
 
             let text;
-            if (s.targetUrl != null && s.targetUrl.length > 0) {
+            if (s.targetUrl != undefined && s.targetUrl.length > 0) {
                 text = `${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
                 text = `${s.description} \u00B7 ${s.context}`;
@@ -305,7 +298,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         details += ` \u00B7 approved by @${s.approval.userId}`;
                     }
                 }
-                if (s.url != null && s.url.length > 0) {
+                if (s.url != undefined && s.url.length > 0) {
                     return `${this.emoji(s.state)} ${url(s.url, s.description)}${details}`;
                 } else {
                     return `${this.emoji(s.state)} ${s.description}${details}`;
@@ -448,6 +441,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
             }
         }
+
+        let present = 0;
+        if (context.has("attachment_count")) {
+            present = context.get("attachment_count");
+        }
+        context.set("attachment_count", present + attachments.length);
 
         msg.attachments.push(...attachments);
 
@@ -628,19 +627,19 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
 }
 
 function notAlreadyDisplayed(push: any, status: any): boolean {
-    if (status.context.includes("travis-ci") && push.builds != null &&
+    if (status.context.includes("travis-ci") && push.builds != undefined &&
         push.builds.some(b => b.provider === "travis")) {
         return false;
     }
-    if (status.context.includes("circleci") && push.builds != null &&
+    if (status.context.includes("circleci") && push.builds != undefined &&
         push.builds.some(b => b.provider === "circle")) {
         return false;
     }
-    if (status.context.includes("jenkins") && push.builds != null &&
+    if (status.context.includes("jenkins") && push.builds != undefined &&
         push.builds.some(b => b.provider === "jenkins")) {
         return false;
     }
-    if (status.context.includes("codeship") && push.builds != null &&
+    if (status.context.includes("codeship") && push.builds != undefined &&
         push.builds.some(b => b.provider.includes("codeship"))) {
         return false;
     }
