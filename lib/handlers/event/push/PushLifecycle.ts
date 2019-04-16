@@ -193,8 +193,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                 renderers: [
                     new PushNodeRenderer(),
                     new CommitNodeRenderer(),
-                    new StatusesNodeRenderer(),
                     new GoalSetNodeRenderer(),
+                    new StatusesNodeRenderer(),
                     new WorkflowNodeRenderer(),
                     new IssueNodeRenderer(),
                     new PullRequestNodeRenderer(),
