@@ -49,13 +49,17 @@ import {
     sortGoals,
 } from "../../../../util/goals";
 import { GoalSet } from "../PushLifecycle";
-import { EMOJI_SCHEME } from "./PushNodeRenderers";
+import {
+    EMOJI_SCHEME,
+    isFullRenderingEnabled,
+} from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
     public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
+    private renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super("statuses");
@@ -64,6 +68,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     public configure(configuration: LifecycleConfiguration) {
         this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -78,6 +83,10 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   actions: Action[],
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
 
         // List all the statuses on the after commit
         const commit = push.after;
