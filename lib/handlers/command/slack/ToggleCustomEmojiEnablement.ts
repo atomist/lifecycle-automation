@@ -30,6 +30,7 @@ import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
     bold,
+    codeBlock,
     codeLine,
     SlackMessage,
     url,
@@ -44,8 +45,11 @@ export const LifecyclePreferencesName = "lifecycle_preferences";
 @Tags("slack", "emoji")
 export class ToggleCustomEmojiEnablement implements HandleCommand {
 
-    @Parameter({ description: "id of the message to use for confirmation", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "id of the message to use for confirmation", pattern: /^.*$/,
+        required: false,
+        displayable: false,
+    })
     public msgId: string;
 
     @MappedParameter(MappedParameters.SlackTeam, false)
@@ -68,44 +72,52 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
 
                 return ctx.graphClient.mutate<graphql.SetChatTeamPreference.Mutation,
                     graphql.SetChatTeamPreference.Variables>({
-                    name: "setChatTeamPreference",
-                    variables: {
-                        teamId: this.teamId,
-                        name: LifecyclePreferencesName,
-                        value: JSON.stringify(preferences),
-                    },
-                })
-                .then(() => preferencesState);
+                        name: "setChatTeamPreference",
+                        variables: {
+                            teamId: this.teamId,
+                            name: LifecyclePreferencesName,
+                            value: JSON.stringify(preferences),
+                        },
+                    })
+                    .then(() => preferencesState);
             })
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
-                /* tslint:disable */
-                const instructions = `Please download the ${url("https://images.atomist.com/atomist-emojis-3.0.1.zip", 
-                    "emoji archive")}, open the ${codeLine("README.md")} and follow the instructions to install the custom emojis into this Slack team.`;
-                const text = `${bold(`'Custom Lifecycle Emojis' ${enabled ? "enabled" : "disabled"}`)}`;
+                const fallback = `'Custom Lifecycle Emojis' ${enabled ? "enabled" : "disabled"}`;
+                const text = bold(fallback);
 
                 const msg: SlackMessage = {
                     attachments: [{
                         author_icon: `https://images.atomist.com/rug/check-circle.gif?gif=${guid()}`,
                         author_name: "Successfully updated your preferences",
                         text,
-                        fallback: text,
+                        fallback,
                         color: "#37A745",
-                        mrkdwn_in: [ "text" ],
+                        mrkdwn_in: ["text"],
                     }],
                 };
 
                 if (enabled) {
+                    const subdomain = preferencesState.domain;
+                    const baseUrl = "https://static.atomist.com";
+                    const scriptUrl = `${baseUrl}/atomist-emojis.bash`;
+                    const zipUrl = `${baseUrl}/atomist-emojis-latest.zip`;
+                    const emojiUrl = `https://${subdomain}.slack.com/customize/emoji`;
+                    const emojiHelpUrl = "https://get.slack.help/hc/en-us/articles/206870177-Create-custom-emoji";
+                    const instructions = "You can add the Atomist emojis to your Slack workspace with the command:\n" +
+                        codeBlock(`bash <(curl -sL ${scriptUrl}) ${subdomain} SLACK_TOKEN`) + "\nFollow these " +
+                        url("https://github.com/jackellenberger/emojme#finding-a-slack-token", "instructions to get your Slack token") +
+                        `. Or download the ${url(zipUrl, "Atomist emojis archive")} and add them using the ` +
+                        url(emojiUrl, "Slack web interface") + ".";
+                    const instructionsFallback = `You can add the Atomist emojis your Slack workspace with the command 'bash ` +
+                        `<(curl -sL ${scriptUrl}) ${subdomain} SLACK_TOKEN'. Or download them from ${zipUrl} and add using ${emojiUrl}.`;
                     msg.attachments.push({
                         text: instructions,
-                        fallback: instructions,
-                        footer: `${url(`https://${preferencesState.domain}.slack.com/customize/emoji`, 
-                            "Slack Emoji Configuration")} \u00B7 ${url("https://get.slack.help/hc/en-us/articles/206870177-Create-custom-emoji", 
-                            "Slack Emoji Help")} \u00B7 ${supportLink(ctx)}`,
-                        mrkdwn_in: [ "text" ]
+                        fallback: instructionsFallback,
+                        footer: [url(emojiHelpUrl, "Slack Emoji Help"), supportLink(ctx)].join(" \u00B7 "),
+                        mrkdwn_in: ["text"],
                     });
                 }
-                /* tslint:enable */
                 return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false });
             })
             .then(success, failure);
@@ -113,7 +125,7 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
 }
 
 export function isCustomEmojisEnabled(teamId: string, ctx: HandlerContext)
-: Promise<{preferences: graphql.ChatTeamPreferences.Preferences, enabled: boolean, domain: string}> {
+    : Promise<{ preferences: graphql.ChatTeamPreferences.Preferences, enabled: boolean, domain: string }> {
     return ctx.graphClient.query<graphql.ChatTeamPreferences.Query,
         graphql.ChatTeamPreferences.Variables>({
             name: "chatTeamPreferences",
