@@ -202,23 +202,21 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
 export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<GoalSet> {
 
-    public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
-    public goalStyle: SdmGoalDisplayFormat;
+    public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super("goals");
     }
 
     public configure(configuration: LifecycleConfiguration) {
-        this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
-        this.goalStyle = configuration.configuration["goal-style"] || SdmGoalDisplayFormat.full;
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
         if (node.goals && node.goalSetId) {
-            return this.showOnPush;
+            return true;
         } else {
             return false;
         }
@@ -234,7 +232,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
         const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
-        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.goalStyle;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.renderingStyle;
 
         if (displayState === SdmGoalDisplayState.show_current && goalSetIndex !== 0) {
             return Promise.resolve(msg);
@@ -254,15 +252,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         sortedGoals.filter(sg => sg.goals && sg.goals.length > 0).forEach((sg, ix) => {
             const statuses = sg.goals;
 
-            // "planned" | "requested" | "in_process" | "waiting_for_approval" | "success" | "failure" | "skipped";
-            const pending = statuses.filter(s =>
-                ["planned", "requested", "in_process", "waiting_for_pre_approval",
-                    "pre_approved"].includes(s.state)).length;
-            const success = statuses.filter(s =>
-                ["success", "skipped", "canceled", "stopped", "waiting_for_approval",
-                    "approved"].includes(s.state)).length;
-            const canceled = statuses.some(s => s.state === "canceled");
-            const error = statuses.length - pending - success;
             const nonPlanned = statuses.some(
                 s => s.state !== "planned" && s.state !== "skipped" && s.state !== "canceled");
 
@@ -468,8 +457,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 attachment.footer =
                     `${creator.registration} | ${lastGoals[0].goalSet} | ${
                         url(link, gsid.slice(0, 7))} | ${duration}`;
-                attachment.thumb_url =
-                    `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;
+                if (this.emojiStyle === "atomist") {
+                    attachment.thumb_url =
+                        `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;
+                }
             }
         }
 

@@ -19,6 +19,7 @@ import {
     Attachment,
     SlackMessage,
 } from "@atomist/slack-messages";
+import { SdmGoalDisplayFormat } from "../../typings/types";
 import {
     extractLinkedIssues,
     issueUrl,
@@ -27,6 +28,7 @@ import {
 } from "../../util/helpers";
 import {
     AbstractIdentifiableContribution,
+    LifecycleConfiguration,
     RendererContext,
     SlackNodeRenderer,
 } from "../Lifecycle";
@@ -34,12 +36,18 @@ import {
 export class ReferencedIssuesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<any> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("referencedissues");
     }
 
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
+    }
+
     public supports(node: any): boolean {
-        return node.body || node.commits;
+        return (node.body || node.commits) && this.renderingStyle === SdmGoalDisplayFormat.full;
     }
 
     public async render(node: any, actions: Action[], msg: SlackMessage, context: RendererContext):

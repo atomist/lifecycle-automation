@@ -37,7 +37,11 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
-import { CommitIssueRelationshipBySha } from "../../../../typings/types";
+import {
+    CommitIssueRelationshipBySha,
+    PushToPushLifecycle,
+    SdmGoalDisplayFormat,
+} from "../../../../typings/types";
 import {
     avatarUrl,
     branchUrl,
@@ -334,12 +338,15 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 
     public emojiStyle: "default" | "atomist";
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("tag");
     }
 
     public configure(configuration: LifecycleConfiguration) {
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -348,6 +355,11 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 
     public render(tag: graphql.PushFields.Tags, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const repo = context.lifecycle.extract("repo");
         const push = context.lifecycle.extract("push");
 
@@ -388,8 +400,14 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
 export class ApplicationNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<Domain> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("application");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -398,6 +416,10 @@ export class ApplicationNodeRenderer extends AbstractIdentifiableContribution
 
     public render(domain: Domain, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
 
         const domains = context.lifecycle.extract("domains") as Domain[];
         const running = domain.apps.filter(a => a.state === "started" || a.state === "healthy").length;
@@ -443,8 +465,14 @@ interface Environment {
 export class K8PodNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.K8PodToPushLifecycle.Pushes> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("container");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -453,6 +481,11 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
 
     public render(push: graphql.K8PodToPushLifecycle.Pushes, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const images = push.after.images;
         let isInitialEnv = true;
         images.forEach(image => {
@@ -509,8 +542,14 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
 export class IssueNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("issue");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -521,6 +560,11 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                         actions: Action[],
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const repo = context.lifecycle.extract("repo");
         const issues = [];
 
@@ -542,8 +586,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
         }));
 
         // Load commit->issue relationships
-        const result = await context.context.graphClient.query<
-            CommitIssueRelationshipBySha.Query, CommitIssueRelationshipBySha.Variables>({
+        const result = await context.context.graphClient.query<CommitIssueRelationshipBySha.Query, CommitIssueRelationshipBySha.Variables>({
             name: "commitIssueRelationshipBySha",
             variables: {
                 owner: [push.repo.owner],
@@ -587,8 +630,14 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
 export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("pullrequest");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -597,6 +646,11 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
 
     public render(node: graphql.PushToPushLifecycle.Push, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const repo = context.lifecycle.extract("repo") as graphql.PushFields.Repo;
 
         // Make sure we only attempt to render PR for non-default branch pushes
@@ -641,8 +695,14 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
 export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("blackduck");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -651,6 +711,11 @@ export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContri
 
     public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const riskProfileFingerprint = push.after.fingerprints.find(f => f.name === "BlackDuckRiskProfile");
         if (riskProfileFingerprint) {
             const riskProfile = JSON.parse(riskProfileFingerprint.data);
@@ -676,4 +741,41 @@ export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContri
         }
         return Promise.resolve(msg);
     }
+}
+
+export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
+
+    public renderingStyle: SdmGoalDisplayFormat;
+
+    constructor() {
+        super("expand");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
+    }
+
+    public supports(node: any): boolean {
+        return !!node.after;
+    }
+
+    public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
+
+        const lastAttachment = msg.attachments.slice(-1)[0];
+        if (!!lastAttachment.actions) {
+            lastAttachment.actions = [...lastAttachment.actions, ...actions];
+        } else {
+            lastAttachment.actions = actions;
+        }
+
+        return Promise.resolve(msg);
+    }
+}
+
+export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {
+    const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+    const displayFormat = _.get(push, "goalsDisplayState[0].format") || goalStyle;
+    return displayFormat === SdmGoalDisplayFormat.full;
 }

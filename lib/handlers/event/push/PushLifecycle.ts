@@ -44,6 +44,7 @@ import { LifecyclePreferences } from "../preferences";
 import {
     ApproveGoalActionContributor,
     DisplayGoalActionContributor,
+    ExpandAttachmentsActionContributor,
     PullRequestActionContributor,
     ReleaseActionContributor,
     sortTagsByName,
@@ -65,6 +66,7 @@ import {
     BlackDuckFingerprintNodeRenderer,
     BuildNodeRenderer,
     CommitNodeRenderer,
+    ExpandAttachmentsNodeRenderer,
     IssueNodeRenderer,
     K8PodNodeRenderer,
     PullRequestNodeRenderer,
@@ -201,7 +203,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new BuildNodeRenderer(),
                     new ApplicationNodeRenderer(),
                     new K8PodNodeRenderer(),
-                    new BlackDuckFingerprintNodeRenderer()],
+                    new BlackDuckFingerprintNodeRenderer(),
+                    new ExpandAttachmentsNodeRenderer()],
                 contributors: !push.repo.org.provider.private ? [
                     new TagPushActionContributor(),
                     new TagTagActionContributor(),
@@ -209,9 +212,11 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
                     new DisplayGoalActionContributor(),
+                    new ExpandAttachmentsActionContributor(),
                 ] : [
                     new ApproveGoalActionContributor(),
                     new DisplayGoalActionContributor(),
+                    new ExpandAttachmentsActionContributor(),
                 ],
                 id: createId(push),
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),

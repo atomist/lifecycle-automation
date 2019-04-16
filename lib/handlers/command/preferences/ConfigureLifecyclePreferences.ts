@@ -50,8 +50,8 @@ import {
 } from "../slack/ToggleCustomEmojiEnablement";
 import {
     isCompactStyleEnabled,
-    ToggleGoalDisplayFormat,
-} from "../slack/ToggleGoalDisplayFormat";
+    ToggleDisplayFormat,
+} from "../slack/ToggleDisplayFormat";
 
 /**
  * Configure DM preferences for the invoking user.
@@ -178,13 +178,13 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
             }
         }
 
-        // Add the emoji attachment
-        const goalFormatHandler = new ToggleGoalDisplayFormat();
+        // Add the configuration for setting display style
+        const goalFormatHandler = new ToggleDisplayFormat();
         goalFormatHandler.msgId = this.msgId;
         msg.attachments.push({
-            title: "Compact Goal Rendering Format",
-            fallback: "Configure Goal Rendering Format",
-            text: `Render SDM Goals more compact`,
+            title: "Compact Lifecycle Rendering Format",
+            fallback: "Compact Lifecycle Rendering Format",
+            text: `Render lifecycle messages in a compact way. Provides a way to expand to the full rendering.`,
             actions: [
                 buttonForCommand(
                     {

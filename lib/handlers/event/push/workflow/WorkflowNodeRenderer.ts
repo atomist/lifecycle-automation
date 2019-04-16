@@ -21,10 +21,13 @@ import {
 } from "@atomist/slack-messages";
 import {
     AbstractIdentifiableContribution,
+    LifecycleConfiguration,
     RendererContext,
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
+import { SdmGoalDisplayFormat } from "../../../../typings/types";
+import { isFullRenderingEnabled } from "../rendering/PushNodeRenderers";
 import { chartUrlFromWorkflow } from "./ChartUrl";
 import {
     circleWorkflowtoStages,
@@ -34,8 +37,14 @@ import {
 export class WorkflowNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushFields.Workflow> {
 
+    private renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super("workflow");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -44,6 +53,11 @@ export class WorkflowNodeRenderer extends AbstractIdentifiableContribution
 
     public render(workflow: graphql.PushFields.Workflow, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (!isFullRenderingEnabled(this.renderingStyle, context)) {
+            return Promise.resolve(msg);
+        }
+
         const push = context.lifecycle.extract("push") as graphql.PushToPushLifecycle.Push;
         const pushTrigger: PushTrigger = {
             name: push.branch,

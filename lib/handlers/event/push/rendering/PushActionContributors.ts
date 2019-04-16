@@ -516,17 +516,90 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
     }
 }
 
+export class ExpandAttachmentsActionContributor extends AbstractIdentifiableContribution
+    implements SlackActionContributor<GoalSet> {
+
+    public renderingStyle: SdmGoalDisplayFormat;
+
+    constructor() {
+        super("expand");
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
+    }
+
+    public supports(node: any): boolean {
+        return !!node.after;
+    }
+
+    public async buttonsFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
+        const buttons = [];
+        const push = context.lifecycle.extract("push") as PushFields.Fragment;
+        const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.renderingStyle;
+
+        if (context.rendererId === "expand") {
+            if (this.renderingStyle === SdmGoalDisplayFormat.compact) {
+                if (displayFormat === SdmGoalDisplayFormat.full) {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.compact,
+                        `\u02C4`,
+                        push,
+                        buttons);
+                } else {
+                    this.createButton(
+                        displayState,
+                        SdmGoalDisplayFormat.full,
+                        `\u02C5`,
+                        push,
+                        buttons);
+                }
+            }
+        }
+
+        return Promise.resolve(buttons);
+    }
+
+    public menusFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
+        return Promise.resolve([]);
+    }
+
+    private createButton(state: SdmGoalDisplayState,
+                         format: SdmGoalDisplayFormat,
+                         label: string,
+                         push: PushFields.Fragment,
+                         buttons: any[]) {
+
+        const handler = new UpdateSdmGoalDisplayState();
+        handler.state = state;
+        handler.format = format;
+        handler.owner = push.repo.owner;
+        handler.name = push.repo.name;
+        handler.providerId = push.repo.org.provider.providerId;
+        handler.branch = push.branch;
+        handler.sha = push.after.sha;
+
+        buttons.push(buttonForCommand(
+            {
+                text: label,
+            },
+            handler));
+    }
+}
+
 export class DisplayGoalActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<GoalSet> {
 
-    public goalStyle: SdmGoalDisplayFormat;
+    public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super(LifecycleActionPreferences.push.display_goals.id);
     }
 
     public configure(configuration: LifecycleConfiguration) {
-        this.goalStyle = configuration.configuration["goal-style"] || SdmGoalDisplayFormat.full;
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -538,7 +611,7 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const push = context.lifecycle.extract("push") as PushFields.Fragment;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
-        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.goalStyle;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.renderingStyle;
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
 
         if (context.rendererId === "goals") {
@@ -559,23 +632,6 @@ export class DisplayGoalActionContributor extends AbstractIdentifiableContributi
                         SdmGoalDisplayState.show_current,
                         displayFormat,
                         `${count} additional goal ${count > 1 ? "sets" : "set"} \u02C4`,
-                        push,
-                        buttons);
-                }
-            }
-            if (this.goalStyle === SdmGoalDisplayFormat.compact && goalSetIndex === goalSets.length - 1) {
-                if (displayFormat === SdmGoalDisplayFormat.full) {
-                    this.createButton(
-                        displayState,
-                        SdmGoalDisplayFormat.compact,
-                        `\u02C4`,
-                        push,
-                        buttons);
-                } else {
-                    this.createButton(
-                        displayState,
-                        SdmGoalDisplayFormat.full,
-                        `\u02C5`,
                         push,
                         buttons);
                 }

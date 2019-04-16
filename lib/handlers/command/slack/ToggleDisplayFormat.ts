@@ -38,9 +38,9 @@ import * as graphql from "../../../typings/types";
 
 export const LifecyclePreferencesName = "lifecycle_preferences";
 
-@CommandHandler("Toggle the goal rendering format")
-@Tags("slack", "goals")
-export class ToggleGoalDisplayFormat implements HandleCommand {
+@CommandHandler("Toggle the lifecycle rendering format")
+@Tags("slack")
+export class ToggleDisplayFormat implements HandleCommand {
 
     @Parameter({ description: "id of the message to use for confirmation", pattern: /^.*$/,
         required: false, displayable: false })
@@ -62,7 +62,7 @@ export class ToggleGoalDisplayFormat implements HandleCommand {
                 const enabled: SdmGoalDisplayFormat = preferencesState.enabled ?
                     SdmGoalDisplayFormat.full : SdmGoalDisplayFormat.compact;
 
-                _.set(preferences, "push.configuration['goal-style']", enabled);
+                _.set(preferences, "push.configuration['rendering-style']", enabled);
 
                 return ctx.graphClient.mutate<graphql.SetChatTeamPreference.Mutation,
                     graphql.SetChatTeamPreference.Variables>({
@@ -77,8 +77,7 @@ export class ToggleGoalDisplayFormat implements HandleCommand {
             })
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
-                /* tslint:disable */
-                const text = `${bold(`'Compact Goal Rendering Format' ${enabled ? "enabled" : "disabled"}`)}`;
+                const text = bold(`'Compact Lifecycle Rendering Format' ${enabled ? "enabled" : "disabled"}`);
 
                 const msg: SlackMessage = {
                     attachments: [{
@@ -91,7 +90,6 @@ export class ToggleGoalDisplayFormat implements HandleCommand {
                     }],
                 };
 
-                /* tslint:enable */
                 return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false });
             })
             .then(success, failure);
@@ -114,7 +112,7 @@ export function isCompactStyleEnabled(teamId: string, ctx: HandlerContext)
                 const lp = JSON.parse(lifecyclePreferences.value);
                 return {
                     preferences: lp,
-                    enabled: _.get(lp, "push.configuration['goal-style']") === SdmGoalDisplayFormat.compact,
+                    enabled: _.get(lp, "push.configuration['rendering-style']") === SdmGoalDisplayFormat.compact,
                 };
             }
             return {
