@@ -140,11 +140,11 @@ describe("BlackDuckFingerprintNodeRenderer", () => {
                     author_icon: "https://images.atomist.com/rug/blackduck.jpg",
                     author_name: "Black Duck",
                     author_link: "https://blackduckhub.com/ui/versions/id:456/view:bom",
-                    fallback: "Security Risks - 1 High, 2 Medium, 3 Low",
+                    fallback: "Security Risks \u00B7 1 High, 2 Medium, 3 Low",
                     mrkdwn_in: [
                         "text",
                     ],
-                    text: "Security Risks - 1 High, 2 Medium, 3 Low",
+                    text: "Security Risks \u00B7 1 High, 2 Medium, 3 Low",
                 },
             ];
             assert.deepEqual(msg.attachments, expected);

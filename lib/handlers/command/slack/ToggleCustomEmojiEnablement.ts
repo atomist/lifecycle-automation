@@ -100,8 +100,8 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
                         text: instructions,
                         fallback: instructions,
                         footer: `${url(`https://${preferencesState.domain}.slack.com/customize/emoji`, 
-                            "Slack Emoji Configuration")} | ${url("https://get.slack.help/hc/en-us/articles/206870177-Create-custom-emoji", 
-                            "Slack Emoji Help")} | ${supportLink(ctx)}`,
+                            "Slack Emoji Configuration")} \u00B7 ${url("https://get.slack.help/hc/en-us/articles/206870177-Create-custom-emoji", 
+                            "Slack Emoji Help")} \u00B7 ${supportLink(ctx)}`,
                         mrkdwn_in: [ "text" ]
                     });
                 }

@@ -226,7 +226,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             lastAttachment.actions = actions;
             lastAttachment.footer_icon = commitIcon(repo);
             if (lastAttachment.footer != null) {
-                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} - ${lastAttachment.footer}`;
+                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} \u00B7 ${lastAttachment.footer}`;
             } else {
                 lastAttachment.footer = url(repoUrl(repo), repoSlug(repo));
             }
@@ -377,9 +377,9 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
         // Add the release to the message
         if (tag.release) {
             if (tag.release.name !== tag.name) {
-                message = `${message} | ${url(tagUrl(repo, tag), `Release ${codeLine(tag.release.name)}`)}`;
+                message = `${message} \u00B7 ${url(tagUrl(repo, tag), `Release ${codeLine(tag.release.name)}`)}`;
             } else {
-                message = `${message} | ${url(tagUrl(repo, tag), "Release")}`;
+                message = `${message} \u00B7 ${url(tagUrl(repo, tag), "Release")}`;
             }
         }
 
@@ -522,7 +522,7 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
                 const stateOfContainers = `${e.running} running${waitingCountMsg}${terminatedCountMsg}`;
                 const attachment: Attachment = {
                     text: escape(`\`${e.name}\` ${stateOfContainers}`),
-                    fallback: escape(`${e.name} - ${stateOfContainers}`),
+                    fallback: escape(`${e.name} \u00B7 ${stateOfContainers}`),
                     mrkdwn_in: ["text"],
                     footer: image.imageName,
                     actions,
@@ -720,7 +720,7 @@ export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContri
         if (riskProfileFingerprint) {
             const riskProfile = JSON.parse(riskProfileFingerprint.data);
             const v = riskProfile.categories.VULNERABILITY;
-            const rpMsg = `Security Risks - ${v.HIGH} High, ${v.MEDIUM} Medium, ${v.LOW} Low`;
+            const rpMsg = `Security Risks \u00B7 ${v.HIGH} High, ${v.MEDIUM} Medium, ${v.LOW} Low`;
             const attachment: Attachment = {
                 author_name: `Black Duck`,
                 author_icon: `https://images.atomist.com/rug/blackduck.jpg`,

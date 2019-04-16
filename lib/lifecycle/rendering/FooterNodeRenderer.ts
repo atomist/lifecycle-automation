@@ -51,7 +51,7 @@ export class FooterNodeRenderer implements SlackNodeRenderer<any> {
                 `https://atomist.typeform.com/to/yvnyOj?message_id=${base64.encode(context.lifecycle.id)}`;
             const feedbackFooter = `${url(feedbackUrl, "Feedback")}`;
             if (attachment.footer != null) {
-                const footer = `${attachment.footer} | ${feedbackFooter}`;
+                const footer = `${attachment.footer} \u00B7 ${feedbackFooter}`;
                 if (footer.length <= 300) {
                     attachment.footer = footer;
                 }

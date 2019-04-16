@@ -94,9 +94,9 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         // Now each one
         const lines = statuses.sort((s1, s2) => s1.context.localeCompare(s2.context)).map(s => {
             if (s.targetUrl != null && s.targetUrl.length > 0) {
-                return `${this.emoji(s.state)} ${s.description} | ${url(s.targetUrl, s.context)}`;
+                return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
-                return `${this.emoji(s.state)} ${s.description} | ${s.context}`;
+                return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.context}`;
             }
         });
 
@@ -176,9 +176,9 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
 
             let text;
             if (s.targetUrl != null && s.targetUrl.length > 0) {
-                text = `${s.description} | ${url(s.targetUrl, s.context)}`;
+                text = `${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
-                text = `${s.description} | ${s.context}`;
+                text = `${s.description} \u00B7 ${s.context}`;
             }
 
             return {
@@ -273,27 +273,27 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 let details = "";
                 if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
                     s.state === SdmGoalState.stopped) && s.phase) {
-                    details += ` | ${s.phase}`;
+                    details += ` \u00B7 ${s.phase}`;
                 } else {
                     if (s.externalUrl) {
-                        details += ` | ${url(s.externalUrl, "Link")}`;
+                        details += ` \u00B7 ${url(s.externalUrl, "Link")}`;
                     }
                     if (s.externalUrls) {
-                        details += s.externalUrls.map(eu => ` | ${url(eu.url, eu.label || "Link")}`).join("");
+                        details += s.externalUrls.map(eu => ` \u00B7 ${url(eu.url, eu.label || "Link")}`).join("");
                     }
                 }
                 if (s.preApproval && s.preApproval.userId) {
                     if (s.state === SdmGoalState.pre_approved) {
-                        details += ` | start requested by @${s.preApproval.userId}`;
+                        details += ` \u00B7 start requested by @${s.preApproval.userId}`;
                     } else {
-                        details += ` | started by @${s.preApproval.userId}`;
+                        details += ` \u00B7 started by @${s.preApproval.userId}`;
                     }
                 }
                 if (s.approval && s.approval.userId) {
                     if (s.state === SdmGoalState.approved) {
-                        details += ` | approval requested by @${s.approval.userId}`;
+                        details += ` \u00B7 approval requested by @${s.approval.userId}`;
                     } else {
-                        details += ` | approved by @${s.approval.userId}`;
+                        details += ` \u00B7 approved by @${s.approval.userId}`;
                     }
                 }
                 if (s.url != null && s.url.length > 0) {
@@ -394,10 +394,10 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             if (displayFormat === SdmGoalDisplayFormat.full) {
                 if (creator) {
                     attachment.footer =
-                        `${creator.registration}:${creator.version} | ${lastGoals[0].goalSet} | ${
-                            url(link, gsid.slice(0, 7))} | ${duration}`;
+                        `${creator.registration}:${creator.version} \u00B7 ${lastGoals[0].goalSet} \u00B7 ${
+                            url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
                 } else {
-                    attachment.footer = `${url(link, gsid.slice(0, 7))} | ${duration}`;
+                    attachment.footer = `${url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
                 }
             } else {
                 const inProcessCount = lastGoals.filter(
@@ -431,8 +431,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
                 attachment.footer =
-                    `${creator.registration} | ${lastGoals[0].goalSet} | ${
-                        url(link, gsid.slice(0, 7))} | ${duration}`;
+                    `${creator.registration} \u00B7 ${lastGoals[0].goalSet} \u00B7 ${
+                        url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
                 if (this.emojiStyle === "atomist") {
                     attachment.thumb_url =
                         `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;
@@ -534,27 +534,27 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                 let details = "";
                 if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
                     s.state === SdmGoalState.stopped) && s.phase) {
-                    details += ` | ${s.phase}`;
+                    details += ` \u00B7 ${s.phase}`;
                 } else {
                     if (s.externalUrl) {
-                        details += ` | ${url(s.externalUrl, "Link")}`;
+                        details += ` \u00B7 ${url(s.externalUrl, "Link")}`;
                     }
                     if (s.externalUrls) {
-                        details += s.externalUrls.map(eu => ` | ${url(eu.url, eu.label || "Link")}`).join("");
+                        details += s.externalUrls.map(eu => ` \u00B7 ${url(eu.url, eu.label || "Link")}`).join("");
                     }
                 }
                 if (s.preApproval && s.preApproval.userId) {
                     if (s.state === SdmGoalState.pre_approved) {
-                        details += ` | start requested by @${s.preApproval.userId}`;
+                        details += ` \u00B7 start requested by @${s.preApproval.userId}`;
                     } else {
-                        details += ` | started by @${s.preApproval.userId}`;
+                        details += ` \u00B7 started by @${s.preApproval.userId}`;
                     }
                 }
                 if (s.approval && s.approval.userId) {
                     if (s.state === SdmGoalState.approved) {
-                        details += ` | approval requested by @${s.approval.userId}`;
+                        details += ` \u00B7 approval requested by @${s.approval.userId}`;
                     } else {
-                        details += ` | approved by @${s.approval.userId}`;
+                        details += ` \u00B7 approved by @${s.approval.userId}`;
                     }
                 }
                 gs.push({

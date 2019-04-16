@@ -43,7 +43,7 @@ export class ReferencedIssuesNodeRenderer extends AbstractIdentifiableContributi
     }
 
     public configure(configuration: LifecycleConfiguration) {
-        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
+        this.renderingStyle = (configuration.configuration || {})["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {

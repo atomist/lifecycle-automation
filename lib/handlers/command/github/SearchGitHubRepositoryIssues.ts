@@ -127,8 +127,8 @@ export class SearchGitHubRepositoryIssues extends ListMyGitHubIssues implements 
                 }));
                 const pagingAttachment: Attachment = {
                     fallback: "Paging",
-                    footer: `Search: ${this.q} | Total results: ${result.data.total_count}`
-                    + ` | Page: ${this.page} of ${Math.ceil(result.data.total_count / +this.perPage)}`,
+                    footer: `Search: ${this.q} \u00B7 Total results: ${result.data.total_count}`
+                    + ` \u00B7 Page: ${this.page} of ${Math.ceil(result.data.total_count / +this.perPage)}`,
                     ts: Math.floor(Date.now() / 1000),
                     actions,
                 };

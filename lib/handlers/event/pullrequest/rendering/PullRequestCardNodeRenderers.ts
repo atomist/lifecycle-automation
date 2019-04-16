@@ -193,9 +193,9 @@ export class StatusCardNodeRenderer extends AbstractIdentifiableContribution
 
                 let text;
                 if (s.targetUrl != null && s.targetUrl.length > 0) {
-                    text = `${s.description} | ${url(s.targetUrl, s.context)}`;
+                    text = `${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
                 } else {
-                    text = `${s.description} | ${s.context}`;
+                    text = `${s.description} \u00B7 ${s.context}`;
                 }
 
                 msg.events.push({

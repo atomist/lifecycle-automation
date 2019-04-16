@@ -318,7 +318,7 @@ describe("K8PodNodeRenderer", () => {
                     actions: [],
                     author_icon: "https://images.atomist.com/rug/kubes.png",
                     author_name: "Containers",
-                    fallback: "prod - 1 running",
+                    fallback: "prod \u00B7 1 running",
                     footer: "sforzando-dockerv2-local.jfrog.io/srv1:0.1.0",
                     mrkdwn_in: [
                         "text",
@@ -553,7 +553,7 @@ describe("K8PodNodeRenderer", () => {
                     actions: [],
                     author_icon: "https://images.atomist.com/rug/kubes.png",
                     author_name: "Containers",
-                    fallback: "prod - 0 running, 2 waiting, 3 terminated",
+                    fallback: "prod \u00B7 0 running, 2 waiting, 3 terminated",
                     footer: "sforzando-dockerv2-local.jfrog.io/srv1:0.1.0",
                     mrkdwn_in: [
                         "text",
@@ -562,7 +562,7 @@ describe("K8PodNodeRenderer", () => {
                 },
                 {
                     actions: [],
-                    fallback: "staging - 0 running",
+                    fallback: "staging \u00B7 0 running",
                     footer: "sforzando-dockerv2-local.jfrog.io/srv1:0.1.0",
                     mrkdwn_in: [
                         "text",
@@ -762,7 +762,7 @@ describe("K8PodNodeRenderer", () => {
                     actions: [],
                     author_icon: "https://images.atomist.com/rug/kubes.png",
                     author_name: "Containers",
-                    fallback: "prod - 1 running",
+                    fallback: "prod \u00B7 1 running",
                     footer: "sforzando-dockerv2-local.jfrog.io/srv1:0.1.0",
                     mrkdwn_in: [
                         "text",
@@ -771,7 +771,7 @@ describe("K8PodNodeRenderer", () => {
                 },
                 {
                     actions: [],
-                    fallback: "prod - 0 running",
+                    fallback: "prod \u00B7 0 running",
                     footer: "sforzando-dockerv2-local.jfrog.io/srv1:0.2.0",
                     mrkdwn_in: [
                         "text",
@@ -1064,7 +1064,7 @@ describe("K8PodNodeRenderer", () => {
                     actions: [],
                     author_icon: "https://images.atomist.com/rug/kubes.png",
                     author_name: "Containers",
-                    fallback: "prod - 0 running, 6 terminated",
+                    fallback: "prod \u00B7 0 running, 6 terminated",
                     footer: "sforzando-dockerv2-local.jfrog.io/lifecycle-automation:0.3.2-20180126144143",
                     mrkdwn_in: [
                         "text",
@@ -1073,7 +1073,7 @@ describe("K8PodNodeRenderer", () => {
                 },
                 {
                     actions: [],
-                    fallback: "staging - 2 running",
+                    fallback: "staging \u00B7 2 running",
                     footer: "sforzando-dockerv2-local.jfrog.io/lifecycle-automation:0.3.2-20180126144143",
                     mrkdwn_in: [
                         "text",

@@ -729,7 +729,7 @@ export function getChatIds(str: string): string[] {
 }
 
 export function repoAndChannelFooter(repo: any): string {
-    const channels = (repo.channels != null && repo.channels.length > 0 ? " - " + repo.channels.map(c =>
+    const channels = (repo.channels != null && repo.channels.length > 0 ? " \u00B7 " + repo.channels.map(c =>
         slack.channel(c.channelId, c.name)).join(" ") : "");
     return `${slack.url(repoUrl(repo), repoSlug(repo))}${channels}`;
 }
@@ -763,11 +763,11 @@ export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignee
 
     let footer = slack.url(repoUrl(repo), `${repo.owner}/${repo.name}`);
     if (labels != null && labels.length > 0) {
-        footer += " - "
+        footer += " \u00B7 "
             + labels.map(l => `${slack.emoji("label")} ${l.name}`).join(" ");
     }
     if (assignees != null && assignees.length > 0) {
-        footer += " - " + assignees.map(a =>
+        footer += " \u00B7 " + assignees.map(a =>
             `${slack.emoji("bust_in_silhouette")} ${a.login}`).join(" ");
     }
     return footer;

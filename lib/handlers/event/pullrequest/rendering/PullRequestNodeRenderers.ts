@@ -315,7 +315,7 @@ export class ReviewNodeRenderer extends AbstractIdentifiableContribution
 
         let summary = this.summarizeReviewCounts(pending, success, changesRequested);
         if (pr.reviewers != null && pr.reviewers.length > 0) {
-            summary += " - " + pr.reviewers.map(r =>
+            summary += " \u00B7 " + pr.reviewers.map(r =>
                 `${emoji("bust_in_silhouette")} ${r.login}`).join(" ");
         }
 

@@ -243,7 +243,7 @@ describe("StatusToPushLifecycle", () => {
                     },
                     "after": {
                         "sha": "886a5c0b985d55659c2c1fdf2542719846daafe2",
-                        "message": "2017.4.0 - release",
+                        "message": "2017.4.0 \u00B7 release",
                         "statuses": [{
                             "context": "fingerprint/atomist",
                             "description": "No blocking Fingerprint changes",
@@ -269,7 +269,7 @@ describe("StatusToPushLifecycle", () => {
                     },
                     "commits": [{
                         "sha": "886a5c0b985d55659c2c1fdf2542719846daafe2",
-                        "message": "2017.4.0 - release",
+                        "message": "2017.4.0 \u00B7 release",
                         "resolves": [],
                         "impact": {
                             "data": "[[[\\"travis\\",0],[\\"docker\\",0],[\\"props\\",0],[\\"rest\\",0],[\\"plugsMgt\\",1],[\\"depsMgt\\",0],[\\"plugins\\",0],[\\"deps\\",0]]]",
