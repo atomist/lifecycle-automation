@@ -775,7 +775,11 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
 }
 
 export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {
-    const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
-    const displayFormat = _.get(push, "goalsDisplayState[0].format") || goalStyle;
-    return displayFormat === SdmGoalDisplayFormat.full;
+    if (!!context) {
+        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+        const displayFormat = _.get(push, "goalsDisplayState[0].format") || goalStyle;
+        return displayFormat === SdmGoalDisplayFormat.full;
+    } else {
+        return true;
+    }
 }

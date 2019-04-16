@@ -545,14 +545,14 @@ export class ExpandAttachmentsActionContributor extends AbstractIdentifiableCont
                     this.createButton(
                         displayState,
                         SdmGoalDisplayFormat.compact,
-                        `\u02C4`,
+                        `Less \u02C4`,
                         push,
                         buttons);
                 } else {
                     this.createButton(
                         displayState,
                         SdmGoalDisplayFormat.full,
-                        `\u02C5`,
+                        `More \u02C5`,
                         push,
                         buttons);
                 }
