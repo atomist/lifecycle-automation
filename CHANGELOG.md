@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.33...HEAD)
 
+### Added
+
+-   Toggle more content in lifecycles. [f987df0](https://github.com/atomist/lifecycle-automation/commit/f987df067a094717a05cb8e1928ae6777ae4de5b)
+
 ## [0.12.33](https://github.com/atomist/lifecycle-automation/compare/0.12.32...0.12.33) - 2019-04-13
 
 ### Changed
