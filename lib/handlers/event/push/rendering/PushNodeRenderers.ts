@@ -714,7 +714,7 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
         if (!isFullRenderingEnabled(this.renderingStyle, context)) {
             if (context.has("attachment_count")) {
                 const count = context.get("attachment_count");
-                if (msg.attachments.length === count) {
+                if (msg.attachments.length === count && (!push.goalSets || push.goalSets.length === 0)) {
                     return msg;
                 } else {
                     msg.attachments = msg.attachments.slice(0, count);
