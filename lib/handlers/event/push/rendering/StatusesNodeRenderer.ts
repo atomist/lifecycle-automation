@@ -251,6 +251,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const attachments: Attachment[] = [];
         sortedGoals.filter(sg => sg.goals && sg.goals.length > 0).forEach((sg, ix) => {
             const statuses = sg.goals;
+            const color = this.color(statuses);
 
             const nonPlanned = statuses.some(
                 s => s.state !== "planned" && s.state !== "skipped" && s.state !== "canceled");
@@ -302,8 +303,8 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
             });
 
-            const lastGoals = lastGoalSet(goalSet.goals);
             if (lines.length === 0 && displayFormat === SdmGoalDisplayFormat.compact) {
+                const lastGoals = lastGoalSet(goalSet.goals);
                 const gsid = lastGoals[0].goalSetId;
                 let gs = lastGoals[0].goalSet;
                 if (gs.length > 40) {
@@ -350,31 +351,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 lines.push(
                     `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${
                         codeLine(gsid.slice(0, 7))} ${label}`)}`);
-            }
-
-            let color;
-            if (lastGoals.some(g => g.state === SdmGoalState.failure)) {
-                color = "#BC3D33";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.in_process)) {
-                color = "#2A7D7D";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.requested)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.approved)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.pre_approved)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.stopped)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.canceled)) {
-                color = "#B5B5B5";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.planned)) {
-                color = "#D7B958";
-            } else if (lastGoals.some(g => g.state === SdmGoalState.success)) {
-                color = "#37A745";
             }
 
             if (ix === 0 || nonPlanned) {
@@ -467,6 +443,34 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         msg.attachments.push(...attachments);
 
         return Promise.resolve(msg);
+    }
+
+    private color(goals: SdmGoalsByCommit.SdmGoal[]): string {
+        let color;
+        if (goals.some(g => g.state === SdmGoalState.failure)) {
+            color = "#BC3D33";
+        } else if (goals.some(g => g.state === SdmGoalState.in_process)) {
+            color = "#2A7D7D";
+        } else if (goals.some(g => g.state === SdmGoalState.requested)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.approved)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.pre_approved)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.stopped)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.canceled)) {
+            color = "#B5B5B5";
+        } else if (goals.some(g => g.state === SdmGoalState.planned)) {
+            color = "#D7B958";
+        } else if (goals.some(g => g.state === SdmGoalState.success)) {
+            color = "#37A745";
+        }
+        return color;
     }
 
     private emoji(state: string): string {
