@@ -172,7 +172,7 @@ export class StatusCardNodeRenderer extends AbstractIdentifiableContribution
     public render(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest, actions: Action[], msg: CardMessage,
                   context: RendererContext): Promise<CardMessage> {
         // List all the statuses on the head commit
-        const commits = pr.commits.sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp))
+        const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
             .filter(c => c.statuses != null && c.statuses.length > 0);
 
         if (commits && commits.length > 0) {

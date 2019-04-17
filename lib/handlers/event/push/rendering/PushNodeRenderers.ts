@@ -723,10 +723,12 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
         }
 
         const lastAttachment = msg.attachments.slice(-1)[0];
-        if (!!lastAttachment.actions) {
-            lastAttachment.actions = [...lastAttachment.actions, ...actions];
-        } else {
-            lastAttachment.actions = actions;
+        if (!!lastAttachment) {
+            if (!!lastAttachment.actions) {
+                lastAttachment.actions = [...lastAttachment.actions, ...actions];
+            } else {
+                lastAttachment.actions = actions;
+            }
         }
 
         return msg;

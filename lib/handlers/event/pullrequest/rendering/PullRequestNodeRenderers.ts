@@ -228,7 +228,7 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
                   context: RendererContext): Promise<SlackMessage> {
 
         const repo = context.lifecycle.extract("repo");
-        const commits = pr.commits.sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp))
+        const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
             .filter(c => c.statuses != null && c.statuses.length > 0);
 
         if (commits.length > 0 && commits[0].statuses != null) {
