@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,47 +33,59 @@ import {
 /**
  * Send a lifecycle message on Application events.
  */
-@EventHandler("Send a lifecycle message on Application events",
-    GraphQL.subscription("applicationToPushLifecycle"))
-@Tags("lifecycle", "push", "application")
-export class ApplicationToPushLifecycle extends PushLifecycleHandler<graphql.ApplicationToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ApplicationToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-
-        const pushes = [];
-        event.data.Application[0].commits.forEach(c => pushes.push(...c.pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ApplicationToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(
-            _.get(event, "data.Application[0].commits[0].pushes[0].repo.org.team.chatTeams"));
-    }
+export function applicationToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ApplicationToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ApplicationToPushLifecycle",
+        description: "Send a push lifecycle message on Application events",
+        tags: ["lifecycle", "push", "application"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("applicationToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ApplicationToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.Application[0].commits.forEach(c => pushes.push(...c.pushes));
+                        return pushes;
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Application[0].commits[0].pushes[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Application events.
  */
-@EventHandler("Send a lifecycle card on Application events",
-    GraphQL. subscription("applicationToPushLifecycle"))
-@Tags("lifecycle", "push", "application")
-export class ApplicationToPushCardLifecycle
-    extends PushCardLifecycleHandler<graphql.ApplicationToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ApplicationToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-
-        const pushes = [];
-        event.data.Application[0].commits.forEach(c => pushes.push(...c.pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ApplicationToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function applicationToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ApplicationToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ApplicationToPushCardLifecycle",
+        description: "Send a push lifecycle card on Application events",
+        tags: ["lifecycle", "push", "application"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("applicationToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ApplicationToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.Application[0].commits.forEach(c => pushes.push(...c.pushes));
+                        return pushes;
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }

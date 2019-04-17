@@ -20,6 +20,7 @@ import {
     logger,
     menuForCommand,
     MenuSpecification,
+    TokenCredentials,
 } from "@atomist/automation-client";
 import { ApolloGraphClient } from "@atomist/automation-client/lib/graph/ApolloGraphClient";
 import { Action } from "@atomist/slack-messages";
@@ -120,7 +121,7 @@ export class DisplayMoreActionContributor extends AbstractIdentifiableContributi
                 ]);
             } else {
                 return Promise.resolve([
-                    buttonForCommand({ text: "More \u02C4" },
+                    buttonForCommand({ text: "Less \u02C4" },
                         "DisplayGitHubIssue",
                         {
                             repo: repo.name,
@@ -277,7 +278,7 @@ export class AssignActionContributor extends AbstractIdentifiableContribution
 
         if (context.rendererId === this.rendererId && context.has("show_more") && isGitHubCom(repo)) {
             const client = new ApolloGraphClient("https://api.github.com/graphql",
-                { Authorization: `bearer ${context.orgToken}` });
+                { Authorization: `bearer ${(context.credentials as TokenCredentials).token}` });
 
             return client.query<any, any>({
                 query: SuggestedAssigneeQuery,
@@ -417,7 +418,7 @@ export class ReactionActionContributor extends AbstractIssueActionContributor
                                  repo: graphql.IssueFields.Repo,
                                  context: RendererContext): Promise<Action[]> {
         try {
-            const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+            const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
             const result = await api.reactions.getForIssue({
                 owner: repo.owner,
                 repo: repo.name,

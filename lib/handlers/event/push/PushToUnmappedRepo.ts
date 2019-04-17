@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,20 @@
 import {
     addressSlackUsers,
     buttonForCommand,
-    EventFired,
     failure,
+    GraphQL,
     HandlerContext,
     HandlerResult,
     logger,
     menuForCommand,
     MenuSpecification,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
+import { PushToUnmappedRepo } from "../../../typings/types";
 import {
     isDmDisabled,
     repoChannelName,
@@ -50,46 +48,48 @@ import { DirectMessagePreferences } from "../preferences";
 /**
  * Suggest mapping a repo to committer on unmapped repo.
  */
-@EventHandler("Suggest mapping a repo to committer on unmapped repo", GraphQL.subscription("pushToUnmappedRepo"))
-@Tags("lifecycle", "push")
-export class PushToUnmappedRepo implements HandleEvent<graphql.PushToUnmappedRepo.Subscription> {
-
-    public handle(e: EventFired<graphql.PushToUnmappedRepo.Subscription>, ctx: HandlerContext): Promise<HandlerResult> {
-        return Promise.all(e.data.Push.map(p => {
-            if (p.repo && p.repo.channels && p.repo.channels.length > 0) {
-                // already mapped
-                return Success;
-            }
-            if (!p.commits || p.commits.length < 1) {
-                // strange
-                return Success;
-            }
-
-            const botNames: { [teamId: string]: string; } = {};
-
-            const chatTeams = (_.get(p, "repo.org.team.chatTeams")
-                || []) as graphql.PushToUnmappedRepo.ChatTeams[];
-
-            chatTeams.forEach(ct => {
-                if (ct.members && ct.members.length > 0 && ct.members.some(m => m.isAtomistBot === "true")) {
-                    botNames[ct.id] = ct.members.find(m => m.isAtomistBot === "true").screenName;
-                } else {
-                    botNames[ct.id] = DefaultBotName;
+export function pushToUnmappedRepo(): EventHandlerRegistration<PushToUnmappedRepo.Subscription> {
+    return {
+        name: "PushToUnmappedRepo",
+        description: "Suggest mapping a repo to committer on unmapped repo",
+        tags: ["lifecycle", "push"],
+        subscription: GraphQL.subscription("pushToUnmappedRepo"),
+        listener: async (e, ctx) => {
+            return Promise.all(e.data.Push.map(p => {
+                if (p.repo && p.repo.channels && p.repo.channels.length > 0) {
+                    // already mapped
+                    return Success;
                 }
-            });
+                if (!p.commits || p.commits.length < 1) {
+                    // strange
+                    return Success;
+                }
 
-            const chatIds = p.commits.filter(c => c.author &&
-                c.author.person &&
-                c.author.person.chatId &&
-                c.author.person.chatId.chatTeam &&
-                c.author.person.chatId.chatTeam.id)
-                .map(c => c.author.person.chatId);
+                const botNames: { [teamId: string]: string; } = {};
 
-            return sendUnMappedRepoMessage(chatIds, p.repo, ctx, botNames);
-        }))
-            .then(() => Success, failure);
-    }
+                const chatTeams = (_.get(p, "repo.org.team.chatTeams")
+                    || []) as graphql.PushToUnmappedRepo.ChatTeams[];
 
+                chatTeams.forEach(ct => {
+                    if (ct.members && ct.members.length > 0 && ct.members.some(m => m.isAtomistBot === "true")) {
+                        botNames[ct.id] = ct.members.find(m => m.isAtomistBot === "true").screenName;
+                    } else {
+                        botNames[ct.id] = DefaultBotName;
+                    }
+                });
+
+                const chatIds = p.commits.filter(c => c.author &&
+                    c.author.person &&
+                    c.author.person.chatId &&
+                    c.author.person.chatId.chatTeam &&
+                    c.author.person.chatId.chatTeam.id)
+                    .map(c => c.author.person.chatId);
+
+                return sendUnMappedRepoMessage(chatIds, p.repo, ctx, botNames);
+            }))
+                .then(() => Success, failure);
+        },
+    };
 }
 
 const repoMappingConfigKey = "repo_mapping_flow";

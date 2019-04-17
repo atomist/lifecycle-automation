@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import {
     RepoProvider,
 } from "../../../../lib/handlers/command/slack/LinkOwnerRepo";
 import {
-    BotJoinedChannel,
+    botJoinedChannel,
     fuzzyChannelRepoMatch,
     repoOptions,
 } from "../../../../lib/handlers/event/channellink/BotJoinedChannel";
@@ -264,8 +264,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(silent);
                 })
@@ -339,8 +339,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(sent);
                 })
@@ -392,8 +392,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(sent);
                 })

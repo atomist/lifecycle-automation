@@ -18,6 +18,7 @@ import {
     buttonForCommand,
     logger,
     QueryNoCacheOptions,
+    TokenCredentials,
 } from "@atomist/automation-client";
 import { ApolloGraphClient } from "@atomist/automation-client/lib/graph/ApolloGraphClient";
 import {
@@ -50,10 +51,7 @@ import {
     LifecycleActionPreferences,
     LifecycleRendererPreferences,
 } from "../../preferences";
-import {
-    Domain,
-    GoalSet,
-} from "../PushLifecycle";
+import { GoalSet } from "../PushLifecycle";
 import { isFullRenderingEnabled } from "./PushNodeRenderers";
 
 const RepositoryTagsQuery = `query RepositoryTags($name: String!, $owner: String!) {
@@ -190,10 +188,10 @@ export class TagPushActionContributor extends AbstractIdentifiableContribution
         if (repo.org &&
             repo.org.provider &&
             repo.org.provider.apiUrl === DefaultGitHubApiUrl &&
-            context.orgToken) {
+            (context.credentials as TokenCredentials).token) {
 
             const client = new ApolloGraphClient("https://api.github.com/graphql",
-                { Authorization: `bearer ${context.orgToken}` });
+                { Authorization: `bearer ${(context.credentials as TokenCredentials).token}` });
 
             return client.query<any, any>({
                 query: RepositoryTagsQuery,

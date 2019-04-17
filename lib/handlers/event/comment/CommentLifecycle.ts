@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,25 +22,23 @@ import { SlackMessage } from "@atomist/slack-messages";
 import {
     Lifecycle,
     LifecycleHandler,
+    Preferences,
 } from "../../../lifecycle/Lifecycle";
-import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
-import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
-import {
-    AssignActionContributor,
-    CloseActionContributor,
-    CommentActionContributor,
-    DetailsActionContributor,
-    LabelActionContributor,
-    ReactionActionContributor,
-} from "./rendering/CommentActionContributors";
-import {
-    IssueCommentNodeRenderer,
-    PullRequestCommentNodeRenderer,
-} from "./rendering/CommentNodeRenderers";
 
-export abstract class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
+export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.IssueToIssueCommentLifecycle.Comments[],
+                    graphql.IssueToIssueCommentLifecycle.Issue,
+                    graphql.PullRequestToPullRequestCommentLifecycle.PullRequest,
+                    graphql.IssueToIssueCommentLifecycle.Repo,
+                    boolean],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(): Promise<SlackMessage> {
         return Promise.resolve({
@@ -81,27 +79,8 @@ export abstract class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
                 const configuration: Lifecycle = {
                     name: LifecyclePreferences.comment.id,
                     nodes,
-                    renderers: [
-                        new IssueCommentNodeRenderer(),
-                        new PullRequestCommentNodeRenderer(),
-                        new ReferencedIssuesNodeRenderer(),
-                        new AttachImagesNodeRenderer(node => {
-                            if (node.issue) {
-                                return node.issue.state === "open";
-                            } else if (node.pullRequest) {
-                                return node.pullRequest.state === "open";
-                            } else {
-                                return false;
-                            }
-                        })],
-                    contributors: !repo.org.provider.private ? [
-                        new AssignActionContributor(),
-                        new CommentActionContributor(),
-                        new LabelActionContributor(),
-                        new ReactionActionContributor(),
-                        new CloseActionContributor(),
-                        new DetailsActionContributor(),
-                    ] : [],
+                    renderers: this.contributors.renderers(repo),
+                    contributors: this.contributors.actions(repo),
                     id: `comment_lifecycle/${repo.owner}/${repo.name}/${id}/${comment.gitHubId}`,
                     timestamp: Date.now().toString(),
                     post: updateOnly ? "update_only" : undefined,
@@ -122,10 +101,7 @@ export abstract class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
         }
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.IssueToIssueCommentLifecycle.Comments[],
-            graphql.IssueToIssueCommentLifecycle.Issue,
-            graphql.PullRequestToPullRequestCommentLifecycle.PullRequest,
-            graphql.IssueToIssueCommentLifecycle.Repo,
-            boolean];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
+    }
 }
