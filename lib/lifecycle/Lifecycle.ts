@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import {
     addressEvent,
     addressSlackChannels,
     CommandReferencingAction,
+    configurationValue,
     EventFired,
     failure,
     Failure,
@@ -25,14 +26,23 @@ import {
     HandlerResult,
     isSlackMessage,
     logger,
+    Maker,
     MessageClient,
     MessageOptions,
+    ProjectOperationCredentials,
     Secret,
     Secrets,
     Success,
     SuccessPromise,
 } from "@atomist/automation-client";
 import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { toFactory } from "@atomist/automation-client/lib/util/constructionUtils";
+import {
+    CredentialsResolver,
+    DeclarationType,
+    ParametersDefinition,
+    resolveCredentialsPromise,
+} from "@atomist/sdm";
 import {
     Action,
     SlackMessage,
@@ -51,6 +61,46 @@ import {
     isCardMessage,
 } from "./card";
 
+export type LifecycleParametersDefinition = { orgToken: string, credentialsResolver?: CredentialsResolver }
+
+export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
+    orgToken: {
+        declarationType: DeclarationType.Secret,
+        uri: Secrets.OrgToken,
+    },
+    credentialsResolver: {
+        path: "sdm.credentialsResolver",
+        required: false,
+    },
+};
+
+export async function lifecycle<R>(e: EventFired<R>,
+                                   params: LifecycleParametersDefinition,
+                                   ctx: HandlerContext,
+                                   maker: Maker<LifecycleHandler<R>>): Promise<HandlerResult> {
+    const handler = toFactory(maker)();
+    handler.orgToken = params.orgToken;
+
+    const creds = await resolveEventHandlerCredentials(e, params, ctx);
+    handler.credentials = creds;
+
+    return handler.handle(e, ctx);
+}
+
+export async function resolveEventHandlerCredentials(e: EventFired<any>,
+                                                     params: LifecycleParametersDefinition,
+                                                     ctx: HandlerContext): Promise<ProjectOperationCredentials> {
+    const credsResolver = params.credentialsResolver || configurationValue<CredentialsResolver>(
+        "sdm.credentialsResolver", {
+            eventHandlerCredentials: async () => {
+            },
+            commandHandlerCredentials: async () => {
+            },
+        });
+
+    return resolveCredentialsPromise(credsResolver.eventHandlerCredentials(ctx));
+}
+
 /**
  * Base Event Handler implementation that handles rendering of lifecycle messages.
  */
@@ -58,6 +108,8 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     @Secret(Secrets.OrgToken)
     public orgToken: string;
+
+    public credentials: ProjectOperationCredentials;
 
     public defaultConfigurations = config.get("lifecycles") || {};
 
@@ -97,7 +149,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     lifecycle.nodes.filter(n => r.supports(n)).forEach(n => {
                         // First collect all buttons/actions for the given node
                         const context = new RendererContext(
-                            r.id(), lifecycle, configuration, this.orgToken, ctx, channels, store);
+                            r.id(), lifecycle, configuration, this.credentials, ctx, channels, store);
 
                         // Second trigger rendering
                         renderers.push(msg => {
@@ -583,7 +635,7 @@ export class RendererContext {
     constructor(public rendererId: string,
                 public lifecycle: Lifecycle,
                 public configuration: LifecycleConfiguration,
-                public orgToken: string,
+                public credentials: ProjectOperationCredentials,
                 public context: HandlerContext,
                 public channels: { teamId: string, channels: string[] },
                 private store: Map<string, any>) {

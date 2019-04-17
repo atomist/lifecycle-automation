@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,30 @@
  */
 
 import {
-    EventFired,
     Failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import * as graphql from "../../../typings/types";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import { NotifyPusherOnBuild } from "../../../typings/types";
 import { buildNotification } from "../../../util/notifications";
 
-@EventHandler("Notify pushers of failing builds in Slack", GraphQL.subscription("notifyPusherOnBuild"))
-@Tags("lifecycle", "build", "notification")
-export class NotifyPusherOnBuild implements HandleEvent<graphql.NotifyPusherOnBuild.Subscription> {
-
-    public handle(root: EventFired<graphql.NotifyPusherOnBuild.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-        const build = root.data.Build[0];
-        if (build.status === "broken" || build.status === "failed") {
-            return buildNotification(build, build.repo, ctx)
-                .then(() => Success)
-                .catch(() => Failure);
-        }
-        return Promise.resolve(Success);
-    }
+export function notifyPusherOnBuild(): EventHandlerRegistration<NotifyPusherOnBuild.Subscription> {
+    return {
+        name: "NotifyPusherOnBuild",
+        description: "Notify pushers of failing builds as DMs",
+        tags: ["lifecycle", "build", "notification"],
+        subscription: GraphQL.subscription("notifyPusherOnBuild"),
+        listener: async (e, ctx) => {
+            const build = e.data.Build[0];
+            if (build.status === "broken" || build.status === "failed") {
+                try {
+                    await buildNotification(build, build.repo, ctx)
+                } catch (e) {
+                    return Failure;
+                }
+            }
+            return Success
+        },
+    };
 }

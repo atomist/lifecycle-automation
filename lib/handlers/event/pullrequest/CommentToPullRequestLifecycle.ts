@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PullRequestCardLifecycleHandler,
@@ -32,47 +33,57 @@ import {
 /**
  * Send a lifecycle message on Comment events.
  */
-@EventHandler("Send a lifecycle message on Comment events",
-    GraphQL.subscription("commentToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "comment")
-export class CommentToPullRequestLifecycle
-    extends PullRequestLifecycleHandler<graphql.CommentToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.CommentToPullRequestLifecycle.Subscription>):
-        [graphql.CommentToPullRequestLifecycle.PullRequest, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.Comment[0].pullRequest");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.CommentToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Comment[0].pullRequest.repo.org.team.chatTeams"));
-    }
+export function commentToPullRequestLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.CommentToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "CommentToPullRequestLifecycle",
+        description: "Send a PR lifecycle message on Comment events",
+        tags: ["lifecycle", "pr", "comment"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("commentToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.CommentToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.Comment[0].pullRequest");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Comment[0].pullRequest.repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Comment events.
  */
-@EventHandler("Send a lifecycle card on Comment events",
-    GraphQL.subscription("commentToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "comment")
-export class CommentToPullRequestCardLifecycle
-    extends PullRequestCardLifecycleHandler<graphql.CommentToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.CommentToPullRequestLifecycle.Subscription>):
-        [graphql.CommentToPullRequestLifecycle.PullRequest, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.Comment[0].pullRequest");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.CommentToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function commentToPullRequestCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.CommentToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "CommentToPullRequestCardLifecycle",
+        description: "Send a pr lifecycle card on Branch events",
+        tags: ["lifecycle", "pr", "comment"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("branchToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.CommentToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestCardLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.Comment[0].pullRequest");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }

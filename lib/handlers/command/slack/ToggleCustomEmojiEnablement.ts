@@ -31,7 +31,6 @@ import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
     bold,
     codeBlock,
-    codeLine,
     SlackMessage,
     url,
 } from "@atomist/slack-messages";

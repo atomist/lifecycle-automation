@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,45 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { BranchLifecycle } from "./BranchLifecycle";
 
 /**
  * Send a lifecycle message on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle message on DeletedBranch events",
-    GraphQL.subscription("deletedBranchToBranchLifecycle"))
-@Tags("lifecycle", "branch", "pr")
-export class DeletedBranchToBranchLifecycle
-    extends BranchLifecycle<graphql.BranchToBranchLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.BranchToBranchLifecycle.Subscription>)
-    : [graphql.BranchToBranchLifecycle.Branch[], graphql.BranchFields.Repo, boolean] {
-
-        const branch = _.get(event, "data.DeletedBranch[0]");
-        return [[branch], branch.repo, true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.BranchToBranchLifecycle.Subscription>): { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.DeletedBranch[0].repo.org.team.chatTeams"));
-    }
+export function deletedBranchToBranchLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.DeletedBranchToBranchLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "DeletedBranchToBranchLifecycle",
+        description: "Send a branch lifecycle message on DeletedBranch events",
+        tags: ["lifecycle", "branch", "deleted branch"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("deletedBranchToBranchLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.DeletedBranchToBranchLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new BranchLifecycle(
+                    e => {
+                        const branch = _.get(e, "data.DeletedBranch[0]");
+                        return [[branch], branch.repo, true];
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.DeletedBranch[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
