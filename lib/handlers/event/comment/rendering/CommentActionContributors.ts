@@ -18,6 +18,7 @@ import {
     buttonForCommand,
     menuForCommand,
     MenuSpecification,
+    TokenCredentials,
 } from "@atomist/automation-client";
 import { Action } from "@atomist/slack-messages";
 import {
@@ -270,7 +271,7 @@ export class ReactionActionContributor extends AbstractCommentActionContributor
                                  repo: graphql.CommentToIssueCommentLifecycle.Repo,
                                  context: RendererContext): Promise<Action[]> {
         try {
-            const api = github.api(context.orgToken);
+            const api = github.api((context.credentials as TokenCredentials).token);
             const result = await api.reactions.getForIssueComment({
                 owner: repo.owner,
                 repo: repo.name,

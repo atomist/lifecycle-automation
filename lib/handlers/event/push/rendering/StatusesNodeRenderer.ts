@@ -439,9 +439,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
-                attachment.footer =
-                    `${creator.registration} \u00B7 ${lastGoals[0].goalSet} \u00B7 ${
-                        url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
+                attachment.footer = `${url(link, lastGoals[0].goalSet)} \u00B7 ${duration}`;
                 if (this.emojiStyle === "atomist") {
                     attachment.thumb_url =
                         `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;

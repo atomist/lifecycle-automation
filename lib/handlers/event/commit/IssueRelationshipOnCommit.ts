@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,52 @@
 
 import {
     addressEvent,
-    EventFired,
+    GraphQL,
     HandlerContext,
-    HandlerResult,
-    SuccessPromise,
+    Success,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import * as graphql from "../../../typings/types";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import { IssueRelationshipOnCommit } from "../../../typings/types";
 import { extractLinkedIssues } from "../../../util/helpers";
 
-@EventHandler("Create a relationship between a commit and issue/PR",
-    GraphQL.subscription("issueRelationshipOnCommit"))
-export class IssueRelationshipOnCommit implements HandleEvent<graphql.IssueRelationshipOnCommit.Subscription> {
+export function issueRelationshipOnCommit(): EventHandlerRegistration<IssueRelationshipOnCommit.Subscription> {
+    return {
+        name: "IssueRelationshipOnCommit",
+        description: "Create a relationship between a commit and issue/PR",
+        tags: ["lifecylce", "issue"],
+        subscription: GraphQL.subscription("issueRelationshipOnCommit"),
+        listener: async (e, ctx) => {
+            const commit = e.data.Commit[0];
 
-    public async handle(e: EventFired<graphql.IssueRelationshipOnCommit.Subscription>,
-                        ctx: HandlerContext): Promise<HandlerResult> {
-        const commit = e.data.Commit[0];
+            const issues = await extractLinkedIssues(commit.message, commit.repo, [], ctx);
 
-        const issues = await extractLinkedIssues(commit.message, commit.repo, [], ctx);
-
-        if (issues) {
-            for (const issue of issues.issues) {
-                await this.storeCommitIssueRelationship(commit, issue, ctx);
+            if (issues) {
+                for (const issue of issues.issues) {
+                    await storeCommitIssueRelationship(commit, issue, ctx);
+                }
+                for (const pr of issues.prs) {
+                    await storeCommitIssueRelationship(commit, pr, ctx);
+                }
             }
-            for (const pr of issues.prs) {
-                await this.storeCommitIssueRelationship(commit, pr, ctx);
-            }
-        }
 
-        return SuccessPromise;
-    }
+            return Success;
+        },
+    };
+}
 
-    private async storeCommitIssueRelationship(commit, issue, ctx: HandlerContext) {
-        const referencedIssue = {
-            commit: {
-                owner: commit.repo.owner,
-                repo: commit.repo.name,
-                sha: commit.sha,
-            },
-            issue: {
-                name: issue.name,
-                owner: issue.repo.owner,
-                repo: issue.repo.name,
-            },
-            type: "references",
-        };
-        await ctx.messageClient.send(referencedIssue, addressEvent("CommitIssueRelationship"));
-    }
+async function storeCommitIssueRelationship(commit, issue, ctx: HandlerContext): Promise<void> {
+    const referencedIssue = {
+        commit: {
+            owner: commit.repo.owner,
+            repo: commit.repo.name,
+            sha: commit.sha,
+        },
+        issue: {
+            name: issue.name,
+            owner: issue.repo.owner,
+            repo: issue.repo.name,
+        },
+        type: "references",
+    };
+    await ctx.messageClient.send(referencedIssue, addressEvent("CommitIssueRelationship"));
 }

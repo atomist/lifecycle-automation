@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,19 @@
  */
 
 import {
-    EventFired,
-    Tags,
+    GraphQL,
+    Maker,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleHandler,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     IssueCardLifecycleHandler,
@@ -32,44 +37,63 @@ import {
 /**
  * Send a lifecycle message on Issue events.
  */
-@EventHandler("Send a lifecycle message on Issue events", GraphQL.subscription("issueToIssueLifecycle"))
-@Tags("lifecycle", "issue")
-export class IssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
+export function issueToIssueLifecycle(contributions: Contributions,
+                                      maker?: Maker<LifecycleHandler<graphql.IssueToIssueLifecycle.Subscription>>)
+    : EventHandlerRegistration<graphql.IssueToIssueLifecycle.Subscription, LifecycleParametersDefinition> {
 
-    protected extractNodes(event: EventFired<graphql.IssueToIssueLifecycle.Subscription>):
-        [graphql.IssueToIssueLifecycle.Issue,
-            graphql.IssueFields.Repo, string] {
+    const defaultMaker: Maker<LifecycleHandler<graphql.IssueToIssueLifecycle.Subscription>> = () => new IssueLifecycleHandler(
+        e => {
+            const issue = e.data.Issue[0];
+            const repo = e.data.Issue[0].repo;
+            return [issue, repo, Date.now().toString()];
+        },
+        e => chatTeamsToPreferences(
+            _.get(e, "data.Issue[0].repo.org.team.chatTeams")),
+        contributions,
+    );
 
-        const issue = event.data.Issue[0];
-        const repo = event.data.Issue[0].repo;
-        return [issue, repo, Date.now().toString()];
-    }
-
-    protected extractPreferences(event: EventFired<graphql.IssueToIssueLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Issue[0].repo.org.team.chatTeams"));
-    }
+    return {
+        name: "IssueToIssueLifecycle",
+        description: "Send a issue lifecycle message on Build events",
+        tags: ["lifecycle", "issue"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("issueToIssueLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.IssueToIssueLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                !!maker ? maker : defaultMaker,
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Issue events.
  */
-@EventHandler("Send a lifecycle message on Issue events", GraphQL.subscription("issueToIssueLifecycle"))
-@Tags("lifecycle", "issue")
-export class IssueToIssueCardLifecycle extends IssueCardLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.IssueToIssueLifecycle.Subscription>):
-        [graphql.IssueToIssueLifecycle.Issue,
-            graphql.IssueFields.Repo,
-            graphql.CommentToIssueLifecycle.Comment,
-            string] {
-        const issue = event.data.Issue[0];
-        const repo = event.data.Issue[0].repo;
-        return [issue, repo, null, Date.now().toString()];
-    }
-
-    protected extractPreferences(event: EventFired<graphql.IssueToIssueLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function issueToIssueCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.IssueToIssueLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "IssueToIssueCardLifecycle",
+        description: "Send a issue lifecycle card on Issue events",
+        tags: ["lifecycle", "issue"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("issueToIssueLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.IssueToIssueLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new IssueCardLifecycleHandler(
+                    e => {
+                        const issue = e.data.Issue[0];
+                        const repo = e.data.Issue[0].repo;
+                        return [issue, repo, null, Date.now().toString()];
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }

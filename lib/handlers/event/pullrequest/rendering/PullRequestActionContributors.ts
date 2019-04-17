@@ -18,6 +18,7 @@ import {
     buttonForCommand,
     menuForCommand,
     MenuSpecification,
+    TokenCredentials,
 } from "@atomist/automation-client";
 import { ApolloGraphClient } from "@atomist/automation-client/lib/graph/ApolloGraphClient";
 import { Action } from "@atomist/slack-messages";
@@ -345,7 +346,7 @@ export class ThumbsUpActionContributor extends AbstractIdentifiableContribution
         if (context.rendererId === "pull_request") {
 
             try {
-                const api = github.api(context.orgToken);
+                const api = github.api((context.credentials as TokenCredentials).token);
                 const result = await api.reactions.getForIssue({
                     owner: repo.owner,
                     repo: repo.name,
@@ -397,8 +398,8 @@ export class AssignReviewerActionContributor extends AbstractIdentifiableContrib
             if (repo.org &&
                 repo.org.provider &&
                 repo.org.provider.apiUrl === DefaultGitHubApiUrl &&
-                context.orgToken) {
-                return this.assignReviewMenu(pr, repo, context.orgToken);
+                (context.credentials as TokenCredentials).token) {
+                return this.assignReviewMenu(pr, repo, (context.credentials as TokenCredentials).token);
             } else {
                 return Promise.resolve(this.assignReviewButton(pr, repo));
             }

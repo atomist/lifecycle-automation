@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,43 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { IssueCardLifecycleHandler } from "./IssueLifecycle";
 
 /**
  * Send a lifecycle card on Comment events.
  */
-@EventHandler("Send a lifecycle message on Comment events",
-    GraphQL.subscription("commentToIssueLifecycle"))
-@Tags("lifecycle", "issue")
-export class CommentToIssueCardLifecycle
-    extends IssueCardLifecycleHandler<graphql.CommentToIssueLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.CommentToIssueLifecycle.Subscription>):
-        [graphql.CommentToIssueLifecycle.Issue,
-            graphql.IssueFields.Repo,
-            graphql.CommentToIssueLifecycle.Comment,
-            string] {
-        const issue = _.get(event.data, "Comment[0].issue") as graphql.CommentToIssueLifecycle.Issue;
-        return [issue, _.get(event.data, "Comment[0].issue.repo"), _.get(event.data, "Comment[0]"),
-            (issue ? Date.parse(issue.timestamp).toString() : Date.now().toString())];
-    }
-
-    protected extractPreferences(event: EventFired<graphql.CommentToIssueLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function commentToIssueCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.CommentToIssueLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "CommentToIssueCardLifecycle",
+        description: "Send a issue lifecycle card on Comment events",
+        tags: ["lifecycle", "issue", "comment"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("commentToIssueLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.CommentToIssueLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new IssueCardLifecycleHandler(
+                    e => {
+                        const issue = _.get(e.data, "Comment[0].issue") as graphql.CommentToIssueLifecycle.Issue;
+                        return [issue, _.get(e.data, "Comment[0].issue.repo"), _.get(e.data, "Comment[0]"),
+                            (issue ? Date.parse(issue.timestamp).toString() : Date.now().toString())];
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }

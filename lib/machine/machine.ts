@@ -24,6 +24,7 @@ import {
     githubAutoMergeSupport,
     githubConvergeSupport,
 } from "@atomist/sdm-pack-rcca-github";
+import { lifecycleSupport } from "./lifecycleSupport";
 
 export async function machine(configuration: LocalSoftwareDeliveryMachineConfiguration)
     : Promise<SoftwareDeliveryMachine> {
@@ -36,6 +37,7 @@ export async function machine(configuration: LocalSoftwareDeliveryMachineConfigu
     sdm.addCommand(cancelGoalSetsCommand(sdm));
 
     sdm.addExtensionPacks(
+        lifecycleSupport(),
         githubAutoMergeSupport(),
         githubConvergeSupport({
             events: { repoGenerated: true },

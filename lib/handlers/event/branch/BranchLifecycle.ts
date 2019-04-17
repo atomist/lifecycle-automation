@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,21 @@ import { SlackMessage } from "@atomist/slack-messages";
 import {
     Lifecycle,
     LifecycleHandler,
+    Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
-import { RaisePrActionContributor } from "./rendering/BranchActionContributors";
-import { BranchNodeRenderer } from "./rendering/BranchNodeRenderers";
 
-export abstract class BranchLifecycle<R> extends LifecycleHandler<R> {
+export class BranchLifecycle<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.BranchToBranchLifecycle.Branch[],
+                    graphql.BranchFields.Repo,
+                    boolean],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(): Promise<SlackMessage> {
         return Promise.resolve({
@@ -50,11 +58,8 @@ export abstract class BranchLifecycle<R> extends LifecycleHandler<R> {
                 const configuration: Lifecycle = {
                     name: LifecyclePreferences.branch.id,
                     nodes,
-                    renderers: [
-                        new BranchNodeRenderer()],
-                    contributors: !repo.org.provider.private ? [
-                        new RaisePrActionContributor(),
-                    ] : [],
+                    renderers: this.contributors.renderers(repo),
+                    contributors: this.contributors.actions(repo),
                     id: `branch_lifecycle/${repo.owner}/${repo.name}/${branch.name}`,
                     // ttl: (1000 * 60 * 60).toString(),
                     timestamp: Date.now().toString(),
@@ -74,8 +79,7 @@ export abstract class BranchLifecycle<R> extends LifecycleHandler<R> {
         }
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.BranchToBranchLifecycle.Branch[],
-            graphql.BranchFields.Repo,
-            boolean];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
+    }
 }

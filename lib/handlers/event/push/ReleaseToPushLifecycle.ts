@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
 import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,40 +33,51 @@ import {
 /**
  * Send a lifecycle message on Release events.
  */
-@EventHandler("Send a lifecycle message on Release events",
-    GraphQL.subscription("releaseToPushLifecycle"))
-@Tags("lifecycle", "push", "release")
-export class ReleaseToPushLifecycle extends PushLifecycleHandler<graphql.ReleaseToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ReleaseToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return event.data.Release[0].tag.commit.pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ReleaseToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(
-            _.get(event, "data.Release[0].tag.commit.pushes[0].repo.org.team.chatTeams"));
-    }
+export function releaseToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ReleaseToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ReleaseToPushLifecycle",
+        description: "Send a push lifecycle message on Release events",
+        tags: ["lifecycle", "push", "release"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("releaseToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => e.data.Release[0].tag.commit.pushes,
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Release[0].tag.commit.pushes[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Release events.
  */
-@EventHandler("Send a lifecycle card on Release events",
-    GraphQL.subscription("releaseToPushLifecycle"))
-@Tags("lifecycle", "push", "release")
-export class ReleaseToPushCardLifecycle extends PushCardLifecycleHandler<graphql.ReleaseToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ReleaseToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return event.data.Release[0].tag.commit.pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ReleaseToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function releaseToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ReleaseToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ReleaseToPushCardLifecycle",
+        description: "Send a push lifecycle card on Release events",
+        tags: ["lifecycle", "push", "release"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("releaseToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => e.data.Release[0].tag.commit.pushes,
+                    contributions,
+                ),
+            );
+        },
+    };
 }
