@@ -29,12 +29,15 @@ import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decor
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import { Lifecycle } from "../../../lifecycle/Lifecycle";
+import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
-import { IssueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
+import { IssueLifecycleHandler } from "../../event/issue/IssueLifecycle";
+import { issueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
 import * as github from "./gitHubApi";
 
 @ConfigurableCommandHandler("Display an issue on GitHub", {
-    intent: [ "show issue", "show github issue" ],
+    intent: ["show issue", "show github issue"],
     autoSubmit: true,
 })
 @Tags("github", "issue")
@@ -66,19 +69,19 @@ export class DisplayGitHubIssue implements HandleCommand {
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return ctx.graphClient.query<graphql.Issue.Query, graphql.Issue.Variables>({
-                name: "issue",
-                variables: {
-                    teamId: ctx.workspaceId,
-                    repoName: this.repo,
-                    issueName: this.issue.toString(),
-                    orgOwner: this.owner,
-                },
-            })
+            name: "issue",
+            variables: {
+                teamId: ctx.workspaceId,
+                repoName: this.repo,
+                issueName: this.issue.toString(),
+                orgOwner: this.owner,
+            },
+        })
             .then(result => {
                 const issues: graphql.Issue.Issue[] =
                     _.cloneDeep(_.get(result, "ChatTeam[0].team.orgs[0].repo[0].issue"));
-                const handler = new ResponseIssueToIssueLifecycle(this.showMore);
-                handler.orgToken = this.githubToken;
+                const handler = issueToIssueLifecycle(DefaultLifecycleOptions.issue.chat,
+                    () => new ResponseIssueToIssueLifecycle(this.showMore)).listener;
 
                 const channels = [{
                     name: this.channelName,
@@ -92,10 +95,10 @@ export class DisplayGitHubIssue implements HandleCommand {
                     // Overwrite the channels to send this message to
                     issues.forEach(i => i.repo.channels = channels);
 
-                    return handler.handle({
+                    return handler({
                         data: { Issue: issues as any },
                         extensions: { operationName: "DisplayGitHubIssue" },
-                    }, ctx);
+                    }, ctx, { orgToken: this.githubToken });
                 } else {
                     // If not in Neo, let's get if from GitHub
                     return github.api(this.githubToken, this.apiUrl).issues.get({
@@ -103,42 +106,48 @@ export class DisplayGitHubIssue implements HandleCommand {
                         repo: this.repo,
                         owner: this.owner,
                     })
-                    .then(gis => {
-                        const gi = gis.data;
-                        const issue: graphql.Issue.Issue = {
-                            repo: {
-                                name: this.repo,
-                                owner: this.owner,
-                                channels,
-                            },
-                            name: this.issue.toString(),
-                            number: this.issue,
-                            title: gi.title,
-                            body: gi.body,
-                            state: gi.state,
-                            labels: gi.labels.map(l => ({ name: l.name })) || [],
-                            createdAt: gi.created_at,
-                            updatedAt: gi.updated_at,
-                            closedAt: gi.closed_at,
-                            assignees: gi.assignees.map(a => ({ login: a.login })) || [],
-                            openedBy: gi.user.login,
-                            resolvingCommits: [],
-                        };
-                        return handler.handle({
-                            data: { Issue: [ issue ] as any },
-                            extensions: { operationName: "DisplayGitHubIssue" },
-                        }, ctx);
-                    });
+                        .then(gis => {
+                            const gi = gis.data;
+                            const issue: graphql.Issue.Issue = {
+                                repo: {
+                                    name: this.repo,
+                                    owner: this.owner,
+                                    channels,
+                                },
+                                name: this.issue.toString(),
+                                number: this.issue,
+                                title: gi.title,
+                                body: gi.body,
+                                state: gi.state,
+                                labels: gi.labels.map(l => ({ name: l.name })) || [],
+                                createdAt: gi.created_at,
+                                updatedAt: gi.updated_at,
+                                closedAt: gi.closed_at,
+                                assignees: gi.assignees.map(a => ({ login: a.login })) || [],
+                                openedBy: gi.user.login,
+                                resolvingCommits: [],
+                            };
+                            return handler({
+                                data: { Issue: [issue] as any },
+                                extensions: { operationName: "DisplayGitHubIssue" },
+                            }, ctx, { orgToken: this.githubToken });
+                        });
                 }
             })
             .catch(failure);
     }
 }
 
-class ResponseIssueToIssueLifecycle extends IssueToIssueLifecycle {
+class ResponseIssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
 
     constructor(private showMore: string) {
-        super();
+        super(e => {
+                const issue = e.data.Issue[0];
+                const repo = e.data.Issue[0].repo;
+                return [issue, repo, Date.now().toString()];
+            },
+            e => chatTeamsToPreferences(_.get(e, "data.Issue[0].repo.org.team.chatTeams")),
+            DefaultLifecycleOptions.issue.chat);
     }
 
     protected processLifecycle(lifecycle: Lifecycle, store: Map<string, any>): Lifecycle {

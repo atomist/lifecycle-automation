@@ -26,7 +26,8 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { PushToPushLifecycle } from "../../../../lib/handlers/event/push/PushToPushLifecycle";
+import { pushToPushLifecycle } from "../../../../lib/handlers/event/push/PushToPushLifecycle";
+import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
 
 describe("PushToPushLifecycle", () => {
 
@@ -130,10 +131,9 @@ describe("PushToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new PushToPushLifecycle();
         const config = `\\"exclude\\":\\"^m.*r$\\"`;
 
-        handler.handle(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext)
+        pushToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })
@@ -164,10 +164,9 @@ describe("PushToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new PushToPushLifecycle();
         const config = `\\"include\\":\\"^m.*r$\\", \\"exclude\\":\\"^m.*r$\\"`;
 
-        handler.handle(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext)
+        pushToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
                 assert(ctx.messageClient.counter === 1);
@@ -196,10 +195,8 @@ describe("PushToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new PushToPushLifecycle();
         const config = `\\"include\\":\\"^feat-.*$\\"`;
-
-        handler.handle(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext)
+        pushToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payload.replace("%%CONFIG%%", config)) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })
@@ -361,9 +358,7 @@ describe("PushToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new PushToPushLifecycle();
-
-        handler.handle(JSON.parse(payloadWithPr) as EventFired<any>, ctx as HandlerContext)
+        pushToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadWithPr) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })
@@ -501,9 +496,8 @@ describe("PushToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new PushToPushLifecycle();
 
-        handler.handle(JSON.parse(payloadCF) as EventFired<any>, ctx as HandlerContext)
+        pushToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadCF) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })

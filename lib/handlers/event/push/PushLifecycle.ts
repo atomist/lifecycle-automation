@@ -26,63 +26,26 @@ import {
     newCardMessage,
 } from "../../../lifecycle/card";
 import {
-    CardActionContributorWrapper,
     Channel,
     Lifecycle,
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
-import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
-import { EventsCardNodeRenderer } from "../../../lifecycle/rendering/EventsCardNodeRenderer";
-import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushToPushLifecycle,
     SdmGoalFields,
 } from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
-import {
-    ApproveGoalActionContributor,
-    DisplayGoalActionContributor,
-    ExpandAttachmentsActionContributor,
-    PullRequestActionContributor,
-    ReleaseActionContributor,
-    sortTagsByName,
-    TagPushActionContributor,
-    TagTagActionContributor,
-} from "./rendering/PushActionContributors";
-import {
-    ApplicationCardNodeRenderer,
-    BuildCardNodeRenderer,
-    CommitCardNodeRenderer,
-    IssueCardNodeRenderer,
-    K8PodCardNodeRenderer,
-    PullRequestCardNodeRenderer,
-    PushCardNodeRenderer,
-    TagCardNodeRenderer,
-} from "./rendering/PushCardNodeRenderers";
-import {
-    ApplicationNodeRenderer,
-    BlackDuckFingerprintNodeRenderer,
-    BuildNodeRenderer,
-    CommitNodeRenderer,
-    ExpandAttachmentsNodeRenderer,
-    ExpandNodeRenderer,
-    IssueNodeRenderer,
-    K8PodNodeRenderer,
-    PullRequestNodeRenderer,
-    PushNodeRenderer,
-    TagNodeRenderer,
-} from "./rendering/PushNodeRenderers";
-import {
-    GoalCardNodeRenderer,
-    GoalSetNodeRenderer,
-    StatusesCardNodeRenderer,
-    StatusesNodeRenderer,
-} from "./rendering/StatusesNodeRenderer";
-import { WorkflowNodeRenderer } from "./workflow/WorkflowNodeRenderer";
+import { sortTagsByName } from "./rendering/PushActionContributors";
 
-export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
+export class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => PushToPushLifecycle.Push[],
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected async prepareMessage(lifecycle: Lifecycle, ctx: HandlerContext): Promise<CardMessage> {
         const msg = newCardMessage("push");
@@ -112,29 +75,8 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
                 nodes,
-                renderers: [
-                    new EventsCardNodeRenderer(node => node.after),
-                    new PushCardNodeRenderer(),
-                    new CommitCardNodeRenderer(),
-                    new BuildCardNodeRenderer(),
-                    new StatusesCardNodeRenderer(),
-                    new GoalCardNodeRenderer(),
-                    new TagCardNodeRenderer(),
-                    new IssueCardNodeRenderer(),
-                    new PullRequestCardNodeRenderer(),
-                    new ApplicationCardNodeRenderer(),
-                    new K8PodCardNodeRenderer(),
-                    new CollaboratorCardNodeRenderer(node => node.after != null),
-                ],
-                contributors: !push.repo.org.provider.private ? [
-                    new CardActionContributorWrapper(new TagPushActionContributor()),
-                    new CardActionContributorWrapper(new TagTagActionContributor()),
-                    new CardActionContributorWrapper(new ReleaseActionContributor()),
-                    new CardActionContributorWrapper(new PullRequestActionContributor()),
-                    new CardActionContributorWrapper(new ApproveGoalActionContributor()),
-                ] : [
-                    new CardActionContributorWrapper(new ApproveGoalActionContributor()),
-                ],
+                renderers: this.contributors.renderers(push),
+                contributors: this.contributors.actions(push),
                 id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
                 timestamp: Date.now().toString(),
                 channels: [{
@@ -160,10 +102,18 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected abstract extractNodes(event: EventFired<R>): PushToPushLifecycle.Push[];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return {};
+    }
 }
 
-export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
+export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => PushToPushLifecycle.Push[],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected async prepareMessage(lifecycle: Lifecycle, ctx: HandlerContext): Promise<SlackMessage> {
         return Promise.resolve({
@@ -191,35 +141,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
                 nodes,
-                renderers: [
-                    new PushNodeRenderer(),
-                    new CommitNodeRenderer(),
-                    new GoalSetNodeRenderer(),
-                    new StatusesNodeRenderer(),
-                    new WorkflowNodeRenderer(),
-                    new IssueNodeRenderer(),
-                    new PullRequestNodeRenderer(),
-                    new ReferencedIssuesNodeRenderer(),
-                    new TagNodeRenderer(),
-                    new BuildNodeRenderer(),
-                    new ApplicationNodeRenderer(),
-                    new K8PodNodeRenderer(),
-                    new BlackDuckFingerprintNodeRenderer(),
-                    new ExpandAttachmentsNodeRenderer(),
-                    new ExpandNodeRenderer()],
-                contributors: !push.repo.org.provider.private ? [
-                    new TagPushActionContributor(),
-                    new TagTagActionContributor(),
-                    new ReleaseActionContributor(),
-                    new PullRequestActionContributor(),
-                    new ApproveGoalActionContributor(),
-                    new DisplayGoalActionContributor(),
-                    new ExpandAttachmentsActionContributor(),
-                ] : [
-                    new ApproveGoalActionContributor(),
-                    new DisplayGoalActionContributor(),
-                    new ExpandAttachmentsActionContributor(),
-                ],
+                renderers: this.contributors.renderers(push),
+                contributors: this.contributors.actions(push),
                 id: createId(push),
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),
                 channels,
@@ -239,8 +162,6 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             return configuration;
         });
     }
-
-    protected abstract extractNodes(event: EventFired<R>): PushToPushLifecycle.Push[];
 
     private filterChannels(push: graphql.PushToPushLifecycle.Push,
                            preferences: { [teamId: string]: Preferences[] } = {})
@@ -297,6 +218,10 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         });
 
         return channelNames;
+    }
+
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
     }
 
 }

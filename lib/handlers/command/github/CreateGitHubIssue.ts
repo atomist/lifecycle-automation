@@ -28,9 +28,10 @@ import {
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
+import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { replaceChatIdWithGitHubId } from "../../../util/helpers";
-import { IssueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
+import { issueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
 import * as github from "./gitHubApi";
 
 @CommandHandler("Create an issue on GitHub", "create issue", "create github issue")
@@ -100,14 +101,14 @@ export class CreateGitHubIssue implements HandleCommand {
                     // to the repo we are creating the issue in.
                     return ctx.graphClient.query<graphql.ChatChannel.Query,
                         graphql.ChatChannel.Variables>({
-                            name: "chatChannel",
-                            variables: {
-                                teamId: this.teamId,
-                                channelName: this.channelName,
-                                repoOwner: this.owner,
-                                repoName: this.repo,
-                            },
-                        })
+                        name: "chatChannel",
+                        variables: {
+                            teamId: this.teamId,
+                            channelName: this.channelName,
+                            repoOwner: this.owner,
+                            repoName: this.repo,
+                        },
+                    })
                         .then(repoChannelMapping => {
                             const repo = _.get(repoChannelMapping, "ChatTeam[0].channels[0].repos[0]");
                             if (!(repo && repo.name === this.repo && repo.owner === this.owner)) {
@@ -123,15 +124,15 @@ export class CreateGitHubIssue implements HandleCommand {
             .then(result => {
                 return ctx.graphClient.query<graphql.ProviderTypeFromRepo.Query,
                     graphql.ProviderTypeFromRepo.Variables>({
-                        name: "providerTypeFromRepo",
-                        variables: {
-                            owner: this.owner,
-                            name: this.repo,
-                            providerId: this.providerId,
-                        },
-                    })
+                    name: "providerTypeFromRepo",
+                    variables: {
+                        owner: this.owner,
+                        name: this.repo,
+                        providerId: this.providerId,
+                    },
+                })
                     .then(providerResult => {
-                        return {issue: result, provider: _.get(providerResult, "Repo[0].org.provider")};
+                        return { issue: result, provider: _.get(providerResult, "Repo[0].org.provider") };
                     });
             })
             .then(result => {
@@ -165,10 +166,12 @@ export class CreateGitHubIssue implements HandleCommand {
                         },
                     };
 
-                    const handler = new IssueToIssueLifecycle();
-                    handler.orgToken = this.githubToken;
-                    return handler.handle(
-                        { data: { Issue: [issue] as any }, extensions: { operationName: "CreateGitHubIssue" } }, ctx);
+                    const handler = issueToIssueLifecycle(DefaultLifecycleOptions.issue.chat).listener;
+                    return handler(
+                        {
+                            data: { Issue: [issue] as any },
+                            extensions: { operationName: "CreateGitHubIssue" },
+                        }, ctx, { orgToken: this.githubToken });
                 } else {
                     return Success;
                 }

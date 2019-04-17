@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    GraphQL,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,47 +33,60 @@ import {
 /**
  * Send a Push lifecycle message on Status events.
  */
-@EventHandler("Send a lifecycle message on Status events",
-    GraphQL.subscription("statusToPushLifecycle"))
-@Tags("lifecycle", "push", "status")
-export class StatusToPushLifecycle extends PushLifecycleHandler<graphql.StatusToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.StatusToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return event.data.Status[0].commit.pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.StatusToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Status[0].commit.pushes[0].repo.org.team.chatTeams"));
-    }
+export function statusToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.StatusToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "StatusToPushLifecycle",
+        description: "Send a push lifecycle message on Status events",
+        tags: ["lifecycle", "push", "status"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("statusToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => e.data.Status[0].commit.pushes,
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Status[0].commit.pushes[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a Push lifecycle card on Status events.
  */
-@EventHandler("Send a lifecycle card on Status events",
-    GraphQL.subscription("statusToPushLifecycle"))
-@Tags("lifecycle", "push", "status")
-export class StatusToPushCardLifecycle extends PushCardLifecycleHandler<graphql.StatusToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.StatusToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-
-        // filter CI statuses as we don't want them to overwrite
-        const cis = ["travis", "jenkins", "circle", "codeship"];
-        const status = event.data.Status[0];
-        if (!cis.some(ci => status.context.includes(ci))) {
-            return event.data.Status[0].commit.pushes;
-        } else {
-            return [];
-        }
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.StatusToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function statusToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.StatusToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "StatusToPushCardLifecycle",
+        description: "Send a push lifecycle card on Status events",
+        tags: ["lifecycle", "push", "status"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("buildToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => {// filter CI statuses as we don't want them to overwrite
+                        const cis = ["travis", "jenkins", "circle", "codeship"];
+                        const status = e.data.Status[0];
+                        if (!cis.some(ci => status.context.includes(ci))) {
+                            return e.data.Status[0].commit.pushes;
+                        } else {
+                            return [];
+                        }
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }
+

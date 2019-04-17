@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,39 +33,51 @@ import {
 /**
  * Send a lifecycle message on Push events.
  */
-@EventHandler("Send a lifecycle message on Push events",
-    GraphQL.subscription("pushToPushLifecycle"))
-@Tags("lifecycle", "push")
-export class PushToPushLifecycle extends PushLifecycleHandler<graphql.PushToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.PushToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return event.data.Push;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.PushToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Push[0].repo.org.team.chatTeams"));
-    }
+export function pushToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.PushToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "PushToPushLifecycle",
+        description: "Send a push lifecycle message on Push events",
+        tags: ["lifecycle", "push"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("pushToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.PushToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => e.data.Push,
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Push[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Push events.
  */
-@EventHandler("Send a lifecycle card on Push events",
-    GraphQL.subscription("pushToPushLifecycle"))
-@Tags("lifecycle", "push")
-export class PushToPushCardLifecycle extends PushCardLifecycleHandler<graphql.PushToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.PushToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return event.data.Push;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.PushToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function pushToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.PushToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "PushToPushCardLifecycle",
+        description: "Send a push lifecycle card on Push events",
+        tags: ["lifecycle", "push"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("pushToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.PushToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => e.data.Push,
+                    contributions,
+                ),
+            );
+        },
+    };
 }

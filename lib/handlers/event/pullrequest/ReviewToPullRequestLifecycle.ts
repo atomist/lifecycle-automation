@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PullRequestCardLifecycleHandler,
@@ -32,47 +33,57 @@ import {
 /**
  * Send a lifecycle message on Review events.
  */
-@EventHandler("Send a lifecycle message on Review events",
-    GraphQL.subscription("reviewToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "review")
-export class ReviewToPullRequestLifecycle
-    extends PullRequestLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ReviewToPullRequestLifecycle.Subscription>):
-        [graphql.ReviewToPullRequestLifecycle.PullRequest, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.Review[0].pullRequest");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ReviewToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Review[0].pullRequest.repo.org.team.chatTeams"));
-    }
+export function reviewToPullRequestLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ReviewToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ReviewToPullRequestLifecycle",
+        description: "Send a PR lifecycle message on Review events",
+        tags: ["lifecycle", "pr", "review"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("reviewToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ReviewToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.Review[0].pullRequest");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Review[0].pullRequest.repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Review events.
  */
-@EventHandler("Send a lifecycle card on Review events",
-    GraphQL.subscription("reviewToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "review")
-export class ReviewToPullRequestCardLifecycle
-    extends PullRequestCardLifecycleHandler<graphql.ReviewToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.ReviewToPullRequestLifecycle.Subscription>):
-        [graphql.ReviewToPullRequestLifecycle.PullRequest, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.Review[0].pullRequest");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.ReviewToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function reviewToPullRequestCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.ReviewToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "ReviewToPullRequestCardLifecycle",
+        description: "Send a pr lifecycle card on Review events",
+        tags: ["lifecycle", "pr", "review"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("reviewToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.ReviewToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestCardLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.Review[0].pullRequest");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { TokenCredentials } from "@atomist/automation-client";
 import {
     bold,
     githubToSlack,
@@ -118,7 +119,7 @@ export class IssueCommentCardNodeRenderer extends AbstractIdentifiableContributi
 
                 return msg;
             }).then(card => {
-                const api = github.api(context.orgToken);
+                const api = github.api((context.credentials as TokenCredentials).token);
                 return api.reactions.getForIssueComment({
                     owner: repo.owner,
                     repo: repo.name,
@@ -205,7 +206,7 @@ export class PullRequestCommentCardNodeRenderer extends AbstractIdentifiableCont
 
                 return Promise.resolve(msg);
             }).then(card => {
-                const api = github.api(context.orgToken);
+                const api = github.api((context.credentials as TokenCredentials).token);
                 return api.reactions.getForIssueComment({
                     owner: repo.owner,
                     repo: repo.name,
