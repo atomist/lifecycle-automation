@@ -1,8 +1,0 @@
-subscription commitToPullRequestLifecycle {
-  Commit {
-    _id
-    pullRequests(first: 1) {
-      ...PullRequestFields
-    }
-  }
-}
