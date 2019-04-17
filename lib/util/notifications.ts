@@ -16,7 +16,6 @@
 
 import {
     addressSlackUsers,
-    buttonForCommand,
     HandlerContext,
 } from "@atomist/automation-client";
 import {
@@ -28,7 +27,6 @@ import {
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { LifecyclePreferencesName } from "../handlers/command/slack/ToggleCustomEmojiEnablement";
-import { RestartTravisBuild } from "../handlers/command/travis/RestartTravisBuild";
 import { DirectMessagePreferences } from "../handlers/event/preferences";
 import { renderDecorator } from "../handlers/event/push/rendering/PushNodeRenderers";
 import * as graphql from "../typings/types";
@@ -449,17 +447,6 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
 
     const commit = build.commit;
 
-    // Add restart action
-    const actions: Action[] = [];
-    if (build.provider === "travis") {
-        const handler = new RestartTravisBuild();
-        handler.owner = repo.owner;
-        handler.repo = repo.name;
-        handler.buildId = build.buildId;
-
-        actions.push(buttonForCommand({ text: "Restart" }, handler));
-    }
-
     const text = "`" + url(commitUrl(repo, commit), commit.sha.substring(0, 7))
         + "` " + truncateCommitMessage(commit.message, repo);
     const [message, color] = renderDecorator(build, [build], text, emojiStyle);
@@ -480,7 +467,6 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
                 footer: repoAndChannelFooter(repo),
                 footer_icon: commitIcon(repo),
                 ts: Math.floor(Date.now() / 1000),
-                actions,
             },
         ],
     };
