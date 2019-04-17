@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,57 +16,55 @@
 
 import {
     AutomationContextAware,
-    EventFired,
-    failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     QueryNoCacheOptions,
     Success,
-    SuccessPromise,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
-import { BranchToBranchLifecycle } from "./BranchToBranchLifecycle";
+import { branchToBranchLifecycle } from "./BranchToBranchLifecycle";
 
 /**
  * Send a lifecycle message on PullRequest events.
  */
-@EventHandler("Send a lifecycle message on Branch events",
-    GraphQL.subscription("pullRequestToBranchLifecycle"))
-@Tags("lifecycle", "branch", "pr")
-export class PullRequestToBranchLifecycle implements HandleEvent<graphql.PullRequestToBranchLifecycle.Subscription> {
+export function pullRequestToBranchLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.PullRequestToBranchLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "PullRequestToBranchLifecycle",
+        description: "Send a branch lifecycle message on PullRequest events",
+        tags: ["lifecycle", "branch", "pr"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("pullRequestToBranchLifecycle"),
+        listener: async (e, ctx, params) => {
 
-    public handle(e: EventFired<graphql.PullRequestToBranchLifecycle.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-        const pr = e.data.PullRequest[0];
+            const pr = e.data.PullRequest[0];
 
-        return ctx.graphClient.query
-                <graphql.BranchWithPullRequest.Query, graphql.BranchWithPullRequest.Variables>({
+            const result = await ctx.graphClient.query<graphql.BranchWithPullRequest.Query, graphql.BranchWithPullRequest.Variables>({
                 name: "branchWithPullRequest",
                 variables: { id: pr.branch.id },
                 options: QueryNoCacheOptions,
-            })
-            .then(result => {
-                if (result && result.Branch && result.Branch.length > 0) {
-                    const handler = new BranchToBranchLifecycle();
-                    const event: any = {
-                        data: { Branch: result.Branch },
-                        extensions: {
-                            type: "READ_ONLY",
-                            operationName: "PullRequestToBranchLifecycle",
-                            team_id: ctx.workspaceId,
-                            team_name: (ctx as any as AutomationContextAware).context.workspaceName,
-                            correlation_id: ctx.correlationId,
-                        },
-                    };
-                    return handler.handle(event, ctx);
-                } else {
-                    return SuccessPromise;
-                }
-            })
-            .then(() => Success, failure);
-    }
+            });
+            if (result && result.Branch && result.Branch.length > 0) {
+                const handler = branchToBranchLifecycle(contributions).listener;
+                const event: any = {
+                    data: { Branch: result.Branch },
+                    extensions: {
+                        type: "READ_ONLY",
+                        operationName: "PullRequestToBranchLifecycle",
+                        team_id: ctx.workspaceId,
+                        team_name: (ctx as any as AutomationContextAware).context.workspaceName,
+                        correlation_id: ctx.correlationId,
+                    },
+                };
+                return handler(event, ctx, params);
+            }
+            return Success;
+        },
+    };
 }

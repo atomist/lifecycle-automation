@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,21 @@
 
 import {
     addressEvent,
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     QueryNoCacheOptions,
-    Secret,
-    Secrets,
     success,
     Success,
-    Tags,
+    TokenCredentials,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import * as graphql from "../../../typings/types";
+import {
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+    resolveEventHandlerCredentials,
+} from "../../../lifecycle/Lifecycle";
+import { CommentOnRelatedIssueClosed } from "../../../typings/types";
 import { AtomistGeneratedLabel } from "../../../util/helpers";
 import * as github from "../../command/github/gitHubApi";
 
@@ -57,19 +56,19 @@ const RelatedIssueQuery = `query RelatedIssue($owner: [String]!, $repo: [String]
 /**
  * Create a comment if a related issue is closed.
  */
-@EventHandler("Create a comment if a related issue is closed", GraphQL.subscription("commentOnRelatedIssueClosed"))
-@Tags("lifecycle", "issue")
-export class CommentOnRelatedIssueClosed
-    implements HandleEvent<graphql.CommentOnRelatedIssueClosed.Subscription> {
+export function commentOnRelatedIssueClosed(): EventHandlerRegistration<CommentOnRelatedIssueClosed.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "CommentOnRelatedIssueClosed",
+        description: "Create a comment if a related issue is closed",
+        tags: ["lifecycle", "issue"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("commentOnRelatedIssueClosed"),
+        listener: async (e, ctx, params) => {
+            const creds = await resolveEventHandlerCredentials(e, params, ctx);
 
-    @Secret(Secrets.OrgToken)
-    public orgToken: string;
+            const issue = e.data.Issue[0];
 
-    public handle(event: EventFired<graphql.CommentOnRelatedIssueClosed.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-        const issue = event.data.Issue[0];
-
-        return ctx.graphClient.query<any, any>({
+            return ctx.graphClient.query<any, any>({
                 query: RelatedIssueQuery,
                 variables: {
                     owner: [issue.repo.owner],
@@ -77,34 +76,35 @@ export class CommentOnRelatedIssueClosed
                     issue: [issue.number.toString()],
                 },
                 options: QueryNoCacheOptions,
-        })
-        .then(result => {
-            if (result
-                && result.IssueRelationship
-                && result.IssueRelationship.length > 0) {
+            })
+                .then(result => {
+                    if (result
+                        && result.IssueRelationship
+                        && result.IssueRelationship.length > 0) {
 
-                const api = github.api(this.orgToken);
+                        const api = github.api((creds as TokenCredentials).token);
 
-                return Promise.all(result.IssueRelationship.map(ir => {
-                    return api.issues.createComment({
-                        owner: ir.source.owner,
-                        repo: ir.source.repo,
-                        number: ir.source.issue,
-                        body: `Related issue ${ir.target.owner}/${ir.target.repo}#${
-                            ir.target.issue} closed by @${issue.closedBy.login}
+                        return Promise.all(result.IssueRelationship.map(ir => {
+                            return api.issues.createComment({
+                                owner: ir.source.owner,
+                                repo: ir.source.repo,
+                                number: ir.source.issue,
+                                body: `Related issue ${ir.target.owner}/${ir.target.repo}#${
+                                    ir.target.issue} closed by @${issue.closedBy.login}
 
 [${AtomistGeneratedLabel}] [atomist:related-issue]`,
-                    })
-                    .then(() => {
-                        const issueRel = _.cloneDeep(ir);
-                        issueRel.state = "closed";
-                        return ctx.messageClient.send(issueRel, addressEvent("IssueRelationship"));
-                    });
-                }))
-                .then(success);
-            }
-            return Success;
-        })
-        .then(success, failure);
-    }
+                            })
+                                .then(() => {
+                                    const issueRel = _.cloneDeep(ir);
+                                    issueRel.state = "closed";
+                                    return ctx.messageClient.send(issueRel, addressEvent("IssueRelationship"));
+                                });
+                        }))
+                            .then(success);
+                    }
+                    return Success;
+                })
+                .then(success, failure);
+        },
+    };
 }

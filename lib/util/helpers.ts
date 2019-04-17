@@ -763,8 +763,7 @@ export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignee
 
     let footer = slack.url(repoUrl(repo), `${repo.owner}/${repo.name}`);
     if (labels != null && labels.length > 0) {
-        footer += " \u00B7 "
-            + labels.map(l => l.name).join(" \u00B7 ");
+        footer += " \u00B7 " + labels.map(l => l.name).join(" \u00B7 ");
     }
     if (assignees != null && assignees.length > 0) {
         footer += " \u00B7 " + assignees.map(a => a.login).join(" \u00B7 ");

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,46 +33,59 @@ import {
 /**
  * Send a lifecycle message on Issue events.
  */
-@EventHandler("Send a lifecycle message on Issue events",
-    GraphQL.subscription("issueToPushLifecycle"))
-@Tags("lifecycle", "push", "issue")
-export class IssueToPushLifecycle extends PushLifecycleHandler<graphql.IssueToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.IssueToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-
-        const pushes = [];
-        event.data.Issue[0].resolvingCommits.forEach(c => pushes.push(...c.pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.IssueToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(
-            _.get(event, "data.Issue[0].resolvingCommits[0].pushes[0].repo.org.team.chatTeams"));
-    }
+export function issueToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.IssueToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "IssueToPushLifecycle",
+        description: "Send a push lifecycle message on Issue events",
+        tags: ["lifecycle", "push", "issue"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("issueToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.IssueToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.Issue[0].resolvingCommits.forEach(c => pushes.push(...c.pushes));
+                        return pushes;
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Issue[0].resolvingCommits[0].pushes[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Issue events.
  */
-@EventHandler("Send a lifecycle card on Issue events",
-    GraphQL.subscription("issueToPushLifecycle"))
-@Tags("lifecycle", "push", "issue")
-export class IssueToPushCardLifecycle extends PushCardLifecycleHandler<graphql.IssueToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.IssueToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-
-        const pushes = [];
-        event.data.Issue[0].resolvingCommits.forEach(c => pushes.push(...c.pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.IssueToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
-}
+export function issueToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.IssueToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "IssueToPushCardLifecycle",
+        description: "Send a push lifecycle card on Issue events",
+        tags: ["lifecycle", "push", "issue"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("issueToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.IssueToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.Issue[0].resolvingCommits.forEach(c => pushes.push(...c.pushes));
+                        return pushes;
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
+};

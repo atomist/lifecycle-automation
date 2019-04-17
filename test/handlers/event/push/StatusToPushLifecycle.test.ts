@@ -27,7 +27,8 @@ import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { fail } from "power-assert";
-import { StatusToPushLifecycle } from "../../../../lib/handlers/event/push/StatusToPushLifecycle";
+import { statusToPushLifecycle } from "../../../../lib/handlers/event/push/StatusToPushLifecycle";
+import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
 
 describe("StatusToPushLifecycle", () => {
 
@@ -220,8 +221,7 @@ describe("StatusToPushLifecycle", () => {
             graphClient: new MockGraphClient(),
             messageClient: new MockMessageClient(),
         };
-        const handler = new StatusToPushLifecycle();
-        handler.handle(JSON.parse(payloadRaisePr) as EventFired<any>, ctx as any as HandlerContext)
+        statusToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadRaisePr) as EventFired<any>, ctx as any as HandlerContext, {})
             .then(result => {
                 assert(messageSent);
                 assert(result.code === 0);
@@ -374,8 +374,7 @@ describe("StatusToPushLifecycle", () => {
             graphClient: new MockGraphClient(),
             messageClient: new MockMessageClient(),
         };
-        const handler = new StatusToPushLifecycle();
-        handler.handle(JSON.parse(payloadNoChannel) as EventFired<any>, ctx as any as HandlerContext)
+        statusToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadNoChannel) as EventFired<any>, ctx as any as HandlerContext, {})
             .then(result => {
                 assert(!messageSent);
                 assert(result.code === 0);
@@ -574,8 +573,8 @@ describe("StatusToPushLifecycle", () => {
             graphClient: new MockGraphClient(),
             messageClient: new MockMessageClient(),
         };
-        const handler = new StatusToPushLifecycle();
-        handler.handle(JSON.parse(payloadNoRaisePr) as EventFired<any>, ctx as any as HandlerContext)
+
+        statusToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadNoRaisePr) as EventFired<any>, ctx as any as HandlerContext, {})
             .then(result => {
                 assert(messageSent);
                 assert(result.code === 0);
@@ -1164,8 +1163,7 @@ describe("StatusToPushLifecycle", () => {
             graphClient: new MockGraphClient(),
             messageClient: new MockMessageClient(),
         };
-        const handler = new StatusToPushLifecycle();
-        handler.handle(JSON.parse(payloadWithGoals) as EventFired<any>, ctx as any as HandlerContext)
+        statusToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payloadWithGoals) as EventFired<any>, ctx as any as HandlerContext, {})
             .then(result => {
                 assert(messageSent);
                 assert(result.code === 0);

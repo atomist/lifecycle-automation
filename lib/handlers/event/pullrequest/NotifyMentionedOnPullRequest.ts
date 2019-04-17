@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,12 @@
  */
 
 import {
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import * as graphql from "../../../typings/types";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import { NotifyMentionedOnPullRequest } from "../../../typings/types";
 import {
     prAssigneeNotification,
     prAuthorMergeNotification,
@@ -33,43 +28,44 @@ import {
     prRevieweeNotification,
 } from "../../../util/notifications";
 
-@EventHandler("Notify mentioned user in slack", GraphQL.subscription("notifyMentionedOnPullRequest"))
-@Tags("lifecycle", "pr", "notification")
-export class NotifyMentionedOnPullRequest implements HandleEvent<graphql.NotifyMentionedOnPullRequest.Subscription> {
+export function notifyMentionedOnPullRequest(): EventHandlerRegistration<NotifyMentionedOnPullRequest.Subscription> {
+    return {
+        name: "NotifyMentionedOnPullRequest",
+        description: "Notify mentioned user in slack",
+        tags: ["lifecycle", "pr", "notification"],
+        subscription: GraphQL.subscription("notifyMentionedOnPullRequest"),
+        listener: async (e, ctx) => {
+            const pr = e.data.PullRequest[0];
+            const repo = pr.repo;
 
-    public handle(root: EventFired<graphql.NotifyMentionedOnPullRequest.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-
-        const pr = root.data.PullRequest[0];
-        const repo = pr.repo;
-
-        return prNotification(pr.number.toString(), "New mention in pull request",
-            pr.body, pr.author, pr, repo, ctx)
-            .then(_ => {
-                if (pr.assignees) {
-                    return Promise.all(pr.assignees.map(a =>
-                        prAssigneeNotification(pr.number.toString(), "New assignment of pull request", pr.body,
-                            a, pr, repo, ctx)));
-                } else {
-                    return Promise.resolve(null);
-                }
-            })
-            .then(() => {
-                if (pr.reviewers) {
-                    return Promise.all(pr.reviewers.map(r =>
-                        prRevieweeNotification(pr.number.toString(), "New review request for pull request", pr.body,
-                            r, pr, repo, ctx)));
-                } else {
-                    return Promise.resolve(null);
-                }
-            })
-            .then(() => {
-                if (pr.state === "closed") {
-                    return prAuthorMergeNotification(pr.number.toString(), pr, repo, ctx);
-                } else {
-                    return Promise.resolve(null);
-                }
-            })
-            .then(() => Success, failure);
+            return prNotification(pr.number.toString(), "New mention in pull request",
+                pr.body, pr.author, pr, repo, ctx)
+                .then(_ => {
+                    if (pr.assignees) {
+                        return Promise.all(pr.assignees.map(a =>
+                            prAssigneeNotification(pr.number.toString(), "New assignment of pull request", pr.body,
+                                a, pr, repo, ctx)));
+                    } else {
+                        return Promise.resolve(null);
+                    }
+                })
+                .then(() => {
+                    if (pr.reviewers) {
+                        return Promise.all(pr.reviewers.map(r =>
+                            prRevieweeNotification(pr.number.toString(), "New review request for pull request", pr.body,
+                                r, pr, repo, ctx)));
+                    } else {
+                        return Promise.resolve(null);
+                    }
+                })
+                .then(() => {
+                    if (pr.state === "closed") {
+                        return prAuthorMergeNotification(pr.number.toString(), pr, repo, ctx);
+                    } else {
+                        return Promise.resolve(null);
+                    }
+                })
+                .then(() => Success, failure);
+        },
     }
 }

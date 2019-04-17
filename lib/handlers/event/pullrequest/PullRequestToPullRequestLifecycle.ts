@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,18 @@
  */
 
 import {
-    EventFired,
-    Tags,
+    GraphQL,
+    Maker,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PullRequestCardLifecycleHandler,
@@ -32,47 +36,56 @@ import {
 /**
  * Send a lifecycle message on PullRequest events.
  */
-@EventHandler("Send a lifecycle message on PullRequest events",
-    GraphQL.subscription("pullRequestToPullRequestLifecycle"))
-@Tags("lifecycle", "pr")
-export class PullRequestToPullRequestLifecycle
-    extends PullRequestLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription> {
+export function pullRequestToPullRequestLifecycle(contributions: Contributions,
+                                                  maker?: Maker<PullRequestLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription>>)
+    : EventHandlerRegistration<graphql.PullRequestToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
 
-    protected extractNodes(event: EventFired<graphql.PullRequestToPullRequestLifecycle.Subscription>):
-        [graphql.PullRequestToPullRequestLifecycle.PullRequest,
-            graphql.PullRequestFields.Repo,
-            string, boolean] {
+    const defaultMaker: Maker<PullRequestLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription>> =
+        () => new PullRequestLifecycleHandler(
+            e => [e.data.PullRequest[0], e.data.PullRequest[0].repo, Date.now().toString(), false],
+            e => chatTeamsToPreferences(
+                _.get(e, "data.PullRequest[0].repo.org.team.chatTeams")),
+            contributions,
+        );
 
-        return [event.data.PullRequest[0], event.data.PullRequest[0].repo, Date.now().toString(), false];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.PullRequestToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.PullRequest[0].repo.org.team.chatTeams"));
-    }
+    return {
+        name: "PullRequestToPullRequestLifecycle",
+        description: "Send a PR lifecycle message on PullRequest events",
+        tags: ["lifecycle", "pr"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("pullRequestToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                !!maker ? maker : defaultMaker,
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on PullRequest events.
  */
-@EventHandler("Send a lifecycle card on PullRequest events",
-    GraphQL.subscription("pullRequestToPullRequestLifecycle"))
-@Tags("lifecycle", "pr")
-export class PullRequestToPullRequestCardLifecycle
-    extends PullRequestCardLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.PullRequestToPullRequestLifecycle.Subscription>):
-        [graphql.PullRequestToPullRequestLifecycle.PullRequest,
-        graphql.PullRequestFields.Repo,
-        string, boolean] {
-
-        return [event.data.PullRequest[0], event.data.PullRequest[0].repo, Date.now().toString(), false];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.PullRequestToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function pullRequestToPullRequestCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.PullRequestToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "PullRequestToPullRequestCardLifecycle",
+        description: "Send a pr lifecycle card on PullRequest events",
+        tags: ["lifecycle", "pr"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("pullRequestToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestCardLifecycleHandler(
+                    e => [e.data.PullRequest[0], e.data.PullRequest[0].repo, Date.now().toString(), false],
+                    contributions,
+                ),
+            );
+        },
+    };
 }
