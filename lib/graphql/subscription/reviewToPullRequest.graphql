@@ -1,8 +1,0 @@
-subscription reviewToPullRequestLifecycle {
-  Review {
-    _id
-    pullRequest {
-      ...PullRequestFields
-    }
-  }
-}
