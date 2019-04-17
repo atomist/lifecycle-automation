@@ -25,41 +25,23 @@ import {
     newCardMessage,
 } from "../../../lifecycle/card";
 import {
-    CardActionContributorWrapper,
     Lifecycle,
     LifecycleHandler,
+    Preferences,
 } from "../../../lifecycle/Lifecycle";
-import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
-import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
-import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
-import { isGitHub } from "../../../util/helpers";
 import { LifecyclePreferences } from "../preferences";
-import {
-    ApproveActionContributor,
-    AssignReviewerActionContributor,
-    AutoMergeActionContributor,
-    CommentActionContributor,
-    DeleteActionContributor,
-    MergeActionContributor,
-    ThumbsUpActionContributor,
-} from "./rendering/PullRequestActionContributors";
-import {
-    BuildCardNodeRenderer,
-    CommitCardNodeRenderer,
-    PullRequestCardNodeRenderer,
-    ReviewCardNodeRenderer,
-    StatusCardNodeRenderer,
-} from "./rendering/PullRequestCardNodeRenderers";
-import {
-    BuildNodeRenderer,
-    CommitNodeRenderer,
-    PullRequestNodeRenderer,
-    ReviewNodeRenderer,
-    StatusNodeRenderer,
-} from "./rendering/PullRequestNodeRenderers";
 
-export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
+export class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.PullRequestToPullRequestLifecycle.PullRequest,
+                    graphql.PullRequestFields.Repo,
+                    string,
+                    boolean],
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(lifecycle: Lifecycle): Promise<CardMessage> {
         const msg = newCardMessage("pullrequest");
@@ -98,23 +80,8 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
         const configuration: Lifecycle = {
             name: LifecyclePreferences.pull_request.id,
             nodes,
-            renderers: [
-                new PullRequestCardNodeRenderer(),
-                new CommitCardNodeRenderer(),
-                new BuildCardNodeRenderer(),
-                new StatusCardNodeRenderer(),
-                new ReviewCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.baseBranchName != null),
-            ],
-            contributors: !repo.org.provider.private ? [
-                new CardActionContributorWrapper(new MergeActionContributor()),
-                new CardActionContributorWrapper(new AssignReviewerActionContributor()),
-                new CardActionContributorWrapper(new AutoMergeActionContributor()),
-                new CardActionContributorWrapper(new CommentActionContributor()),
-                new CardActionContributorWrapper(new ThumbsUpActionContributor()),
-                new CardActionContributorWrapper(new ApproveActionContributor()),
-                new CardActionContributorWrapper(new DeleteActionContributor()),
-            ] : [],
+            renderers: this.contributors.renderers(repo),
+            contributors: this.contributors.actions(repo),
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),
@@ -134,14 +101,21 @@ export abstract class PullRequestCardLifecycleHandler<R> extends LifecycleHandle
         return [configuration];
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.PullRequestToPullRequestLifecycle.PullRequest,
-            graphql.PullRequestFields.Repo,
-            string,
-            boolean];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return {};
+    }
 }
 
-export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
+export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.PullRequestToPullRequestLifecycle.PullRequest,
+                    graphql.PullRequestFields.Repo,
+                    string,
+                    boolean],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(): Promise<SlackMessage> {
         return Promise.resolve({
@@ -175,23 +149,8 @@ export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R>
         const configuration: Lifecycle = {
             name: LifecyclePreferences.pull_request.id,
             nodes,
-            renderers: [
-                new PullRequestNodeRenderer(),
-                new CommitNodeRenderer(),
-                new BuildNodeRenderer(),
-                new StatusNodeRenderer(),
-                new ReviewNodeRenderer(),
-                new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open")],
-            contributors: !repo.org.provider.private ? [
-                new MergeActionContributor(),
-                new AssignReviewerActionContributor(),
-                new AutoMergeActionContributor(),
-                new CommentActionContributor(),
-                new ThumbsUpActionContributor(),
-                new ApproveActionContributor(),
-                new DeleteActionContributor(),
-            ] : [],
+            renderers: this.contributors.renderers(repo),
+            contributors: this.contributors.actions(repo),
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),
@@ -208,9 +167,8 @@ export abstract class PullRequestLifecycleHandler<R> extends LifecycleHandler<R>
         return [configuration];
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.PullRequestToPullRequestLifecycle.PullRequest,
-            graphql.PullRequestFields.Repo,
-            string,
-            boolean];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
+    }
+
 }

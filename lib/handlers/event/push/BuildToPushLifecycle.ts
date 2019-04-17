@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,40 +33,51 @@ import {
 /**
  * Send a lifecycle message on Build events.
  */
-@EventHandler("Send a lifecycle message on Build events",
-    GraphQL.subscription("buildToPushLifecycle"))
-@Tags("lifecycle", "push", "build")
-export class BuildToPushLifecycle extends PushLifecycleHandler<graphql.BuildToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.BuildToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return [event.data.Build[0].push];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.BuildToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Build[0].push.repo.org.team.chatTeams"));
-    }
+export function buildToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.BuildToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "BuildToPushLifecycle",
+        description: "Send a push lifecycle message on Build events",
+        tags: ["lifecycle", "push", "build"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("buildToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.BuildToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => [e.data.Build[0].push],
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Build[0].push.repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on Build events.
  */
-@EventHandler("Send a lifecycle card on Build events",
-    GraphQL.subscription("buildToPushLifecycle"))
-@Tags("lifecycle", "push", "build")
-export class BuildToPushCardLifecycle
-    extends PushCardLifecycleHandler<graphql.BuildToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.BuildToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return [event.data.Build[0].push];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.BuildToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function buildToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.BuildToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "BuildToPushCardLifecycle",
+        description: "Send a push lifecycle card on Build events",
+        tags: ["lifecycle", "push", "build"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("buildToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.BuildToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => [e.data.Build[0].push],
+                    contributions,
+                ),
+            );
+        },
+    };
 }

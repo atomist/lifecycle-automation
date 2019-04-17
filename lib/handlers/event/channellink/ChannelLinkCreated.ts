@@ -36,6 +36,7 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
+import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { repoSlackLink } from "../../../util/helpers";
 import {
@@ -43,7 +44,7 @@ import {
     InstallGitHubRepoWebhook,
 } from "../../command/github/InstallGitHubWebhook";
 import { ListRepoLinks } from "../../command/slack/ListRepoLinks";
-import { PushToPushLifecycle } from "../push/PushToPushLifecycle";
+import { pushToPushLifecycle } from "../push/PushToPushLifecycle";
 
 @EventHandler("Display an unlink message when a channel is linked", GraphQL.subscription("channelLinkCreated"))
 @Tags("enrollment")
@@ -153,16 +154,14 @@ function showLastPush(repo: graphql.ChannelLinkCreated.Repo, token: string, ctx:
         })
         .then(push => {
             if (push) {
-                const handler = new PushToPushLifecycle();
-                handler.orgToken = token;
-                return handler.handle({
+                return pushToPushLifecycle(DefaultLifecycleOptions.push.web).listener({
                     data: {
                         Push: _.cloneDeep(push.Push),
                     },
                     extensions: {
-                        operationName: "PushToPushLifecycle",
+                        operationName: pushToPushLifecycle(DefaultLifecycleOptions.push.web).name,
                     },
-                }, ctx);
+                }, ctx, { orgToken: token });
             }
             return null;
         });

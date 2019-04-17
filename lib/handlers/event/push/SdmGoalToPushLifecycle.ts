@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,41 +33,51 @@ import {
 /**
  * Send a Push lifecycle message on SdmGoal events.
  */
-@EventHandler("Send a lifecycle message on SdmGoal events",
-    GraphQL.subscription("sdmGoalToPushLifecycle"))
-@Tags("lifecycle", "push", "sdm goal")
-export class SdmGoalToPushLifecycle
-    extends PushLifecycleHandler<graphql.SdmGoalToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return [event.data.SdmGoal[0].push];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.SdmGoal[0].push.repo.org.team.chatTeams"));
-    }
+export function sdmGoalToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.SdmGoalToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "SdmGoalToPushLifecycle",
+        description: "Send a push lifecycle message on SdmGoal events",
+        tags: ["lifecycle", "push", "sdm goal"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("sdmGoalToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => [e.data.SdmGoal[0].push],
+                    e => chatTeamsToPreferences(
+                        _.get(e, "\"data.SdmGoal[0].push.repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on SdmGoal events.
  */
-@EventHandler("Send a lifecycle card on Release events",
-    GraphQL.subscription("sdmGoalToPushLifecycle"))
-@Tags("lifecycle", "push", "sdm release")
-export class SdmGoalToPushCardLifecycle
-    extends PushCardLifecycleHandler<graphql.SdmGoalToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return [event.data.SdmGoal[0].push];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function sdmGoalToPushCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.SdmGoalToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "SdmGoalToPushCardLifecycle",
+        description: "Send a push lifecycle card on SdmGoal events",
+        tags: ["lifecycle", "push", "sdm goal"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("sdmGoalToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => [e.data.SdmGoal[0].push],
+                    contributions,
+                ),
+            );
+        },
+    };
 }

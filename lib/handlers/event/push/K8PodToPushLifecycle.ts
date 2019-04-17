@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PushCardLifecycleHandler,
@@ -32,50 +33,61 @@ import {
 /**
  * Send a lifecycle message on K8Pod events.
  */
-@EventHandler("Send a lifecycle message on K8Pod events",
-    GraphQL.subscription("k8PodToPushLifecycle"))
-@Tags("lifecycle", "push", "k8pod")
-export class K8PodToPushLifecycle extends PushLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.K8PodToPushLifecycle.Subscription>):
-        graphql.K8PodToPushLifecycle.Pushes[] {
-
-        const pushes = [];
-        event.data.K8Pod[0].images
-            .filter(i => i.commits && i.commits.length > 0)
-            .forEach(i => pushes.push(...i.commits[0].pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.K8PodToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(
-            _.get(event, "data.K8Pod[0].images[0].commits[0].pushes[0].repo.org.team.chatTeams"));
-    }
+export function k8PodToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.K8PodToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "K8PodToPushLifecycle",
+        description: "Send a push lifecycle message on K8Pod events",
+        tags: ["lifecycle", "push", "k8pod"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("k8PodToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.K8Pod[0].images
+                            .filter(i => i.commits && i.commits.length > 0)
+                            .forEach(i => pushes.push(...i.commits[0].pushes));
+                        return pushes;
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.K8Pod[0].images[0].commits[0].pushes[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on K8Pod events.
  */
-@EventHandler("Send a lifecycle card on K8Pod events",
-    GraphQL.subscription("k8PodToPushLifecycle"))
-@Tags("lifecycle", "push", "k8pod")
-export class K8PodToPushCardLifecycle extends PushCardLifecycleHandler<graphql.K8PodToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.K8PodToPushLifecycle.Subscription>):
-        graphql.K8PodToPushLifecycle.Pushes[] {
-
-        const pushes = [];
-        event.data.K8Pod[0].images
-            .filter(i => i.commits && i.commits.length > 0)
-            .forEach(i => pushes.push(...i.commits[0].pushes));
-        return pushes;
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.K8PodToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function k8PodToPushCardLifecycle(contributions: Contributions): EventHandlerRegistration<graphql.K8PodToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "K8PodToPushCardLifecycle",
+        description: "Send a push lifecycle card on K8Pod events",
+        tags: ["lifecycle", "push", "k8pod"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("k8PodToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushCardLifecycleHandler(
+                    e => {
+                        const pushes = [];
+                        e.data.K8Pod[0].images
+                            .filter(i => i.commits && i.commits.length > 0)
+                            .forEach(i => pushes.push(...i.commits[0].pushes));
+                        return pushes;
+                    },
+                    contributions,
+                ));
+        },
+    };
 }

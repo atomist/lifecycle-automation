@@ -29,7 +29,8 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { BranchToBranchLifecycle } from "../../../../lib/handlers/event/branch/BranchToBranchLifecycle";
+import { branchToBranchLifecycle } from "../../../../lib/handlers/event/branch/BranchToBranchLifecycle";
+import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
 
 describe("BranchToBranchLifecycle", () => {
 
@@ -115,9 +116,9 @@ describe("BranchToBranchLifecycle", () => {
         const ctx: any = {
             messageClient: new DefaultSlackMessageClient(new MockMessageClient(), null),
         };
-        const handler = new BranchToBranchLifecycle();
+        const handler = branchToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
 
-        handler.handle(JSON.parse(payload) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })
@@ -207,9 +208,9 @@ describe("BranchToBranchLifecycle", () => {
             invocationId: guid(),
             messageClient: new DefaultSlackMessageClient(new MockMessageClient(), null),
         };
-        const handler = new BranchToBranchLifecycle();
+        const handler = branchToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
 
-        handler.handle(JSON.parse(payload1) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload1) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(!messageSent);
                 assert(result.code === 0);
@@ -305,9 +306,9 @@ describe("BranchToBranchLifecycle", () => {
             invocationId: guid(),
             messageClient: new DefaultSlackMessageClient(new MockMessageClient(), null),
         };
-        const handler = new BranchToBranchLifecycle();
+        const handler = branchToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
 
-        handler.handle(JSON.parse(payload2) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload2) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(messageSent);
                 assert(result.code === 0);
@@ -333,9 +334,9 @@ describe("BranchToBranchLifecycle", () => {
             invocationId: guid(),
             messageClient: new DefaultSlackMessageClient(new MockMessageClient(), null),
         };
-        const handler = new BranchToBranchLifecycle();
+        const handler = branchToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
 
-        handler.handle(JSON.parse(payloadFailure) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payloadFailure) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })

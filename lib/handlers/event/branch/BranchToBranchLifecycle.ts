@@ -14,36 +14,45 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { BranchLifecycle } from "./BranchLifecycle";
 
 /**
  * Send a lifecycle message on Branch events.
  */
-@EventHandler("Send a lifecycle message on Branch events",
-    GraphQL.subscription("branchToBranchLifecycle"))
-@Tags("lifecycle", "branch")
-export class BranchToBranchLifecycle
-    extends BranchLifecycle<graphql.BranchToBranchLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.BranchToBranchLifecycle.Subscription>)
-        : [graphql.BranchToBranchLifecycle.Branch[], graphql.BranchFields.Repo, boolean] {
-
-        const branch = _.get(event, "data.Branch[0]");
-        return [[branch], branch.repo, false];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.BranchToBranchLifecycle.Subscription>): { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.Branch[0].repo.org.team.chatTeams"));
-    }
+export function branchToBranchLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.BranchToBranchLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "BranchToBranchLifecycle",
+        description: "Send a branch lifecycle message on Branch events",
+        tags: ["lifecycle", "branch"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("branchToBranchLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.BranchToBranchLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new BranchLifecycle(
+                    e => {
+                        const branch = _.get(e, "data.Branch[0]");
+                        return [[branch], branch.repo, false];
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.Branch[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }

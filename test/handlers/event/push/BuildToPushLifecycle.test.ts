@@ -25,7 +25,8 @@ import {
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import { BuildToPushLifecycle } from "../../../../lib/handlers/event/push/BuildToPushLifecycle";
+import { buildToPushLifecycle } from "../../../../lib/handlers/event/push/BuildToPushLifecycle";
+import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
 
 describe("BuildToPushLifecycle", () => {
 
@@ -140,8 +141,7 @@ describe("BuildToPushLifecycle", () => {
             },
             messageClient: new MockMessageClient(),
         };
-        const handler = new BuildToPushLifecycle();
-        handler.handle(JSON.parse(payload) as EventFired<any>, ctx)
+        buildToPushLifecycle(DefaultLifecycleOptions.push.chat).listener(JSON.parse(payload) as EventFired<any>, ctx, {})
             .then(result => {
                 assert.deepEqual(result, Success);
             })

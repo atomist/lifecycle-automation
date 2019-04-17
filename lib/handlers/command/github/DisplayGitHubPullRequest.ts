@@ -29,12 +29,15 @@ import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decor
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import { Lifecycle } from "../../../lifecycle/Lifecycle";
+import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
-import { PullRequestToPullRequestLifecycle } from "../../event/pullrequest/PullRequestToPullRequestLifecycle";
+import { PullRequestLifecycleHandler } from "../../event/pullrequest/PullRequestLifecycle";
+import { pullRequestToPullRequestLifecycle } from "../../event/pullrequest/PullRequestToPullRequestLifecycle";
 import * as github from "./gitHubApi";
 
 @ConfigurableCommandHandler("Display a pull request on GitHub", {
-    intent: [ "show pull request", "show pr", "show github pr", "show github pull request" ],
+    intent: ["show pull request", "show pr", "show github pr", "show github pull request"],
     autoSubmit: true,
 })
 @Tags("github", "pr")
@@ -60,33 +63,42 @@ export class DisplayGitHubPullRequest implements HandleCommand {
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
         return ctx.graphClient.query<graphql.PullRequest.Query, graphql.PullRequest.Variables>({
-                name: "pullRequest",
-                variables: {
-                    teamId: ctx.workspaceId,
-                    repoName: this.repo,
-                    prName: this.issue,
-                    orgOwner: this.owner,
-                },
-            })
+            name: "pullRequest",
+            variables: {
+                teamId: ctx.workspaceId,
+                repoName: this.repo,
+                prName: this.issue,
+                orgOwner: this.owner,
+            },
+        })
             .then(result => {
                 const prs: graphql.PullRequest.PullRequest[] =
                     _.get(result, "ChatTeam[0].team.orgs[0].repo[0].pullRequest");
-                const handler = new ResponsePullRequestToPullRequestLifecycle();
-                handler.orgToken = this.githubToken;
+                const handler = pullRequestToPullRequestLifecycle(
+                    DefaultLifecycleOptions.pullRequest.chat,
+                    () => new ResponsePullRequestToPullRequestLifecycle()).listener;
 
                 // Hopefully we can find the pull request in Neo
                 if (prs && prs.length > 0) {
-                    return handler.handle({
+                    return handler({
                         data: { PullRequest: prs as any },
                         extensions: { operationName: "DisplayGitHubPullRequest" },
-                    }, ctx);
+                    }, ctx, { orgToken: this.githubToken });
                 }
             })
             .catch(failure);
     }
 }
 
-class ResponsePullRequestToPullRequestLifecycle extends PullRequestToPullRequestLifecycle {
+class ResponsePullRequestToPullRequestLifecycle
+    extends PullRequestLifecycleHandler<graphql.PullRequestToPullRequestLifecycle.Subscription> {
+
+    constructor() {
+        super(e => [e.data.PullRequest[0], e.data.PullRequest[0].repo, Date.now().toString(), false],
+            e => chatTeamsToPreferences(
+                _.get(e, "data.PullRequest[0].repo.org.team.chatTeams")),
+            DefaultLifecycleOptions.pullRequest.chat);
+    }
 
     protected processLifecycle(lifecycle: Lifecycle): Lifecycle {
         lifecycle.post = "always";

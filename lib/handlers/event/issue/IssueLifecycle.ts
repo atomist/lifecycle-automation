@@ -25,39 +25,23 @@ import {
     newCardMessage,
 } from "../../../lifecycle/card";
 import {
-    CardActionContributorWrapper,
     Lifecycle,
     LifecycleHandler,
+    Preferences,
 } from "../../../lifecycle/Lifecycle";
-import { AttachImagesNodeRenderer } from "../../../lifecycle/rendering/AttachImagesNodeRenderer";
-import { CollaboratorCardNodeRenderer } from "../../../lifecycle/rendering/CollaboratorCardNodeRenderer";
-import { ReferencedIssuesNodeRenderer } from "../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
-import {
-    AssignActionContributor,
-    AssignToMeActionContributor,
-    CloseActionContributor,
-    CommentActionContributor,
-    DisplayMoreActionContributor,
-    LabelActionContributor,
-    MoveActionContributor,
-    ReactionActionContributor,
-    RelatedActionContributor,
-    ReopenActionContributor,
-} from "./rendering/IssueActionContributors";
-import {
-    CommentCardNodeRenderer,
-    CorrelationsCardNodeRenderer,
-    IssueCardNodeRenderer,
-    ReferencedIssueCardNodeRenderer,
-} from "./rendering/IssueCardNodeRenderers";
-import {
-    IssueNodeRenderer,
-    MoreNodeRenderer,
-} from "./rendering/IssueNodeRenderers";
 
-export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
+export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.IssueToIssueLifecycle.Issue,
+                    graphql.IssueFields.Repo,
+                    graphql.CommentToIssueLifecycle.Comment,
+                    string],
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(lifecycle: Lifecycle): Promise<CardMessage> {
         const msg = newCardMessage("issue");
@@ -92,22 +76,8 @@ export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.issue.id,
             nodes,
-            renderers: [
-                new IssueCardNodeRenderer(),
-                new CommentCardNodeRenderer(),
-                new CorrelationsCardNodeRenderer(),
-                new ReferencedIssueCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.body != null),
-            ],
-            contributors: !repo.org.provider.private ? [
-                new CardActionContributorWrapper(new CommentActionContributor()),
-                new CardActionContributorWrapper(new ReactionActionContributor()),
-                new CardActionContributorWrapper(new LabelActionContributor()),
-                new CardActionContributorWrapper(new AssignToMeActionContributor("issue")),
-                new CardActionContributorWrapper(new AssignActionContributor("issue")),
-                new CardActionContributorWrapper(new CloseActionContributor()),
-                new CardActionContributorWrapper(new ReopenActionContributor()),
-            ] : [],
+            renderers: this.contributors.renderers(repo),
+            contributors: this.contributors.actions(repo),
             id: `issue_lifecycle/${repo.owner}/${repo.name}/${issue.number}`,
             timestamp,
             channels: [{
@@ -132,14 +102,18 @@ export abstract class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         return lifecycle;
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.IssueToIssueLifecycle.Issue,
-            graphql.IssueFields.Repo,
-            graphql.CommentToIssueLifecycle.Comment,
-            string];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return {};
+    }
 }
 
-export abstract class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
+export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.IssueToIssueLifecycle.Issue, graphql.IssueFields.Repo, string],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(): Promise<SlackMessage> {
         return Promise.resolve({
@@ -165,23 +139,8 @@ export abstract class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.issue.id,
             nodes,
-            renderers: [
-                new IssueNodeRenderer(),
-                new MoreNodeRenderer(),
-                new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open")],
-            contributors: [
-                new CommentActionContributor(),
-                new LabelActionContributor(),
-                new ReactionActionContributor(),
-                new AssignToMeActionContributor(),
-                new AssignActionContributor(),
-                new MoveActionContributor(),
-                new RelatedActionContributor(),
-                new ReopenActionContributor(),
-                new CloseActionContributor(),
-                new DisplayMoreActionContributor(),
-            ],
+            renderers: this.contributors.renderers(repo),
+            contributors: this.contributors.actions(repo),
             id: `issue_lifecycle/${repo.owner}/${repo.name}/${issue.number}`,
             timestamp,
             channels: repo.channels.map(c => ({ name: c.name, teamId: c.team.id })),
@@ -196,6 +155,8 @@ export abstract class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         return [configuration];
     }
 
-    protected abstract extractNodes(event: EventFired<R>):
-        [graphql.IssueToIssueLifecycle.Issue, graphql.IssueFields.Repo, string];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
+    }
+
 }

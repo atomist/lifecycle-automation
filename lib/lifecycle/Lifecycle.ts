@@ -18,6 +18,7 @@ import {
     addressEvent,
     addressSlackChannels,
     CommandReferencingAction,
+    configurationValue,
     EventFired,
     failure,
     Failure,
@@ -25,14 +26,24 @@ import {
     HandlerResult,
     isSlackMessage,
     logger,
+    Maker,
     MessageClient,
     MessageOptions,
+    Project,
+    ProjectOperationCredentials,
     Secret,
     Secrets,
     Success,
     SuccessPromise,
 } from "@atomist/automation-client";
 import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { toFactory } from "@atomist/automation-client/lib/util/constructionUtils";
+import {
+    CredentialsResolver,
+    DeclarationType,
+    ParametersDefinition,
+    resolveCredentialsPromise,
+} from "@atomist/sdm";
 import {
     Action,
     SlackMessage,
@@ -51,6 +62,32 @@ import {
     isCardMessage,
 } from "./card";
 
+export type LifecycleParametersDefinition = { orgToken: string }
+
+export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
+    orgToken: {
+        declarationType: DeclarationType.Secret,
+        uri: Secrets.OrgToken,
+    },
+};
+
+export async function lifecycle<R>(e: EventFired<R>,
+                                   params: LifecycleParametersDefinition,
+                                   ctx: HandlerContext,
+                                   maker: Maker<LifecycleHandler<R>>): Promise<HandlerResult> {
+    const handler = toFactory(maker)();
+    handler.orgToken = params.orgToken;
+
+    const creds = await resolveCredentialsPromise(
+        configurationValue<CredentialsResolver>("sdm.credentialsResolver", {
+            eventHandlerCredentials: async () => {},
+            commandHandlerCredentials: async () => {},
+        }).eventHandlerCredentials(ctx));
+    handler.credentials = creds;
+
+    return handler.handle(e, ctx);
+}
+
 /**
  * Base Event Handler implementation that handles rendering of lifecycle messages.
  */
@@ -58,6 +95,8 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     @Secret(Secrets.OrgToken)
     public orgToken: string;
+
+    public credentials: ProjectOperationCredentials;
 
     public defaultConfigurations = config.get("lifecycles") || {};
 
@@ -97,7 +136,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     lifecycle.nodes.filter(n => r.supports(n)).forEach(n => {
                         // First collect all buttons/actions for the given node
                         const context = new RendererContext(
-                            r.id(), lifecycle, configuration, this.orgToken, ctx, store);
+                            r.id(), lifecycle, configuration, this.credentials, ctx, store);
 
                         // Second trigger rendering
                         renderers.push(msg => {
@@ -583,7 +622,7 @@ export class RendererContext {
     constructor(public rendererId: string,
                 public lifecycle: Lifecycle,
                 public configuration: LifecycleConfiguration,
-                public orgToken: string,
+                public credentials: ProjectOperationCredentials,
                 public context: HandlerContext,
                 private store: Map<string, any>) { }
 

@@ -28,10 +28,11 @@ import { EventHandler } from "@atomist/automation-client/lib/decorators";
 import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
 import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
 import * as _ from "lodash";
+import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
-import { IssueToIssueCardLifecycle } from "../issue/IssueToIssueLifecycle";
-import { PullRequestToPullRequestCardLifecycle } from "../pullrequest/PullRequestToPullRequestLifecycle";
-import { PushToPushCardLifecycle } from "../push/PushToPushLifecycle";
+import { issueToIssueLifecycle } from "../issue/IssueToIssueLifecycle";
+import { pullRequestToPullRequestCardLifecycle } from "../pullrequest/PullRequestToPullRequestLifecycle";
+import { pushToPushCardLifecycle } from "../push/PushToPushLifecycle";
 
 @EventHandler("Send a Push lifecycle card when a new repo has finished onboarding",
     GraphQL.subscription("repoOnboarded"))
@@ -48,13 +49,13 @@ export class RepositoryOnboarded implements HandleEvent<graphql.RepoOnboarded.Su
 
         const commitResult = await ctx.graphClient.query<graphql.LastCommitOnBranch.Query,
             graphql.LastCommitOnBranch.Variables>({
-                name: "lastCommitOnBranch",
-                variables: {
-                    name: repo.name,
-                    owner: repo.owner,
-                    branch: repo.defaultBranch,
-                },
-            });
+            name: "lastCommitOnBranch",
+            variables: {
+                name: repo.name,
+                owner: repo.owner,
+                branch: repo.defaultBranch,
+            },
+        });
         const commit = _.get(commitResult, "Repo[0].branches[0].commit") as graphql.LastCommitOnBranch.Commit;
         if (commit) {
             promises.push(processCommit(commit, repo, event, ctx, this.orgToken));
@@ -62,12 +63,12 @@ export class RepositoryOnboarded implements HandleEvent<graphql.RepoOnboarded.Su
 
         const issueResult = await ctx.graphClient.query<graphql.LastIssueOnRepo.Query,
             graphql.LastIssueOnRepo.Variables>({
-                name: "lastIssueOnRepo",
-                variables: {
-                    name: repo.name,
-                    owner: repo.owner,
-                },
-            });
+            name: "lastIssueOnRepo",
+            variables: {
+                name: repo.name,
+                owner: repo.owner,
+            },
+        });
         const issues = _.get(issueResult, "Repo[0].issue");
         if (issues) {
             promises.push(...issues.map(i => processIssue(i, event, ctx, this.orgToken)));
@@ -75,12 +76,12 @@ export class RepositoryOnboarded implements HandleEvent<graphql.RepoOnboarded.Su
 
         const prResult = await ctx.graphClient.query<graphql.LastPullRequestOnRepo.Query,
             graphql.LastPullRequestOnRepo.Variables>({
-                name: "lastPullRequestOnRepo",
-                variables: {
-                    name: repo.name,
-                    owner: repo.owner,
-                },
-            });
+            name: "lastPullRequestOnRepo",
+            variables: {
+                name: repo.name,
+                owner: repo.owner,
+            },
+        });
         const prs = _.get(prResult, "Repo[0].pullRequest");
         if (prs) {
             promises.push(...prs.map(pr => processPullRequest(pr, event, ctx, this.orgToken)));
@@ -105,23 +106,18 @@ function processCommit(commit: graphql.LastCommitOnBranch.Commit,
         timestamp: commit.timestamp,
     };
 
-    const handler = new PushToPushCardLifecycle();
-    handler.orgToken = orgToken;
-
-    return handler.handle(
-        {
-            data: {
-                Push: [push],
-            },
-            extensions: {
-                ...event.extensions,
-                operationName: "PushToPushCardLifecycle",
-            },
-            secrets: {
-                ...event.secrets,
-            },
+    return pushToPushCardLifecycle(DefaultLifecycleOptions.push.web).listener({
+        data: {
+            Push: [push],
         },
-        ctx);
+        extensions: {
+            ...event.extensions,
+            operationName: pushToPushCardLifecycle(DefaultLifecycleOptions.push.web).name,
+        },
+        secrets: {
+            ...event.secrets,
+        },
+    }, ctx, { orgToken });
 }
 
 function processIssue(issue: graphql.LastIssueOnRepo.Issue,
@@ -129,10 +125,9 @@ function processIssue(issue: graphql.LastIssueOnRepo.Issue,
                       ctx: HandlerContext,
                       orgToken: string): Promise<HandlerResult> {
 
-    const handler = new IssueToIssueCardLifecycle();
-    handler.orgToken = orgToken;
+    const handler = issueToIssueLifecycle(DefaultLifecycleOptions.issue.chat).listener;
 
-    return handler.handle(
+    return handler(
         {
             data: {
                 Issue: [issue],
@@ -145,7 +140,8 @@ function processIssue(issue: graphql.LastIssueOnRepo.Issue,
                 ...event.secrets,
             },
         },
-        ctx);
+        ctx,
+        { orgToken });
 }
 
 function processPullRequest(pr: graphql.LastPullRequestOnRepo.PullRequest,
@@ -153,10 +149,9 @@ function processPullRequest(pr: graphql.LastPullRequestOnRepo.PullRequest,
                             ctx: HandlerContext,
                             orgToken: string): Promise<HandlerResult> {
 
-    const handler = new PullRequestToPullRequestCardLifecycle();
-    handler.orgToken = orgToken;
+    const handler = pullRequestToPullRequestCardLifecycle(DefaultLifecycleOptions.pullRequest.chat).listener;
 
-    return handler.handle(
+    return handler(
         {
             data: {
                 PullRequest: [pr],
@@ -169,5 +164,6 @@ function processPullRequest(pr: graphql.LastPullRequestOnRepo.PullRequest,
                 ...event.secrets,
             },
         },
-        ctx);
+        ctx,
+        { orgToken });
 }

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    logger,
+    TokenCredentials,
+} from "@atomist/automation-client";
 import {
     githubToSlack,
     url,
@@ -114,7 +117,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
                 return msg;
             })
             .then(card => {
-                const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+                const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
                 return api.reactions.getForIssue({
                     owner: repo.owner,
                     repo: repo.name,
@@ -140,7 +143,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
                     .catch(err => msg);
             })
             .then(card => {
-                const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+                const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
                 return api.issues.getComments({
                     owner: repo.owner,
                     repo: repo.name,
@@ -218,7 +221,7 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
                 return msg;
             })
             .then(card => {
-                const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+                const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
                 return api.reactions.getForIssue({
                     owner: repo.owner,
                     repo: repo.name,
@@ -247,7 +250,7 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
                     });
             })
             .then(card => {
-                const api = github.api(context.orgToken, _.get(repo, "org.provider.apiUrl"));
+                const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
                 return api.issues.getComments({
                     owner: repo.owner,
                     repo: repo.name,
@@ -332,7 +335,7 @@ export class CorrelationsCardNodeRenderer extends AbstractIdentifiableContributi
         });
 
         try {
-            const api = github.api(context.orgToken);
+            const api = github.api((context.credentials as TokenCredentials).token);
             const result = await api.issues.getEventsTimeline({
                 owner: repo.owner,
                 repo: repo.name,

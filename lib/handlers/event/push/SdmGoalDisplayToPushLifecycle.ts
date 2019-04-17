@@ -14,35 +14,42 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { PushLifecycleHandler } from "./PushLifecycle";
 
 /**
- * Send a Push lifecycle message on SdmGoalDisplaytower  events.
+ * Send a Push lifecycle message on SdmGoalDisplay events.
  */
-@EventHandler("Send a lifecycle message on SdmGoalDisplay events",
-    GraphQL.subscription("sdmGoalDisplayToPushLifecycle"))
-@Tags("lifecycle", "push", "sdm goal")
-export class SdmGoalDisplayToPushLifecycle
-    extends PushLifecycleHandler<graphql.SdmGoalDisplayToPushLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.SdmGoalDisplayToPushLifecycle.Subscription>):
-        graphql.PushToPushLifecycle.Push[] {
-        return [event.data.SdmGoalDisplay[0].push];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.SdmGoalToPushLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(_.get(event, "data.SdmGoalDisplay[0].push.repo.org.team.chatTeams"));
-    }
+export function sdmGoalDisplayToPushLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.SdmGoalDisplayToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "SdmGoalDisplayToPushLifecycle",
+        description: "Send a push lifecycle message on SdmGoalDisplay events",
+        tags: ["lifecycle", "push", "sdm goal display"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("sdmGoalDisplayToPushLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.SdmGoalDisplayToPushLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PushLifecycleHandler(
+                    e => [e.data.SdmGoalDisplay[0].push],
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.SdmGoalDisplay[0].push.repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }

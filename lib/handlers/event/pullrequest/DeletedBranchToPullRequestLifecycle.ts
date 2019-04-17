@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    Tags,
-} from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
+import { GraphQL } from "@atomist/automation-client";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as _ from "lodash";
-import { Preferences } from "../../../lifecycle/Lifecycle";
+import {
+    lifecycle,
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+} from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
     PullRequestCardLifecycleHandler,
@@ -32,48 +33,57 @@ import {
 /**
  * Send a lifecycle message on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle message on DeletedBranch events",
-    GraphQL.subscription("deletedBranchToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "status")
-export class DeletedBranchToPullRequestLifecycle
-    extends PullRequestLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.DeletedBranchToPullRequestLifecycle.Subscription>):
-        [graphql.StatusToPullRequestLifecycle.PullRequests, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.DeletedBranch[0].pullRequests[0]");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.DeletedBranchToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return chatTeamsToPreferences(
-            _.get(event, "data.DeletedBranch[0].pullRequests[0].repo.org.team.chatTeams"));
-    }
+export function deletedBranchToPullRequestLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.DeletedBranchToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "DeletedBranchToPullRequestLifecycle",
+        description: "Send a PR lifecycle message on DeletedBranch events",
+        tags: ["lifecycle", "pr", "deleted branch"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("deletedBranchToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.DeletedBranch[0].pullRequests[0]");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    e => chatTeamsToPreferences(
+                        _.get(e, "data.DeletedBranch[0].pullRequests[0].repo.org.team.chatTeams")),
+                    contributions,
+                ),
+            );
+        },
+    };
 }
 
 /**
  * Send a lifecycle card on DeletedBranch events.
  */
-@EventHandler("Send a lifecycle card on DeletedBranch events",
-    GraphQL.subscription("deletedBranchToPullRequestLifecycle"))
-@Tags("lifecycle", "pr", "status")
-export class DeletedBranchToPullRequestCardLifecycle
-    extends PullRequestCardLifecycleHandler<graphql.DeletedBranchToPullRequestLifecycle.Subscription> {
-
-    protected extractNodes(event: EventFired<graphql.DeletedBranchToPullRequestLifecycle.Subscription>):
-        [graphql.StatusToPullRequestLifecycle.PullRequests, graphql.PullRequestFields.Repo,
-            string, boolean] {
-
-        const pr = _.get(event, "data.DeletedBranch[0].pullRequests[0]");
-        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
-    }
-
-    protected extractPreferences(
-        event: EventFired<graphql.DeletedBranchToPullRequestLifecycle.Subscription>)
-        : { [teamId: string]: Preferences[] } {
-        return {};
-    }
+export function deletedBranchToPullRequestCardLifecycle(contributions: Contributions)
+    : EventHandlerRegistration<graphql.DeletedBranchToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "DeletedBranchToPullRequestCardLifecycle",
+        description: "Send a pr lifecycle card on DeletedBranch events",
+        tags: ["lifecycle", "pr", "deleted branch"],
+        parameters: LifecycleParameters,
+        subscription: GraphQL.subscription("deletedBranchToPullRequestLifecycle"),
+        listener: async (e, ctx, params) => {
+            return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
+                e,
+                params,
+                ctx,
+                () => new PullRequestCardLifecycleHandler(
+                    e => {
+                        const pr = _.get(e, "data.DeletedBranch[0].pullRequests[0]");
+                        return [pr, _.get(pr, "repo"), Date.now().toString(), true];
+                    },
+                    contributions,
+                ),
+            );
+        },
+    };
 }
