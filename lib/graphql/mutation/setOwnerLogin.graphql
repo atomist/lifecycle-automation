@@ -1,7 +1,0 @@
-mutation setOwnerLogin($owner: String!, $login: String!, $providerId: String!) {
-  setOwnerLogin(owner: $owner, login: $login, providerId: $providerId) {
-    owner
-    providerId
-    login
-  }
-}
