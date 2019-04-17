@@ -1,8 +1,0 @@
-subscription commentToPullRequestLifecycle {
-  Comment {
-    _id
-    pullRequest {
-      ...PullRequestFields
-    }
-  }
-}

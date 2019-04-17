@@ -1,9 +1,0 @@
-query chatTeamPreferences($teamId: ID!) {
-  ChatTeam(id: $teamId) {
-    domain
-    preferences {
-      name
-      value
-    }
-  }
-}
