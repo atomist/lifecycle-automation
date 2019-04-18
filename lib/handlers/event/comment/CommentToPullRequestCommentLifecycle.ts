@@ -46,7 +46,7 @@ export function commentToPullRequestCommentLifecycle(contributions: Contribution
                 () => new CommentLifecycleHandler(
                     e => {
                         return [e.data.Comment, null, _.get(e, "data.Comment[0].pullRequest"),
-                            _.get(event, "data.Comment[0].pullRequest.repo"), false];
+                            _.get(e, "data.Comment[0].pullRequest.repo"), false];
                     },
                     e => chatTeamsToPreferences(
                         _.get(e, "data.Comment[0].pullRequest.repo.org.team.chatTeams")),

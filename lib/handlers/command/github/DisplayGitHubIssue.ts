@@ -113,6 +113,11 @@ export class DisplayGitHubIssue implements HandleCommand {
                                     name: this.repo,
                                     owner: this.owner,
                                     channels,
+                                    org: {
+                                        provider: {
+                                            private: false,
+                                        },
+                                    },
                                 },
                                 name: this.issue.toString(),
                                 number: this.issue,
