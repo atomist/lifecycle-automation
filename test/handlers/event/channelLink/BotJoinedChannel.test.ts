@@ -24,9 +24,9 @@ import {
     RepoProvider,
 } from "../../../../lib/handlers/command/slack/LinkOwnerRepo";
 import {
+    botJoinedChannel,
     fuzzyChannelRepoMatch,
     repoOptions,
-    botJoinedChannel,
 } from "../../../../lib/handlers/event/channellink/BotJoinedChannel";
 
 import * as graphql from "../../../../lib/typings/types";
