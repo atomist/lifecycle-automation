@@ -121,7 +121,7 @@ export class DisplayMoreActionContributor extends AbstractIdentifiableContributi
                 ]);
             } else {
                 return Promise.resolve([
-                    buttonForCommand({ text: "More \u02C4" },
+                    buttonForCommand({ text: "Less \u02C4" },
                         "DisplayGitHubIssue",
                         {
                             repo: repo.name,

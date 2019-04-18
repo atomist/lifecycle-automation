@@ -393,8 +393,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             // Comment
             sdm.addEvent(commentToIssueCommentLifecycle(optsToUse.comment.chat));
             sdm.addEvent(commentToPullRequestCommentLifecycle(optsToUse.comment.chat));
-            sdm.addEvent(issueToIssueCommentLifecycle(optsToUse.branch.chat));
-            sdm.addEvent(pullRequestToPullRequestCommentLifecycle(optsToUse.branch.chat));
+            sdm.addEvent(issueToIssueCommentLifecycle(optsToUse.comment.chat));
+            sdm.addEvent(pullRequestToPullRequestCommentLifecycle(optsToUse.comment.chat));
 
             // Commit
             sdm.addEvent(issueRelationshipOnCommit());

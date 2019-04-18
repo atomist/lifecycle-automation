@@ -57,6 +57,7 @@ query issue(
                   url
                   providerId
                   providerType
+                  private
                 }
               }
             }
