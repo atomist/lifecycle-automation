@@ -76,18 +76,6 @@ import { NoLinkRepo } from "./lib/handlers/command/slack/NoLinkRepo";
 import { ToggleCustomEmojiEnablement } from "./lib/handlers/command/slack/ToggleCustomEmojiEnablement";
 import { ToggleDisplayFormat } from "./lib/handlers/command/slack/ToggleDisplayFormat";
 import { UnlinkRepo } from "./lib/handlers/command/slack/UnlinkRepo";
-import { NotifyPusherOnBuild } from "./lib/handlers/event/build/NotifyPusherOnBuild";
-import { BotJoinedChannel } from "./lib/handlers/event/channellink/BotJoinedChannel";
-import { ChannelLinkCreated } from "./lib/handlers/event/channellink/ChannelLinkCreated";
-import { IssueRelationshipOnCommit } from "./lib/handlers/event/commit/IssueRelationshipOnCommit";
-import { CommentOnRelatedIssueClosed } from "./lib/handlers/event/issue/CommentOnRelatedIssueClosed";
-import { NotifyMentionedOnIssue } from "./lib/handlers/event/issue/NotifyMentionedOnIssue";
-import { DeploymentOnK8Pod } from "./lib/handlers/event/k8container/DeploymentOnK8Pod";
-import { RepositoryOnboarded } from "./lib/handlers/event/onboarded/RepositoryOnboarded";
-import { NotifyBotOwnerOnPush } from "./lib/handlers/event/push/NotifyBotOwnerOnPush";
-import { NotifyReviewerOnPush } from "./lib/handlers/event/push/NotifyReviewerOnPush";
-import { PushToUnmappedRepo } from "./lib/handlers/event/push/PushToUnmappedRepo";
-import { NotifyAuthorOnReview } from "./lib/handlers/event/review/NotifyAuthorOnReview";
 import { machine } from "./lib/machine/machine";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
@@ -150,51 +138,6 @@ export const configuration: any = {
         () => new ToggleCustomEmojiEnablement(),
         () => new ToggleDisplayFormat(),
         () => new UnlinkRepo(),
-    ],
-    events: [
-        // branch
-
-        // build
-        () => new NotifyPusherOnBuild(),
-
-        // channellink
-        () => new BotJoinedChannel(),
-        () => new ChannelLinkCreated(),
-
-        // push
-        () => new NotifyBotOwnerOnPush(),
-        () => new NotifyReviewerOnPush(),
-        () => new PushToUnmappedRepo(),
-
-        // issue
-        () => new CommentOnRelatedIssueClosed(),
-        () => new NotifyMentionedOnIssue(),
-
-        // k8container
-        () => new DeploymentOnK8Pod(),
-
-        // onboarded
-        () => new RepositoryOnboarded(),
-
-        // pullRequest
-
-        // comment
-
-        // commit
-        () => new IssueRelationshipOnCommit(),
-
-        // review
-        () => new NotifyAuthorOnReview(),
-        // () => new PullRequestToReviewLifecycle(),
-        // () => new ReviewToReviewLifecycle(),
-
-        // add card handlers
-
-        // push
-
-        // pullRequest
-
-        // issue
     ],
     ingesters: notLocal ? [
         GraphQL.ingester({ path: "./lib/graphql/ingester/commitIssueRelationship" }),

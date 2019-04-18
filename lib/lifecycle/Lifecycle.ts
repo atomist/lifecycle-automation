@@ -29,7 +29,6 @@ import {
     Maker,
     MessageClient,
     MessageOptions,
-    Project,
     ProjectOperationCredentials,
     Secret,
     Secrets,
@@ -62,12 +61,16 @@ import {
     isCardMessage,
 } from "./card";
 
-export type LifecycleParametersDefinition = { orgToken: string }
+export type LifecycleParametersDefinition = { orgToken: string, credentialsResolver?: CredentialsResolver }
 
 export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
     orgToken: {
         declarationType: DeclarationType.Secret,
         uri: Secrets.OrgToken,
+    },
+    credentialsResolver: {
+        path: "sdm.credentialsResolver",
+        required: false,
     },
 };
 
@@ -78,14 +81,24 @@ export async function lifecycle<R>(e: EventFired<R>,
     const handler = toFactory(maker)();
     handler.orgToken = params.orgToken;
 
-    const creds = await resolveCredentialsPromise(
-        configurationValue<CredentialsResolver>("sdm.credentialsResolver", {
-            eventHandlerCredentials: async () => {},
-            commandHandlerCredentials: async () => {},
-        }).eventHandlerCredentials(ctx));
+    const creds = await resolveEventHandlerCredentials(e, params, ctx);
     handler.credentials = creds;
 
     return handler.handle(e, ctx);
+}
+
+export async function resolveEventHandlerCredentials(e: EventFired<any>,
+                                                     params: LifecycleParametersDefinition,
+                                                     ctx: HandlerContext): Promise<ProjectOperationCredentials> {
+    const credsResolver = params.credentialsResolver || configurationValue<CredentialsResolver>(
+        "sdm.credentialsResolver", {
+            eventHandlerCredentials: async () => {
+            },
+            commandHandlerCredentials: async () => {
+            },
+        });
+
+    return resolveCredentialsPromise(credsResolver.eventHandlerCredentials(ctx));
 }
 
 /**
@@ -311,7 +324,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
      */
     private groupChannels(lifecycle: Lifecycle,
                           preferences: { [teamId: string]: Preferences[] } = {})
-                          : Array<{teamId: string, channels: string[]}> {
+        : Array<{ teamId: string, channels: string[] }> {
 
         if (lifecycle == null) {
             return [];
@@ -321,27 +334,27 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         const channels = lifecycle.channels.filter(c => c.name && c.teamId)
             .filter(channel => this.lifecycleEnabled(lifecycle, channel, preferences));
 
-        const unconfiguredChannels: Array<{teamId: string, channels: string[]}> = [];
-        const configuredChannels: Array<{teamId: string, channels: string[]}> = [];
+        const unconfiguredChannels: Array<{ teamId: string, channels: string[] }> = [];
+        const configuredChannels: Array<{ teamId: string, channels: string[] }> = [];
 
         channels.forEach(c => {
-           if (preferences[c.teamId] && this.channelConfigured(c,
-                   preferences[c.teamId].find(p => p.name === LifecycleActionPreferences.key))) {
-               configuredChannels.push({teamId: c.teamId, channels: [c.name]});
-           } else if (preferences[c.teamId] && this.channelConfigured(c,
-                   preferences[c.teamId].find(p => p.name === LifecycleRendererPreferences.key))) {
-               configuredChannels.push({teamId: c.teamId, channels: [c.name]});
-           } else {
-               if (unconfiguredChannels.some(uc => uc.teamId === c.teamId)) {
-                   unconfiguredChannels.find(uc => uc.teamId === c.teamId).channels.push(c.name);
-               } else {
-                   unconfiguredChannels.push({teamId: c.teamId, channels: [c.name]});
-               }
-           }
+            if (preferences[c.teamId] && this.channelConfigured(c,
+                preferences[c.teamId].find(p => p.name === LifecycleActionPreferences.key))) {
+                configuredChannels.push({ teamId: c.teamId, channels: [c.name] });
+            } else if (preferences[c.teamId] && this.channelConfigured(c,
+                preferences[c.teamId].find(p => p.name === LifecycleRendererPreferences.key))) {
+                configuredChannels.push({ teamId: c.teamId, channels: [c.name] });
+            } else {
+                if (unconfiguredChannels.some(uc => uc.teamId === c.teamId)) {
+                    unconfiguredChannels.find(uc => uc.teamId === c.teamId).channels.push(c.name);
+                } else {
+                    unconfiguredChannels.push({ teamId: c.teamId, channels: [c.name] });
+                }
+            }
         });
 
         if (unconfiguredChannels.length > 0) {
-            return [ ...configuredChannels, ...unconfiguredChannels];
+            return [...configuredChannels, ...unconfiguredChannels];
         } else {
             return configuredChannels;
         }
@@ -387,9 +400,9 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         contributors = this.filterAndSortContributions("action", contributors, configuration.contributors,
             name, channels, preferences) as Array<ActionContributor<any, any>>;
         contributors.forEach(c => {
-           if (c.configure) {
-               c.configure(configuration);
-           }
+            if (c.configure) {
+                c.configure(configuration);
+            }
         });
         return contributors;
     }
@@ -624,7 +637,8 @@ export class RendererContext {
                 public configuration: LifecycleConfiguration,
                 public credentials: ProjectOperationCredentials,
                 public context: HandlerContext,
-                private store: Map<string, any>) { }
+                private store: Map<string, any>) {
+    }
 
     public set(key: string, value: any) {
         this.store.set(key, value);
@@ -642,7 +656,8 @@ export class RendererContext {
 export abstract class AbstractIdentifiableContribution implements IdentifiableContribution {
 
     // tslint:disable-next-line:variable-name
-    constructor(private _id: string) { }
+    constructor(private _id: string) {
+    }
 
     public id(): string {
         return this._id;

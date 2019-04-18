@@ -23,7 +23,7 @@ import {
 } from "@atomist/automation-client";
 import "mocha";
 import * as assert from "power-assert";
-import { NotifyReviewerOnPush } from "../../../../lib/handlers/event/push/NotifyReviewerOnPush";
+import { notifyReviewerOnPush } from "../../../../lib/handlers/event/push/NotifyReviewerOnPush";
 
 describe("NotifyReviewerOnPush", () => {
 
@@ -108,9 +108,9 @@ describe("NotifyReviewerOnPush", () => {
         const ctx: any = {
             messageClient: new MockMessageClient(),
         };
-        const handler = new NotifyReviewerOnPush();
+        const handler = notifyReviewerOnPush().listener;
 
-        handler.handle(JSON.parse(payload1) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload1) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(messageSend);
                 assert(result.code === 0);
@@ -193,9 +193,9 @@ describe("NotifyReviewerOnPush", () => {
         const ctx: any = {
             messageClient: new MockMessageClient(),
         };
-        const handler = new NotifyReviewerOnPush();
+        const handler = notifyReviewerOnPush().listener;
 
-        handler.handle(JSON.parse(payload11) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload11) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(!messageSend);
                 assert(result.code === 0);
@@ -274,9 +274,9 @@ describe("NotifyReviewerOnPush", () => {
         const ctx: any = {
             messageClient: new MockMessageClient(),
         };
-        const handler = new NotifyReviewerOnPush();
+        const handler = notifyReviewerOnPush().listener;
 
-        handler.handle(JSON.parse(payload2) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload2) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })
@@ -354,9 +354,9 @@ describe("NotifyReviewerOnPush", () => {
         const ctx: any = {
             messageClient: new MockMessageClient(),
         };
-        const handler = new NotifyReviewerOnPush();
+        const handler = notifyReviewerOnPush().listener;
 
-        handler.handle(JSON.parse(payload3) as EventFired<any>, ctx as HandlerContext)
+        handler(JSON.parse(payload3) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {
                 assert(result.code === 0);
             })

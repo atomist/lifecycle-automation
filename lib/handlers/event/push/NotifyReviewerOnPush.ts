@@ -15,17 +15,12 @@
  */
 
 import {
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import * as graphql from "../../../typings/types";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import { NotifyReviewerOnPush } from "../../../typings/types";
 import { reviewerNotification } from "../../../util/notifications";
 
 /**
@@ -37,30 +32,32 @@ import { reviewerNotification } from "../../../util/notifications";
  *
  * This DM can be disabled via the `@atomist configured dm` command.
  */
-@EventHandler("Notify pull request reviewer about new commits", GraphQL.subscription("notifyReviewerOnPush"))
-@Tags("lifecycle", "pr", "notification")
-export class NotifyReviewerOnPush implements HandleEvent<graphql.NotifyReviewerOnPush.Subscription> {
+export function notifyReviewerOnPush(): EventHandlerRegistration<NotifyReviewerOnPush.Subscription> {
+    return {
+        name: "NotifyReviewerOnPush",
+        description: "Notify pull request reviewer about new commits",
+        tags: ["lifecycle", "pr", "notification"],
+        subscription: GraphQL.subscription("notifyReviewerOnPush"),
+        listener: async (e, ctx) => {
+            const push = e.data.Push[0];
 
-    public handle(event: EventFired<graphql.NotifyReviewerOnPush.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-        const push = event.data.Push[0];
+            if (push.commits) {
+                const commitWithPr = push.commits.find(
+                    c => c.pullRequests != null && c.pullRequests.length > 0);
+                if (commitWithPr) {
+                    const pr = commitWithPr.pullRequests[0];
 
-        if (push.commits) {
-            const commitWithPr = push.commits.find(
-                c => c.pullRequests != null && c.pullRequests.length > 0);
-            if (commitWithPr) {
-                const pr = commitWithPr.pullRequests[0];
+                    const reviewers = pr.reviewers ? pr.reviewers.map(r => r.login) : [];
+                    const reviews = pr.reviews ? pr.reviews.filter(r => r.state !== "requested")
+                        .filter(r => r.by && r.by.some(rr => reviewers.indexOf(rr.login) >= 0)) : [];
 
-                const reviewers = pr.reviewers ? pr.reviewers.map(r => r.login) : [];
-                const reviews = pr.reviews ? pr.reviews.filter(r => r.state !== "requested")
-                    .filter(r => r.by && r.by.some(rr => reviewers.indexOf(rr.login) >= 0)) : [];
-
-                if (pr.state === "open" && reviews && reviews.length > 0) {
-                    return Promise.all(reviews.map(r => reviewerNotification(push, pr, push.repo, r, ctx)))
-                        .then(() => Success, failure);
+                    if (pr.state === "open" && reviews && reviews.length > 0) {
+                        return Promise.all(reviews.map(r => reviewerNotification(push, pr, push.repo, r, ctx)))
+                            .then(() => Success, failure);
+                    }
                 }
             }
-        }
-        return Promise.resolve(Success);
-    }
+            return Promise.resolve(Success);
+        },
+    };
 }
