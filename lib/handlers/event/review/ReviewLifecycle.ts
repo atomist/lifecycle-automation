@@ -28,10 +28,6 @@ import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
 import { CommentActionContributor } from "./rendering/ReviewActionContributors";
-import {
-    ReviewDetailNodeRenderer,
-    ReviewNodeRenderer,
-} from "./rendering/ReviewNodeRenderers";
 
 export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
 

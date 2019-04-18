@@ -16,49 +16,42 @@
 
 import {
     buttonForCommand,
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import { Action } from "@atomist/slack-messages";
-import * as graphql from "../../../typings/types";
+import { NotifyMentionedOnPullRequestComment } from "../../../typings/types";
 import { prNotification } from "../../../util/notifications";
 import { CommentGitHubIssue } from "../../command/github/CommentGitHubIssue";
 import { ReactGitHubIssueComment } from "../../command/github/ReactGitHubIssueComment";
 
-@EventHandler("Notify mentioned user in slack", GraphQL.subscription("notifyMentionedOnPullRequestComment"))
-@Tags("lifecycle", "pr comment", "notification")
-export class NotifyMentionedOnPullRequestComment
-    implements HandleEvent<graphql.NotifyMentionedOnPullRequestComment.Subscription> {
+export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<NotifyMentionedOnPullRequestComment.Subscription> {
+    return {
+        name: "NotifyMentionedOnPullRequestComment",
+        description: "Notify mentioned user in slack",
+        tags: ["lifecycle", "pr comment", "notification"],
+        subscription: GraphQL.subscription("notifyMentionedOnPullRequestComment"),
+        listener: async (e, ctx) => {
+            const comment = e.data.Comment[0];
+            const pr = comment.pullRequest;
 
-    public handle(event: EventFired<graphql.NotifyMentionedOnPullRequestComment.Subscription>,
-                  ctx: HandlerContext): Promise<HandlerResult> {
-
-        const comment = event.data.Comment[0];
-        const pr = comment.pullRequest;
-
-        if (pr) {
-            return prNotification(`${pr.number}/${comment._id}`, "New mention in comment on pull request",
-                comment.body, comment.by, pr, pr.repo, ctx)
-                .then(_ => Success, failure);
-        } else {
-            return Promise.resolve(Success);
-        }
+            if (pr) {
+                return prNotification(`${pr.number}/${comment._id}`, "New mention in comment on pull request",
+                    comment.body, comment.by, pr, pr.repo, ctx, createActions(comment))
+                    .then(_ => Success, failure);
+            } else {
+                return Promise.resolve(Success);
+            }
+        },
     }
 }
 
 /**
  * Add comment and +1 action into the DM
- * @param {NotifyMentionedOnPullRequestComment.Comment} comment
- * @returns {Action[]}
  */
-function createActions(comment: graphql.NotifyMentionedOnPullRequestComment.Comment): Action[] {
+function createActions(comment: NotifyMentionedOnPullRequestComment.Comment): Action[] {
 
     const commentIssue = new CommentGitHubIssue();
     commentIssue.owner = comment.pullRequest.repo.owner;
