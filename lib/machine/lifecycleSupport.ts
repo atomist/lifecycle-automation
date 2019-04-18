@@ -33,6 +33,8 @@ import { channelLinkCreated } from "../handlers/event/channellink/ChannelLinkCre
 import { commentToIssueCommentLifecycle } from "../handlers/event/comment/CommentToIssueCommentLifecycle";
 import { commentToPullRequestCommentLifecycle } from "../handlers/event/comment/CommentToPullRequestCommentLifecycle";
 import { issueToIssueCommentLifecycle } from "../handlers/event/comment/IssueToIssueCommentLifecycle";
+import { notifyMentionedOnIssueComment } from "../handlers/event/comment/NotifyMentionedOnIssueComment";
+import { notifyMentionedOnPullRequestComment } from "../handlers/event/comment/NotifyMentionedOnPullRequestComment";
 import { pullRequestToPullRequestCommentLifecycle } from "../handlers/event/comment/PullRequestToPullRequestCommentLifecycle";
 import * as ca from "../handlers/event/comment/rendering/CommentActionContributors";
 import * as cr from "../handlers/event/comment/rendering/CommentNodeRenderers";
@@ -65,6 +67,7 @@ import {
     deletedBranchToPullRequestCardLifecycle,
     deletedBranchToPullRequestLifecycle,
 } from "../handlers/event/pullrequest/DeletedBranchToPullRequestLifecycle";
+import { notifyMentionedOnPullRequest } from "../handlers/event/pullrequest/NotifyMentionedOnPullRequest";
 import {
     pullRequestToPullRequestCardLifecycle,
     pullRequestToPullRequestLifecycle,
@@ -390,6 +393,9 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(channelLinkCreated());
 
             // Comment
+            sdm.addEvent(notifyMentionedOnIssueComment());
+            sdm.addEvent(notifyMentionedOnPullRequestComment());
+
             sdm.addEvent(commentToIssueCommentLifecycle(optsToUse.comment.chat));
             sdm.addEvent(commentToPullRequestCommentLifecycle(optsToUse.comment.chat));
             sdm.addEvent(issueToIssueCommentLifecycle(optsToUse.comment.chat));
@@ -414,6 +420,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(repositoryOnboarded(options));
 
             // Pull Request
+            sdm.addEvent(notifyMentionedOnPullRequest());
+
             sdm.addEvent(branchToPullRequestLifecycle(optsToUse.pullRequest.chat));
             sdm.addEvent(commentToPullRequestLifecycle(optsToUse.pullRequest.chat));
             sdm.addEvent(commitToPullRequestLifecycle(optsToUse.pullRequest.chat));

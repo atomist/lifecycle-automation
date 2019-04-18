@@ -23,7 +23,6 @@ import {
 } from "@atomist/automation-client";
 import { EventHandlerRegistration } from "@atomist/sdm";
 import { Action } from "@atomist/slack-messages";
-import { graphql } from "graphql";
 import { NotifyMentionedOnIssue } from "../../../typings/types";
 import {
     issueAssigneeNotification,

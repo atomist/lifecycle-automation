@@ -16,49 +16,43 @@
 
 import {
     buttonForCommand,
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import { Action } from "@atomist/slack-messages";
-import * as graphql from "../../../typings/types";
+import { NotifyMentionedOnIssueComment } from "../../../typings/types";
 import { issueNotification } from "../../../util/notifications";
 import { CommentGitHubIssue } from "../../command/github/CommentGitHubIssue";
 import { ReactGitHubIssueComment } from "../../command/github/ReactGitHubIssueComment";
 
-@EventHandler("Notify mentioned user in slack", GraphQL.subscription("notifyMentionedOnIssueComment"))
-@Tags("lifecycle", "issue comment", "notification")
-export class NotifyMentionedOnIssueComment implements HandleEvent<graphql.NotifyMentionedOnIssueComment.Subscription> {
+export function notifyMentionedOnIssueComment(): EventHandlerRegistration<NotifyMentionedOnIssueComment.Subscription> {
+    return {
+        name: "NotifyMentionedOnIssueComment",
+        description: "Notify mentioned user in slack",
+        tags: ["lifecycle", "issue comment", "notification"],
+        subscription: GraphQL.subscription("notifyMentionedOnIssueComment"),
+        listener: async (e, ctx) => {
+            const comment = e.data.Comment[0];
+            const issue = comment.issue;
 
-    public handle(event: EventFired<graphql.NotifyMentionedOnIssueComment.Subscription>, ctx: HandlerContext):
-        Promise<HandlerResult> {
-
-        const comment = event.data.Comment[0];
-        const issue = comment.issue;
-
-        if (issue) {
-            const repo = issue.repo;
-            return issueNotification(`${issue.number}/${comment._id}`, "New mention in comment on issue",
-                comment.body, comment.by.login, issue, repo, ctx, createActions(comment))
-                .then(() => Success, failure);
-        } else {
-            return Promise.resolve(Success);
-        }
+            if (issue) {
+                const repo = issue.repo;
+                return issueNotification(`${issue.number}/${comment._id}`, "New mention in comment on issue",
+                    comment.body, comment.by.login, issue, repo, ctx, createActions(comment))
+                    .then(() => Success, failure);
+            } else {
+                return Promise.resolve(Success);
+            }
+        },
     }
 }
 
 /**
  * Add comment and +1 action into the DM
- * @param {NotifyMentionedOnIssueComment.Comment} comment
- * @returns {Action[]}
  */
-function createActions(comment: graphql.NotifyMentionedOnIssueComment.Comment): Action[] {
+function createActions(comment: NotifyMentionedOnIssueComment.Comment): Action[] {
 
     const commentIssue = new CommentGitHubIssue();
     commentIssue.owner = comment.issue.repo.owner;
