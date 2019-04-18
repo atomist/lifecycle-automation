@@ -27,20 +27,28 @@ import { deletedBranchToBranchLifecycle } from "../handlers/event/branch/Deleted
 import { pullRequestToBranchLifecycle } from "../handlers/event/branch/PullRequestToBranchLifecycle";
 import { RaisePrActionContributor } from "../handlers/event/branch/rendering/BranchActionContributors";
 import { BranchNodeRenderer } from "../handlers/event/branch/rendering/BranchNodeRenderers";
+import { notifyPusherOnBuild } from "../handlers/event/build/NotifyPusherOnBuild";
+import { botJoinedChannel } from "../handlers/event/channellink/BotJoinedChannel";
+import { channelLinkCreated } from "../handlers/event/channellink/ChannelLinkCreated";
 import { commentToIssueCommentLifecycle } from "../handlers/event/comment/CommentToIssueCommentLifecycle";
 import { commentToPullRequestCommentLifecycle } from "../handlers/event/comment/CommentToPullRequestCommentLifecycle";
 import { issueToIssueCommentLifecycle } from "../handlers/event/comment/IssueToIssueCommentLifecycle";
 import { pullRequestToPullRequestCommentLifecycle } from "../handlers/event/comment/PullRequestToPullRequestCommentLifecycle";
 import * as ca from "../handlers/event/comment/rendering/CommentActionContributors";
 import * as cr from "../handlers/event/comment/rendering/CommentNodeRenderers";
+import { issueRelationshipOnCommit } from "../handlers/event/commit/IssueRelationshipOnCommit";
+import { commentOnRelatedIssueClosed } from "../handlers/event/issue/CommentOnRelatedIssueClosed";
 import { commentToIssueCardLifecycle } from "../handlers/event/issue/CommentToIssueLifecycle";
 import {
     issueToIssueCardLifecycle,
     issueToIssueLifecycle,
 } from "../handlers/event/issue/IssueToIssueLifecycle";
+import { notifyMentionedOnIssue } from "../handlers/event/issue/NotifyMentionedOnIssue";
 import * as ia from "../handlers/event/issue/rendering/IssueActionContributors";
 import * as icr from "../handlers/event/issue/rendering/IssueCardNodeRenderers";
 import * as ir from "../handlers/event/issue/rendering/IssueNodeRenderers";
+import { deploymentOnK8Pod } from "../handlers/event/k8container/DeploymentOnK8Pod";
+import { repositoryOnboarded } from "../handlers/event/onboarded/RepositoryOnboarded";
 import {
     branchToPullRequestCardLifecycle,
     branchToPullRequestLifecycle,
@@ -88,10 +96,12 @@ import {
     k8PodToPushCardLifecycle,
     k8PodToPushLifecycle,
 } from "../handlers/event/push/K8PodToPushLifecycle";
+import { notifyReviewerOnPush } from "../handlers/event/push/NotifyReviewerOnPush";
 import {
     pushToPushCardLifecycle,
     pushToPushLifecycle,
 } from "../handlers/event/push/PushToPushLifecycle";
+import { pushToUnmappedRepo } from "../handlers/event/push/PushToUnmappedRepo";
 import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
@@ -114,6 +124,11 @@ import {
     tagToPushLifecycle,
 } from "../handlers/event/push/TagToPushLifecycle";
 import { WorkflowNodeRenderer } from "../handlers/event/push/workflow/WorkflowNodeRenderer";
+import { notifyAuthorOnReview } from "../handlers/event/review/NotifyAuthorOnReview";
+import { pullRequestToReviewLifecycle } from "../handlers/event/review/PullRequestToReviewLifecycle";
+import * as rra from "../handlers/event/review/rendering/ReviewActionContributors";
+import * as rr from "../handlers/event/review/rendering/ReviewNodeRenderers";
+import { reviewToReviewLifecycle } from "../handlers/event/review/ReviewToReviewLifecycle";
 import {
     Action as CardAction,
     CardMessage,
@@ -127,7 +142,14 @@ import { AttachImagesNodeRenderer } from "../lifecycle/rendering/AttachImagesNod
 import { CollaboratorCardNodeRenderer } from "../lifecycle/rendering/CollaboratorCardNodeRenderer";
 import { EventsCardNodeRenderer } from "../lifecycle/rendering/EventsCardNodeRenderer";
 import { ReferencedIssuesNodeRenderer } from "../lifecycle/rendering/ReferencedIssuesNodeRenderer";
-import * as graphql from "../typings/types";
+import {
+    BranchFields,
+    IssueFields,
+    IssueToIssueCommentLifecycle,
+    PullRequestFields,
+    PushToPushLifecycle,
+    ReviewToReviewLifecycle,
+} from "../typings/types";
 
 export type RendererFactory<T, M, A> = (event: T) => Array<NodeRenderer<any, M, A>>;
 export type ActionFactory<T, A> = (event: T) => Array<ActionContributor<any, A>>;
@@ -139,23 +161,26 @@ export interface Contributions<T = any, M = any, A = any> {
 
 export interface LifecycleOptions {
     branch?: {
-        chat?: Contributions<graphql.BranchFields.Repo, SlackMessage, Action>;
+        chat?: Contributions<BranchFields.Repo, SlackMessage, Action>;
     };
     comment?: {
-        chat?: Contributions<graphql.IssueToIssueCommentLifecycle.Repo, SlackMessage, Action>;
+        chat?: Contributions<IssueToIssueCommentLifecycle.Repo, SlackMessage, Action>;
     },
     issue?: {
-        chat?: Contributions<graphql.IssueFields.Repo, SlackMessage, Action>;
-        web?: Contributions<graphql.IssueFields.Repo, CardMessage, CardAction>;
+        chat?: Contributions<IssueFields.Repo, SlackMessage, Action>;
+        web?: Contributions<IssueFields.Repo, CardMessage, CardAction>;
     };
     pullRequest?: {
-        chat?: Contributions<graphql.PullRequestFields.Repo, SlackMessage, Action>;
-        web?: Contributions<graphql.PullRequestFields.Repo, CardMessage, CardAction>;
+        chat?: Contributions<PullRequestFields.Repo, SlackMessage, Action>;
+        web?: Contributions<PullRequestFields.Repo, CardMessage, CardAction>;
     }
     push?: {
-        chat?: Contributions<graphql.PushToPushLifecycle.Push, SlackMessage, Action>;
-        web?: Contributions<graphql.PushToPushLifecycle.Push, CardMessage, CardAction>;
+        chat?: Contributions<PushToPushLifecycle.Push, SlackMessage, Action>;
+        web?: Contributions<PushToPushLifecycle.Push, CardMessage, CardAction>;
     };
+    review?: {
+        chat?: Contributions<ReviewToReviewLifecycle.Repo, SlackMessage, Action>;
+    }
 }
 
 export const DefaultLifecycleOptions: LifecycleOptions = {
@@ -331,6 +356,16 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
             ],
         },
     },
+    review: {
+        chat: {
+            renderers: () => [
+                new rr.ReviewNodeRenderer(),
+                new rr.ReviewDetailNodeRenderer()],
+            actions: repo => !repo.org.provider.private ? [
+                new rra.CommentActionContributor(),
+            ] : [],
+        },
+    },
 };
 
 export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack {
@@ -343,10 +378,17 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
                 ...options,
             };
 
+            // Build
+            sdm.addEvent(notifyPusherOnBuild());
+
             // Branch
             sdm.addEvent(branchToBranchLifecycle(optsToUse.branch.chat));
             sdm.addEvent(deletedBranchToBranchLifecycle(optsToUse.branch.chat));
             sdm.addEvent(pullRequestToBranchLifecycle(optsToUse.branch.chat));
+
+            // ChannelLink
+            sdm.addEvent(botJoinedChannel());
+            sdm.addEvent(channelLinkCreated());
 
             // Comment
             sdm.addEvent(commentToIssueCommentLifecycle(optsToUse.comment.chat));
@@ -354,11 +396,23 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(issueToIssueCommentLifecycle(optsToUse.branch.chat));
             sdm.addEvent(pullRequestToPullRequestCommentLifecycle(optsToUse.branch.chat));
 
+            // Commit
+            sdm.addEvent(issueRelationshipOnCommit());
+
             // Issue
+            sdm.addEvent(commentOnRelatedIssueClosed());
+            sdm.addEvent(notifyMentionedOnIssue());
+
             sdm.addEvent(issueToIssueLifecycle(optsToUse.issue.chat));
 
             sdm.addEvent(issueToIssueCardLifecycle(optsToUse.issue.web));
             sdm.addEvent(commentToIssueCardLifecycle(optsToUse.issue.web));
+
+            // K8Pod
+            sdm.addEvent(deploymentOnK8Pod());
+
+            // OnBoarded
+            sdm.addEvent(repositoryOnboarded(options));
 
             // Pull Request
             sdm.addEvent(branchToPullRequestLifecycle(optsToUse.pullRequest.chat));
@@ -378,6 +432,9 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(statusToPullRequestCardLifecycle(optsToUse.pullRequest.web));
 
             // Push
+            sdm.addEvent(notifyReviewerOnPush());
+            sdm.addEvent(pushToUnmappedRepo());
+
             sdm.addEvent(applicationToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(buildToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(issueToPushLifecycle(optsToUse.push.chat));
@@ -398,6 +455,12 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(sdmGoalToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
+
+            // Review
+            sdm.addEvent(notifyAuthorOnReview());
+
+            sdm.addEvent(pullRequestToReviewLifecycle(optsToUse.review.chat));
+            sdm.addEvent(reviewToReviewLifecycle(optsToUse.review.chat));
         },
     };
 }

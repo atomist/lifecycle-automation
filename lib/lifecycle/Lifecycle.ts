@@ -61,12 +61,16 @@ import {
     isCardMessage,
 } from "./card";
 
-export type LifecycleParametersDefinition = { orgToken: string }
+export type LifecycleParametersDefinition = { orgToken: string, credentialsResolver?: CredentialsResolver }
 
 export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
     orgToken: {
         declarationType: DeclarationType.Secret,
         uri: Secrets.OrgToken,
+    },
+    credentialsResolver: {
+        path: "sdm.credentialsResolver",
+        required: false,
     },
 };
 
@@ -77,14 +81,24 @@ export async function lifecycle<R>(e: EventFired<R>,
     const handler = toFactory(maker)();
     handler.orgToken = params.orgToken;
 
-    const creds = await resolveCredentialsPromise(
-        configurationValue<CredentialsResolver>("sdm.credentialsResolver", {
-            eventHandlerCredentials: async () => {},
-            commandHandlerCredentials: async () => {},
-        }).eventHandlerCredentials(ctx));
+    const creds = await resolveEventHandlerCredentials(e, params, ctx);
     handler.credentials = creds;
 
     return handler.handle(e, ctx);
+}
+
+export async function resolveEventHandlerCredentials(e: EventFired<any>,
+                                                     params: LifecycleParametersDefinition,
+                                                     ctx: HandlerContext): Promise<ProjectOperationCredentials> {
+    const credsResolver = params.credentialsResolver || configurationValue<CredentialsResolver>(
+        "sdm.credentialsResolver", {
+            eventHandlerCredentials: async () => {
+            },
+            commandHandlerCredentials: async () => {
+            },
+        });
+
+    return resolveCredentialsPromise(credsResolver.eventHandlerCredentials(ctx));
 }
 
 /**

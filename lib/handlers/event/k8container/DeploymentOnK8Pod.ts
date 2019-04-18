@@ -16,51 +16,53 @@
 
 import {
     addressEvent,
-    EventFired,
+    GraphQL,
     HandlerContext,
-    HandlerResult,
-    SuccessPromise,
+    Success,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import * as graphql from "../../../typings/types";
+import { EventHandlerRegistration } from "@atomist/sdm";
+import {
+    Deployment,
+    DeploymentOnK8Pod,
+} from "../../../typings/types";
 
-@EventHandler("Create a deployment on running K8 container events",
-    GraphQL.subscription("deploymentOnK8Pod"))
-export class DeploymentOnK8Pod implements HandleEvent<graphql.DeploymentOnK8Pod.Subscription> {
+export function deploymentOnK8Pod(): EventHandlerRegistration<DeploymentOnK8Pod.Subscription> {
+    return {
+        name: "DeploymentOnK8Pod",
+        description: "Create a deployment on running K8 container events",
+        tags: ["lifecycle", "k8s"],
+        subscription:   GraphQL.subscription("deploymentOnK8Pod"),
+        listener: async (e, ctx) => {
+            const pod = e.data.K8Pod[0];
+            const containers = pod.containers;
 
-    public async handle(e: EventFired<graphql.DeploymentOnK8Pod.Subscription>,
-                        ctx: HandlerContext): Promise<HandlerResult> {
-        const pod = e.data.K8Pod[0];
-        const containers = pod.containers;
+            for (const container of containers) {
+                const commit = container.image.commits[0];
 
-        for (const container of containers) {
-            const commit = container.image.commits[0];
+                const deployment = {
+                    commit: {
+                        owner: commit.repo.owner,
+                        repo: commit.repo.name,
+                        sha: commit.sha,
+                    },
+                    environment: `${pod.environment}:${pod.namespace}`,
+                    ts: Date.now(),
+                };
 
-            const deployment = {
-                commit: {
-                    owner: commit.repo.owner,
-                    repo: commit.repo.name,
-                    sha: commit.sha,
-                },
-                environment: `${pod.environment}:${pod.namespace}`,
-                ts: Date.now(),
-            };
-
-            if (container.ready && !(await isDeployed(deployment, ctx))) {
-                await ctx.messageClient.send(deployment, addressEvent("Deployment"));
+                if (container.ready && !(await isDeployed(deployment, ctx))) {
+                    await ctx.messageClient.send(deployment, addressEvent("Deployment"));
+                }
             }
-        }
 
-        return SuccessPromise;
-    }
+            return Success;
+        }
+    };
 
 }
 
 async function isDeployed(deployment: any,
                           ctx: HandlerContext): Promise<boolean> {
-    const result = await ctx.graphClient.query<graphql.Deployment.Query, graphql.Deployment.Variables>({
+    const result = await ctx.graphClient.query<Deployment.Query, Deployment.Variables>({
         name: "Deployment",
         variables: {
             owner: [deployment.commit.owner],

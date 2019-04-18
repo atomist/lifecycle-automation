@@ -17,28 +17,27 @@
 import {
     addressSlackChannels,
     buttonForCommand,
-    EventFired,
     failure,
-    HandlerContext,
-    HandlerResult,
+    GraphQL,
     logger,
     menuForCommand,
     MenuSpecification,
-    Secret,
-    Secrets,
     Success,
-    Tags,
+    TokenCredentials,
 } from "@atomist/automation-client";
-import { EventHandler } from "@atomist/automation-client/lib/decorators";
-import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
+import { EventHandlerRegistration } from "@atomist/sdm";
 import * as slack from "@atomist/slack-messages";
 import {
     OptionGroup,
     user,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
-import * as graphql from "../../../typings/types";
+import {
+    LifecycleParameters,
+    LifecycleParametersDefinition,
+    resolveEventHandlerCredentials,
+} from "../../../lifecycle/Lifecycle";
+import { BotJoinedChannel } from "../../../typings/types";
 import {
     repoChannelName,
     repoSlackLink,
@@ -55,173 +54,177 @@ import {
 } from "../../command/slack/LinkRepo";
 import { NoLinkRepo } from "../../command/slack/NoLinkRepo";
 
-@EventHandler("Display a helpful message when the bot joins a channel", GraphQL.subscription("botJoinedChannel"))
-@Tags("enrollment")
-export class BotJoinedChannel implements HandleEvent<graphql.BotJoinedChannel.Subscription> {
+export function botJoinedChannel(): EventHandlerRegistration<BotJoinedChannel.Subscription, LifecycleParametersDefinition> {
+    return {
+        name: "BotJoinedChannel",
+        description: "Display a helpful message when the bot joins a channel",
+        tags: "enrollment",
+        subscription: GraphQL.subscription("botJoinedChannel"),
+        parameters: LifecycleParameters,
+        listener: async (e, ctx, params) => {
 
-    @Secret(Secrets.OrgToken)
-    public orgToken: string;
+            const creds = await resolveEventHandlerCredentials(e, params, ctx);
 
-    public handle(e: EventFired<graphql.BotJoinedChannel.Subscription>, ctx: HandlerContext): Promise<HandlerResult> {
+            return Promise.all(e.data.UserJoinedChannel.map(j => {
+                if (!j.user) {
+                    logger.debug(`UserJoinedChannel.user is false, probably not the bot joining a channel`);
+                    return Success;
+                }
+                if (j.user.isAtomistBot !== "true") {
+                    logger.debug(`user joining the channel is not the bot: ${j.user.screenName}`);
+                    return Success;
+                }
+                if (!j.channel) {
+                    logger.debug(`UserJoinedChannel.channel is false, strange`);
+                    return Success;
+                }
+                if (!j.channel.name) {
+                    logger.debug(`the channel has no name, odd`);
+                    return Success;
+                }
+                const channelName = j.channel.name;
+                if (j.channel.botInvitedSelf) {
+                    logger.debug(`bot invited self to #${channelName}, not sending message`);
+                    return Success;
+                }
+                const botName = (j.user.screenName) ? j.user.screenName : DefaultBotName;
 
-        return Promise.all(e.data.UserJoinedChannel.map(j => {
-            if (!j.user) {
-                logger.debug(`UserJoinedChannel.user is false, probably not the bot joining a channel`);
-                return Success;
-            }
-            if (j.user.isAtomistBot !== "true") {
-                logger.debug(`user joining the channel is not the bot: ${j.user.screenName}`);
-                return Success;
-            }
-            if (!j.channel) {
-                logger.debug(`UserJoinedChannel.channel is false, strange`);
-                return Success;
-            }
-            if (!j.channel.name) {
-                logger.debug(`the channel has no name, odd`);
-                return Success;
-            }
-            const channelName = j.channel.name;
-            if (j.channel.botInvitedSelf) {
-                logger.debug(`bot invited self to #${channelName}, not sending message`);
-                return Success;
-            }
-            const botName = (j.user.screenName) ? j.user.screenName : DefaultBotName;
+                const helloText = `Hello! Now I can respond to messages beginning with ${user(botName)}. ` +
+                    `To see some options, try \`@${botName} help\``;
 
-            const helloText = `Hello! Now I can respond to messages beginning with ${user(botName)}. ` +
-                `To see some options, try \`@${botName} help\``;
-
-            if (j.channel.repos && j.channel.repos.length > 0) {
-                const linkedRepoNames = j.channel.repos.map(r => repoSlackLink(r));
-                const msg = `${helloText}
+                if (j.channel.repos && j.channel.repos.length > 0) {
+                    const linkedRepoNames = j.channel.repos.map(r => repoSlackLink(r));
+                    const msg = `${helloText}
 I will post GitHub notifications about ${linkedRepoNames.join(", ")} here.`;
-                return ctx.messageClient.send(
-                    msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
-            }
+                    return ctx.messageClient.send(
+                        msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
+                }
 
-            if (!j.channel.team || !j.channel.team.orgs || j.channel.team.orgs.length < 1) {
-                const msg = `${helloText}
+                if (!j.channel.team || !j.channel.team.orgs || j.channel.team.orgs.length < 1) {
+                    const msg = `${helloText}
 I won't be able to do much without GitHub integration, though. Run \`@${botName} enroll org\` to set that up.`;
-                return ctx.messageClient.send(
-                    msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
-            }
-            const orgs = j.channel.team.orgs.filter(o => o);
+                    return ctx.messageClient.send(
+                        msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
+                }
+                const orgs = j.channel.team.orgs.filter(o => o);
 
-            return Promise.all(orgs.map(o => {
-                const repos: RepoProvider[] = [];
-                const apiUrl = (o.provider && o.provider.apiUrl) ? o.provider.apiUrl : github.DefaultGitHubApiUrl;
-                const api = github.api(this.orgToken, apiUrl);
-                return ((o.ownerType === "user") ?
-                    api.repos.getForUser({ username: o.owner, per_page: 100 }) :
-                    api.repos.getForOrg({ org: o.owner, per_page: 100 }))
-                    .then(res => {
-                        interface GitHubRepoResponse {
-                            name: string;
-                            owner: {
-                                login: string;
-                            };
-                        }
-                        const providerId = (o.provider && o.provider.providerId) ?
-                            o.provider.providerId : github.DefaultGitHubProviderId;
-                        const ghRepos = res.data as GitHubRepoResponse[];
-                        ghRepos.forEach(ghr => repos.push({
-                            name: ghr.name,
-                            owner: ghr.owner.login,
-                            apiUrl,
-                            providerId,
-                        }));
-                        return repos;
-                    })
-                    .catch(err => {
-                        console.warn(`failed to get repos for ${o.owner}: ${err.message}`);
-                        return repos;
-                    });
-            }))
-                .then(lolRepos => {
-                    const repos = _.flatten(lolRepos);
-                    if (repos.length < 1) {
-                        const owners = orgs.map(o => o.owner);
-                        let ownerText: string;
-                        if (owners.length > 2) {
-                            owners[owners.length - 1] = "or " + owners[owners.length - 1];
-                            ownerText = owners.join(", ");
-                        } else if (owners.length === 2) {
-                            ownerText = owners.join(" or ");
-                        } else if (owners.length === 1) {
-                            ownerText = owners[0];
-                        }
-                        ownerText = (ownerText) ? ` for ${ownerText}` : "";
-                        const msg = `${helloText}
+                return Promise.all(orgs.map(o => {
+                    const repos: RepoProvider[] = [];
+                    const apiUrl = (o.provider && o.provider.apiUrl) ? o.provider.apiUrl : github.DefaultGitHubApiUrl;
+                    const api = github.api((creds as TokenCredentials).token, apiUrl);
+                    return ((o.ownerType === "user") ?
+                        api.repos.getForUser({ username: o.owner, per_page: 100 }) :
+                        api.repos.getForOrg({ org: o.owner, per_page: 100 }))
+                        .then(res => {
+                            interface GitHubRepoResponse {
+                                name: string;
+                                owner: {
+                                    login: string;
+                                };
+                            }
+
+                            const providerId = (o.provider && o.provider.providerId) ?
+                                o.provider.providerId : github.DefaultGitHubProviderId;
+                            const ghRepos = res.data as GitHubRepoResponse[];
+                            ghRepos.forEach(ghr => repos.push({
+                                name: ghr.name,
+                                owner: ghr.owner.login,
+                                apiUrl,
+                                providerId,
+                            }));
+                            return repos;
+                        })
+                        .catch(err => {
+                            console.warn(`failed to get repos for ${o.owner}: ${err.message}`);
+                            return repos;
+                        });
+                }))
+                    .then(lolRepos => {
+                        const repos = _.flatten(lolRepos);
+                        if (repos.length < 1) {
+                            const owners = orgs.map(o => o.owner);
+                            let ownerText: string;
+                            if (owners.length > 2) {
+                                owners[owners.length - 1] = "or " + owners[owners.length - 1];
+                                ownerText = owners.join(", ");
+                            } else if (owners.length === 2) {
+                                ownerText = owners.join(" or ");
+                            } else if (owners.length === 1) {
+                                ownerText = owners[0];
+                            }
+                            ownerText = (ownerText) ? ` for ${ownerText}` : "";
+                            const msg = `${helloText}
 I don't see any repositories in GitHub${ownerText}.`;
-                        return ctx.messageClient.send(
-                            msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
-                    }
+                            return ctx.messageClient.send(
+                                msg, addressSlackChannels(j.channel.team.id, channelName), { dashboard: false });
+                        }
 
-                    const msgId = `channel_link/bot_joined_channel/${channelName}`;
-                    const actions: slack.Action[] = [];
+                        const msgId = `channel_link/bot_joined_channel/${channelName}`;
+                        const actions: slack.Action[] = [];
 
-                    const matchyRepos =
-                        _.uniqBy(fuzzyChannelRepoMatch(channelName, repos), r => `${r.owner}/${r.name}`);
-                    matchyRepos.forEach(r => {
-                        const linkRepo = new LinkRepo();
-                        const org = orgs.find(o => o.owner === r.owner);
-                        const apiUrl = (org && org.provider && org.provider.apiUrl) ?
-                            org.provider.apiUrl : github.DefaultGitHubApiUrl;
-                        const providerId = (org && org.provider && org.provider.providerId) ?
-                            org.provider.providerId : github.DefaultGitHubProviderId;
-                        linkRepo.teamId = j.channel.team.id;
-                        linkRepo.channelId = j.channel.channelId;
-                        linkRepo.channelName = channelName;
-                        linkRepo.owner = r.owner;
-                        linkRepo.apiUrl = apiUrl;
-                        linkRepo.provider = providerId;
-                        linkRepo.name = r.name;
-                        linkRepo.msgId = msgId;
-                        linkRepo.msg = helloText;
-                        actions.push(buttonForCommand({ text: repoSlug(r) }, linkRepo));
+                        const matchyRepos =
+                            _.uniqBy(fuzzyChannelRepoMatch(channelName, repos), r => `${r.owner}/${r.name}`);
+                        matchyRepos.forEach(r => {
+                            const linkRepo = new LinkRepo();
+                            const org = orgs.find(o => o.owner === r.owner);
+                            const apiUrl = (org && org.provider && org.provider.apiUrl) ?
+                                org.provider.apiUrl : github.DefaultGitHubApiUrl;
+                            const providerId = (org && org.provider && org.provider.providerId) ?
+                                org.provider.providerId : github.DefaultGitHubProviderId;
+                            linkRepo.teamId = j.channel.team.id;
+                            linkRepo.channelId = j.channel.channelId;
+                            linkRepo.channelName = channelName;
+                            linkRepo.owner = r.owner;
+                            linkRepo.apiUrl = apiUrl;
+                            linkRepo.provider = providerId;
+                            linkRepo.name = r.name;
+                            linkRepo.msgId = msgId;
+                            linkRepo.msg = helloText;
+                            actions.push(buttonForCommand({ text: repoSlug(r) }, linkRepo));
+                        });
+
+                        if (repos.length > matchyRepos.length) {
+                            const menu: MenuSpecification = {
+                                text: "repository...",
+                                options: repoOptions(lolRepos),
+                            };
+                            const linkOwnerRepo = new LinkOwnerRepo();
+                            linkOwnerRepo.teamId = j.channel.team.id;
+                            linkOwnerRepo.channelId = j.channel.channelId;
+                            linkOwnerRepo.channelName = channelName;
+                            linkOwnerRepo.msgId = msgId;
+                            linkOwnerRepo.msg = helloText;
+                            actions.push(menuForCommand(menu, linkOwnerRepo, "repoProvider"));
+                        }
+
+                        const noLinkRepo = new NoLinkRepo();
+                        noLinkRepo.channelName = channelName;
+                        noLinkRepo.msgId = msgId;
+                        const linkCmd = LinkRepo.linkRepoCommand(botName);
+                        noLinkRepo.msg = `${helloText}
+OK. If you want to link a repository later, type \`${linkCmd}\``;
+                        actions.push(buttonForCommand({ text: "No thanks" }, noLinkRepo));
+
+                        const msgText = "Since I'm here, would you like me to post notifications " +
+                            "from a GitHub repository to this channel?";
+                        const linkMsg: slack.SlackMessage = {
+                            text: helloText,
+                            attachments: [
+                                {
+                                    text: msgText,
+                                    fallback: msgText,
+                                    mrkdwn_in: ["text"],
+                                    actions,
+                                },
+                            ],
+                        };
+                        return ctx.messageClient.send(linkMsg,
+                            addressSlackChannels(j.channel.team.id, channelName), { id: msgId, dashboard: false });
                     });
 
-                    if (repos.length > matchyRepos.length) {
-                        const menu: MenuSpecification = {
-                            text: "repository...",
-                            options: repoOptions(lolRepos),
-                        };
-                        const linkOwnerRepo = new LinkOwnerRepo();
-                        linkOwnerRepo.teamId = j.channel.team.id;
-                        linkOwnerRepo.channelId = j.channel.channelId;
-                        linkOwnerRepo.channelName = channelName;
-                        linkOwnerRepo.msgId = msgId;
-                        linkOwnerRepo.msg = helloText;
-                        actions.push(menuForCommand(menu, linkOwnerRepo, "repoProvider"));
-                    }
-
-                    const noLinkRepo = new NoLinkRepo();
-                    noLinkRepo.channelName = channelName;
-                    noLinkRepo.msgId = msgId;
-                    const linkCmd = LinkRepo.linkRepoCommand(botName);
-                    noLinkRepo.msg = `${helloText}
-OK. If you want to link a repository later, type \`${linkCmd}\``;
-                    actions.push(buttonForCommand({ text: "No thanks" }, noLinkRepo));
-
-                    const msgText = "Since I'm here, would you like me to post notifications " +
-                        "from a GitHub repository to this channel?";
-                    const linkMsg: slack.SlackMessage = {
-                        text: helloText,
-                        attachments: [
-                            {
-                                text: msgText,
-                                fallback: msgText,
-                                mrkdwn_in: ["text"],
-                                actions,
-                            },
-                        ],
-                    };
-                    return ctx.messageClient.send(linkMsg,
-                        addressSlackChannels(j.channel.team.id, channelName), { id: msgId, dashboard: false });
-                });
-
-        })).then(x => Success, failure);
-    }
+            })).then(x => Success, failure);
+        },
+    };
 }
 
 export function repoOptions(lol: RepoProvider[][]): OptionGroup[] {
@@ -253,9 +256,9 @@ export function repoOptions(lol: RepoProvider[][]): OptionGroup[] {
  */
 export function fuzzyChannelRepoMatch(
     channel: string,
-    repos: graphql.BotJoinedChannel.Repo[],
+    repos: BotJoinedChannel.Repo[],
     max: number = 2,
-): graphql.BotJoinedChannel.Repo[] {
+): BotJoinedChannel.Repo[] {
 
     const l = channel.length;
     const reposWithNames = repos.filter(r => r && r.name).map(r => ({ r, n: repoChannelName(r.name) }));

@@ -22,7 +22,9 @@ import { SlackMessage } from "@atomist/slack-messages";
 import {
     Lifecycle,
     LifecycleHandler,
+    Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { Contributions } from "../../../machine/lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
 import { CommentActionContributor } from "./rendering/ReviewActionContributors";
@@ -31,7 +33,13 @@ import {
     ReviewNodeRenderer,
 } from "./rendering/ReviewNodeRenderers";
 
-export abstract class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
+export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
+
+    constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.ReviewToReviewLifecycle.Review[], string],
+                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly contributors: Contributions) {
+        super();
+    }
 
     protected prepareMessage(): Promise<SlackMessage> {
         return Promise.resolve({
@@ -67,9 +75,7 @@ export abstract class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
                 const configuration: Lifecycle = {
                     name: LifecyclePreferences.review.id,
                     nodes,
-                    renderers: [
-                        new ReviewNodeRenderer(),
-                        new ReviewDetailNodeRenderer()],
+                    renderers: this.contributors.renderers(repo),
                     contributors: !repo.org.provider.private ? [
                         new CommentActionContributor(),
                     ] : [],
@@ -93,5 +99,8 @@ export abstract class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
 
     }
 
-    protected abstract extractNodes(event: EventFired<R>): [graphql.ReviewToReviewLifecycle.Review[], string];
+    protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
+        return this._extractPreferences(event);
+    }
+
 }

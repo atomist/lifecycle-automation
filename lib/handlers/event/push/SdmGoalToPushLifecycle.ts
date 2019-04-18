@@ -49,7 +49,7 @@ export function sdmGoalToPushLifecycle(contributions: Contributions)
                 () => new PushLifecycleHandler(
                     e => [e.data.SdmGoal[0].push],
                     e => chatTeamsToPreferences(
-                        _.get(e, "\"data.SdmGoal[0].push.repo.org.team.chatTeams")),
+                        _.get(e, "data.SdmGoal[0].push.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

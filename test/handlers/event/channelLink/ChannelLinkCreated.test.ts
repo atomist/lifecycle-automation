@@ -21,14 +21,13 @@ import {
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
+import { channelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 import assert = require("power-assert");
-import { ChannelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 import * as graphql from "../../../../lib/typings/types";
 
 describe("ChannelLinkCreated", () => {
 
-    const handler = new ChannelLinkCreated();
-    handler.orgToken = "some broken token";
+    const handler = channelLinkCreated().listener;
 
     it("should generate a message", done => {
         const event = {
@@ -88,7 +87,7 @@ describe("ChannelLinkCreated", () => {
             },
         };
 
-        handler.handle(event, ctx)
+        handler(event, ctx, {})
             .then(result => {
                 assert(result.code === 0);
                 assert(messageSend);

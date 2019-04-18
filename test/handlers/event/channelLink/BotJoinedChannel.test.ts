@@ -24,9 +24,9 @@ import {
     RepoProvider,
 } from "../../../../lib/handlers/command/slack/LinkOwnerRepo";
 import {
-    BotJoinedChannel,
     fuzzyChannelRepoMatch,
     repoOptions,
+    botJoinedChannel,
 } from "../../../../lib/handlers/event/channellink/BotJoinedChannel";
 
 import * as graphql from "../../../../lib/typings/types";
@@ -264,8 +264,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(silent);
                 })
@@ -339,8 +339,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(sent);
                 })
@@ -392,8 +392,8 @@ describe("BotJoinedChannel", () => {
                     },
                 },
             };
-            const h = new BotJoinedChannel();
-            h.handle(event, ctx)
+            const h = botJoinedChannel().listener;
+            h(event, ctx, {})
                 .then(() => {
                     assert(sent);
                 })
