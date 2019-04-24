@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.38...HEAD)
 
+### Changed
+
+-   Remove label and person emoji. [ee1a129](https://github.com/atomist/lifecycle-automation/commit/ee1a129d1337df5c76cdce255f63ecd6ad816ff8)
+
 ## [0.12.38](https://github.com/atomist/lifecycle-automation/compare/0.12.37...0.12.38) - 2019-04-17
 
 ## [0.12.37](https://github.com/atomist/lifecycle-automation/compare/0.12.36...0.12.37) - 2019-04-16
