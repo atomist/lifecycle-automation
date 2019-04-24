@@ -764,11 +764,10 @@ export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignee
     let footer = slack.url(repoUrl(repo), `${repo.owner}/${repo.name}`);
     if (labels != null && labels.length > 0) {
         footer += " \u00B7 "
-            + labels.map(l => `${slack.emoji("label")} ${l.name}`).join(" ");
+            + labels.map(l => l.name).join(" \u00B7 ");
     }
     if (assignees != null && assignees.length > 0) {
-        footer += " \u00B7 " + assignees.map(a =>
-            `${slack.emoji("bust_in_silhouette")} ${a.login}`).join(" ");
+        footer += " \u00B7 " + assignees.map(a => a.login).join(" \u00B7 ");
     }
     return footer;
 }

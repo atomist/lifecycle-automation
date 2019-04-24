@@ -315,8 +315,7 @@ export class ReviewNodeRenderer extends AbstractIdentifiableContribution
 
         let summary = this.summarizeReviewCounts(pending, success, changesRequested);
         if (pr.reviewers != null && pr.reviewers.length > 0) {
-            summary += " \u00B7 " + pr.reviewers.map(r =>
-                `${emoji("bust_in_silhouette")} ${r.login}`).join(" ");
+            summary += " \u00B7 " + pr.reviewers.map(r => r.login).join(" \u00B7 ");
         }
 
         // tslint:disable-next-line:variable-name
