@@ -134,8 +134,10 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     private createMessage(preferences: any, emojisEnabled: boolean, compactGoalFormatEnabled: boolean): SlackMessage {
         const msg: SlackMessage = {
-            text: `Configure Lifecycle for ${channel(this.channelId)}:`,
-            attachments: [],
+            attachments: [{
+                text: `Configure Lifecycle for ${channel(this.channelId)}:`,
+                fallback: `Configure Lifecycle for ${channel(this.channelId)}:`,
+            }],
         };
 
         for (const type in LifecyclePreferences) {
@@ -177,6 +179,11 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                 msg.attachments.push(configureAttachment);
             }
         }
+
+        msg.attachments.push({
+            text: "Configure Lifecycle for Slack Workspace:",
+            fallback: "Configure Lifecycle for Slack Workspace:",
+        });
 
         // Add the configuration for setting display style
         const goalFormatHandler = new ToggleDisplayFormat();

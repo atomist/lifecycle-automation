@@ -57,6 +57,10 @@ import {
     truncateCommitMessage,
     userUrl,
 } from "../../../../util/helpers";
+import {
+    LifecycleActionPreferences,
+    LifecycleRendererPreferences,
+} from "../../preferences";
 import { Domain } from "../PushLifecycle";
 import { sortTagsByName } from "./PushActionContributors";
 
@@ -697,7 +701,7 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
     public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
-        super("expand");
+        super("expand_attachments");
     }
 
     public configure(configuration: LifecycleConfiguration) {
@@ -735,10 +739,30 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
     }
 }
 
+export class ExpandNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
+
+    constructor() {
+        super(LifecycleRendererPreferences.push.expand.id);
+    }
+
+    public supports(node: any): boolean {
+        return !!node.after;
+    }
+
+    public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
+        return msg;
+    }
+}
+
 export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {
     if (!!context) {
+        const shouldChannelExpand = context.lifecycle.renderers.some(
+            r => r.id() === LifecycleRendererPreferences.push.expand.id) === true ? SdmGoalDisplayFormat.full : undefined;
+
         const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
-        const displayFormat = _.get(push, "goalsDisplayState[0].format") || goalStyle;
+        const displayFormat = shouldChannelExpand || _.get(push, "goalsDisplayState[0].format") || goalStyle;
         return displayFormat === SdmGoalDisplayFormat.full;
     } else {
         return true;

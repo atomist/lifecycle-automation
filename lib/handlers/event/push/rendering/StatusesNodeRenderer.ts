@@ -48,10 +48,9 @@ import {
     lastGoalSet,
     sortGoals,
 } from "../../../../util/goals";
+import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
-import {
-    EMOJI_SCHEME,
-} from "./PushNodeRenderers";
+import { EMOJI_SCHEME } from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
@@ -234,7 +233,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
         const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
-        const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.renderingStyle;
+
+        const shouldChannelExpand = context.lifecycle.renderers.some(
+            r => r.id() === LifecycleRendererPreferences.push.expand.id) === true ? SdmGoalDisplayFormat.full : undefined;
+        let displayFormat = shouldChannelExpand || _.get(push, "goalsDisplayState[0].format");
+        if (this.renderingStyle === SdmGoalDisplayFormat.full) {
+            displayFormat = SdmGoalDisplayFormat.full;
+        } else if (!displayFormat) {
+            displayFormat = this.renderingStyle;
+        }
 
         if (displayState === SdmGoalDisplayState.show_current && goalSetIndex !== 0) {
             return Promise.resolve(msg);

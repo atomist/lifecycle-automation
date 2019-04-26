@@ -97,7 +97,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     lifecycle.nodes.filter(n => r.supports(n)).forEach(n => {
                         // First collect all buttons/actions for the given node
                         const context = new RendererContext(
-                            r.id(), lifecycle, configuration, this.orgToken, ctx, store);
+                            r.id(), lifecycle, configuration, this.orgToken, ctx, channels, store);
 
                         // Second trigger rendering
                         renderers.push(msg => {
@@ -272,7 +272,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
      */
     private groupChannels(lifecycle: Lifecycle,
                           preferences: { [teamId: string]: Preferences[] } = {})
-                          : Array<{teamId: string, channels: string[]}> {
+        : Array<{ teamId: string, channels: string[] }> {
 
         if (lifecycle == null) {
             return [];
@@ -282,27 +282,27 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         const channels = lifecycle.channels.filter(c => c.name && c.teamId)
             .filter(channel => this.lifecycleEnabled(lifecycle, channel, preferences));
 
-        const unconfiguredChannels: Array<{teamId: string, channels: string[]}> = [];
-        const configuredChannels: Array<{teamId: string, channels: string[]}> = [];
+        const unconfiguredChannels: Array<{ teamId: string, channels: string[] }> = [];
+        const configuredChannels: Array<{ teamId: string, channels: string[] }> = [];
 
         channels.forEach(c => {
-           if (preferences[c.teamId] && this.channelConfigured(c,
-                   preferences[c.teamId].find(p => p.name === LifecycleActionPreferences.key))) {
-               configuredChannels.push({teamId: c.teamId, channels: [c.name]});
-           } else if (preferences[c.teamId] && this.channelConfigured(c,
-                   preferences[c.teamId].find(p => p.name === LifecycleRendererPreferences.key))) {
-               configuredChannels.push({teamId: c.teamId, channels: [c.name]});
-           } else {
-               if (unconfiguredChannels.some(uc => uc.teamId === c.teamId)) {
-                   unconfiguredChannels.find(uc => uc.teamId === c.teamId).channels.push(c.name);
-               } else {
-                   unconfiguredChannels.push({teamId: c.teamId, channels: [c.name]});
-               }
-           }
+            if (preferences[c.teamId] && this.channelConfigured(c,
+                preferences[c.teamId].find(p => p.name === LifecycleActionPreferences.key))) {
+                configuredChannels.push({ teamId: c.teamId, channels: [c.name] });
+            } else if (preferences[c.teamId] && this.channelConfigured(c,
+                preferences[c.teamId].find(p => p.name === LifecycleRendererPreferences.key))) {
+                configuredChannels.push({ teamId: c.teamId, channels: [c.name] });
+            } else {
+                if (unconfiguredChannels.some(uc => uc.teamId === c.teamId)) {
+                    unconfiguredChannels.find(uc => uc.teamId === c.teamId).channels.push(c.name);
+                } else {
+                    unconfiguredChannels.push({ teamId: c.teamId, channels: [c.name] });
+                }
+            }
         });
 
         if (unconfiguredChannels.length > 0) {
-            return [ ...configuredChannels, ...unconfiguredChannels];
+            return [...configuredChannels, ...unconfiguredChannels];
         } else {
             return configuredChannels;
         }
@@ -348,9 +348,9 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         contributors = this.filterAndSortContributions("action", contributors, configuration.contributors,
             name, channels, preferences) as Array<ActionContributor<any, any>>;
         contributors.forEach(c => {
-           if (c.configure) {
-               c.configure(configuration);
-           }
+            if (c.configure) {
+                c.configure(configuration);
+            }
         });
         return contributors;
     }
@@ -585,7 +585,9 @@ export class RendererContext {
                 public configuration: LifecycleConfiguration,
                 public orgToken: string,
                 public context: HandlerContext,
-                private store: Map<string, any>) { }
+                public channels: { teamId: string, channels: string[] },
+                private store: Map<string, any>) {
+    }
 
     public set(key: string, value: any) {
         this.store.set(key, value);
@@ -603,7 +605,8 @@ export class RendererContext {
 export abstract class AbstractIdentifiableContribution implements IdentifiableContribution {
 
     // tslint:disable-next-line:variable-name
-    constructor(private _id: string) { }
+    constructor(private _id: string) {
+    }
 
     public id(): string {
         return this._id;

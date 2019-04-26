@@ -553,7 +553,7 @@ export class ExpandAttachmentsActionContributor extends AbstractIdentifiableCont
     public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
-        super("expand");
+        super("expand_attachments");
     }
 
     public configure(configuration: LifecycleConfiguration) {
@@ -568,9 +568,12 @@ export class ExpandAttachmentsActionContributor extends AbstractIdentifiableCont
         const buttons = [];
         const push = context.lifecycle.extract("push") as PushFields.Fragment;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
+
+        const shouldChannelExpand = context.lifecycle.renderers.some(
+            r => r.id() === LifecycleRendererPreferences.push.expand.id);
         const displayFormat = _.get(push, "goalsDisplayState[0].format") || this.renderingStyle;
 
-        if (context.rendererId === "expand") {
+        if (context.rendererId === "expand_attachments" && !shouldChannelExpand) {
             if (this.renderingStyle === SdmGoalDisplayFormat.compact) {
                 if (displayFormat === SdmGoalDisplayFormat.full) {
                     this.createButton(

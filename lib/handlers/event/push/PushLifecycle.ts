@@ -67,6 +67,7 @@ import {
     BuildNodeRenderer,
     CommitNodeRenderer,
     ExpandAttachmentsNodeRenderer,
+    ExpandNodeRenderer,
     IssueNodeRenderer,
     K8PodNodeRenderer,
     PullRequestNodeRenderer,
@@ -204,7 +205,8 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ApplicationNodeRenderer(),
                     new K8PodNodeRenderer(),
                     new BlackDuckFingerprintNodeRenderer(),
-                    new ExpandAttachmentsNodeRenderer()],
+                    new ExpandAttachmentsNodeRenderer(),
+                    new ExpandNodeRenderer()],
                 contributors: !push.repo.org.provider.private ? [
                     new TagPushActionContributor(),
                     new TagTagActionContributor(),

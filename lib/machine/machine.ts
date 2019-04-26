@@ -19,6 +19,7 @@ import {
     createSoftwareDeliveryMachine,
     LocalSoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm-core";
+import { cancelGoalSetsCommand } from "@atomist/sdm-core/lib/pack/goal-state/cancelGoals";
 import {
     githubAutoMergeSupport,
     githubConvergeSupport,
@@ -31,6 +32,8 @@ export async function machine(configuration: LocalSoftwareDeliveryMachineConfigu
         name: "Lifecycle Software Delivery Machine",
         configuration,
     });
+
+    sdm.addCommand(cancelGoalSetsCommand(sdm));
 
     sdm.addExtensionPacks(
         githubAutoMergeSupport(),

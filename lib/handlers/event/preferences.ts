@@ -321,6 +321,12 @@ export const LifecycleRendererPreferences = {
             description: "Render referenced pull requests",
             enabled: true,
         },
+        expand: {
+            id: "expand",
+            name: "Overwrite Compact Lifecycle Rendering Format",
+            description: "Always display the full Lifecycle Rendering despite the global configuration",
+            enabled: false,
+        }
     },
 
     comment: {
