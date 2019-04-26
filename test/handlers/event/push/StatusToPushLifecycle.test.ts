@@ -1113,9 +1113,10 @@ describe("StatusToPushLifecycle", () => {
                 const sm = msg as SlackMessage;
                 assert(sm.attachments.length === 7);
                 assert(sm.attachments[1].author_name === "Goals");
-                assert(sm.attachments[3].actions.length === 2);
+                assert(sm.attachments[3].actions.length === 3);
                 assert(sm.attachments[3].actions[0].text === "Restart _build_");
                 assert(sm.attachments[3].actions[1].text === "Approve _deploy to prod_");
+                assert(sm.attachments[3].actions[2].text === "Cancel");
                 messageSent = true;
                 return Promise.resolve();
             }
