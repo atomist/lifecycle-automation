@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.39...HEAD)
 
+### Added
+
+-   Make goal rendering format a per channel configuration . [#283](https://github.com/atomist/lifecycle-automation/issues/283)
+
 ## [0.12.39](https://github.com/atomist/lifecycle-automation/compare/0.12.38...0.12.39) - 2019-04-24
 
 ### Changed
