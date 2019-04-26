@@ -46,11 +46,15 @@ import { CreateGitHubTag } from "../../../command/github/CreateGitHubTag";
 import { DefaultGitHubApiUrl } from "../../../command/github/gitHubApi";
 import { UpdateSdmGoalDisplayState } from "../../../command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "../../../command/sdm/UpdateSdmGoalState";
-import { LifecycleActionPreferences } from "../../preferences";
+import {
+    LifecycleActionPreferences,
+    LifecycleRendererPreferences,
+} from "../../preferences";
 import {
     Domain,
     GoalSet,
 } from "../PushLifecycle";
+import { isFullRenderingEnabled } from "./PushNodeRenderers";
 
 const RepositoryTagsQuery = `query RepositoryTags($name: String!, $owner: String!) {
   repository(name: $name, owner: $owner) {
@@ -463,8 +467,14 @@ export class ApplicationActionContributor extends AbstractIdentifiableContributi
 export class ApproveGoalActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<GoalSet> {
 
+    public renderingStyle: SdmGoalDisplayFormat;
+
     constructor() {
         super(LifecycleActionPreferences.push.approve_goal.id);
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
@@ -484,6 +494,27 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
                     .forEach(g => this.createButton(SdmGoalState.pre_approved, "Start", g, buttons));
                 goals.filter(g => g.state === SdmGoalState.waiting_for_approval)
                     .forEach(g => this.createButton(SdmGoalState.approved, "Approve", g, buttons));
+
+                // Add cancel button for in-flight goal sets
+                if (isFullRenderingEnabled(this.renderingStyle, context) && goals.some(g =>
+                    [SdmGoalState.in_process,
+                        SdmGoalState.requested,
+                        SdmGoalState.planned,
+                        SdmGoalState.waiting_for_approval,
+                        SdmGoalState.approved,
+                        SdmGoalState.waiting_for_pre_approval,
+                        SdmGoalState.pre_approved].includes(g.state))) {
+
+                    buttons.push(buttonForCommand({
+                        text: "Cancel",
+                        confirm: {
+                            title: "Cancel Goal Set",
+                            text: `Do you really want to cancel goal set ${goalSet.goalSetId.slice(0, 7)}?`,
+                            dismiss_text: "No",
+                            ok_text: "Yes",
+                        },
+                    }, "CancelGoalSets", { goalSetId: goalSet.goalSetId }));
+                }
             }
         }
 
