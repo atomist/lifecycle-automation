@@ -196,10 +196,10 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                 }).join("\n");
 
                 const fallback = `${cgba.commits.length} ${(cgba.commits.length > 1 ? "commits" : "commit")}` +
-                    ` to ${slug} by @${a}`;
+                    ` to ${slug} by ${a}`;
 
                 const attachment: Attachment = {
-                    author_name: `@${a}`,
+                    author_name: a,
                     author_link: userUrl(repo, a),
                     author_icon: avatarUrl(repo, a, cgba.avatar),
                     text: message,
