@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.40...HEAD)
 
+### Changed
+
+-   Remove @ in front of SCM user names. [#282](https://github.com/atomist/lifecycle-automation/issues/282)
+
 ## [0.12.40](https://github.com/atomist/lifecycle-automation/compare/0.12.39...0.12.40) - 2019-04-27
 
 ### Added
