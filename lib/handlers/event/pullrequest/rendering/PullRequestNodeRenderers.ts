@@ -18,7 +18,6 @@ import { guid } from "@atomist/automation-client";
 import {
     Action,
     Attachment,
-    emoji,
     escape,
     githubToSlack,
     SlackMessage,
@@ -77,7 +76,7 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
 
         if (state === "open") {
             msg.text = `${url(userUrl(repo, pr.author.login),
-                `@${pr.author.login}`)} wants to merge ${commitText} from ${url(branchUrl(repo, branchName),
+                `${pr.author.login}`)} wants to merge ${commitText} from ${url(branchUrl(repo, branchName),
                 branchName)} to ${url(branchUrl(repo, baseBranchName), baseBranchName)}`;
             color = "#37A745";
             ts = pr.createdAt;
@@ -87,7 +86,7 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
             ts = pr.mergedAt;
         } else if (state === "merged") {
             msg.text = `${url(userUrl(repo, pr.merger.login),
-                `@${pr.merger.login}`)} merged ${commitText} from ${url(branchUrl(repo, branchName),
+                `${pr.merger.login}`)} merged ${commitText} from ${url(branchUrl(repo, branchName),
                 branchName)} to ${url(branchUrl(repo, baseBranchName), baseBranchName)}`;
             color = "#6E5692";
             ts = pr.mergedAt;
@@ -177,14 +176,14 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                 }).join("\n");
 
                 const attachment: Attachment = {
-                    author_name: `@${a}`,
+                    author_name: a,
                     author_link: userUrl(repo, a),
                     author_icon: avatarUrl(repo, a),
                     text: message,
                     mrkdwn_in: ["text"],
                     color,
                     fallback: `${cgba.commits.length} ${(cgba.commits.length > 1 ? "commits" : "commit")}` +
-                    ` to ${url(repoUrl(repo), repoSlug)} by @${a}`,
+                    ` to ${url(repoUrl(repo), repoSlug)} by ${a}`,
                     actions,
                 };
                 msg.attachments.push(attachment);

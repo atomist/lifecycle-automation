@@ -73,7 +73,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
             if (node.closedAt === node.updatedAt) {
                 if (node.closedBy != null && node.closedBy.login != null) {
                     pretext = `${url(userUrl(repo, node.closedBy.login),
-                        `@${node.closedBy.login}`)} closed issue ${title}`;
+                        `${node.closedBy.login}`)} closed issue ${title}`;
                 } else {
                     pretext = `Closed issue ${title}`;
                 }
@@ -91,7 +91,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
 
         if (node.openedBy != null && node.openedBy.login != null) {
             const author = node.openedBy.login;
-            author_name = `@${author}`;
+            author_name = author;
             author_link = userUrl(repo, author);
             author_icon = avatarUrl(repo, author);
         }

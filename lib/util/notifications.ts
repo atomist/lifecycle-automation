@@ -85,7 +85,7 @@ export function issueNotification(id: string,
                                     text,
                                     attachments: [
                                         {
-                                            author_name: `@${login}`,
+                                            author_name: login,
                                             author_link: userUrl(repo, login),
                                             author_icon: avatarUrl(repo, login),
                                             text: removeMarkers(linkIssues(b, repo)),
@@ -147,7 +147,7 @@ export function prNotification(id: string,
                                     text,
                                     attachments: [
                                         {
-                                            author_name: `@${author.login}`,
+                                            author_name: author.login,
                                             author_link: userUrl(repo, author.login),
                                             author_icon: avatarUrl(repo, author.login),
                                             text: removeMarkers(linkIssues(b, repo)),
@@ -198,7 +198,7 @@ export function issueAssigneeNotification(id: string,
                     text,
                     attachments: [
                         {
-                            author_name: `@${issue.openedBy.login}`,
+                            author_name: issue.openedBy.login,
                             author_link: userUrl(repo, issue.openedBy.login),
                             author_icon: avatarUrl(repo, issue.openedBy.login),
                             text: removeMarkers(linkIssues(b, repo)),
@@ -247,7 +247,7 @@ export function prAssigneeNotification(id: string,
                     text,
                     attachments: [
                         {
-                            author_name: `@${pr.author.login}`,
+                            author_name: pr.author.login,
                             author_link: userUrl(repo, pr.author.login),
                             author_icon: avatarUrl(repo, pr.author.login),
                             text: removeMarkers(linkIssues(b, repo)),
@@ -295,7 +295,7 @@ export function prRevieweeNotification(id: string,
                     text,
                     attachments: [
                         {
-                            author_name: `@${pr.author.login}`,
+                            author_name: pr.author.login,
                             author_link: userUrl(repo, pr.author.login),
                             author_icon: avatarUrl(repo, pr.author.login),
                             text: removeMarkers(linkIssues(b, repo)),
@@ -336,13 +336,13 @@ export function prAuthorMergeNotification(id: string,
                 // tslint:disable-next-line:variable-name
                 const footer_icon = `https://images.atomist.com/rug/pull-request-${state}.png`;
                 const text = `${url(userUrl(repo, pr.merger.login),
-                    `@${pr.merger.login}`)} ${state} your pull request ${url(prUrl(repo, pr),
+                    `${pr.merger.login}`)} ${state} your pull request ${url(prUrl(repo, pr),
                         bold(`#${pr.number}: ${pr.title}`))}`;
                 const slackMessage: SlackMessage = {
                     text,
                     attachments: [
                         {
-                            author_name: `@${pr.author.login}`,
+                            author_name: pr.author.login,
                             author_link: userUrl(repo, pr.author.login),
                             author_icon: avatarUrl(repo, pr.author.login),
                             text: removeMarkers(linkIssues(b, repo)),
@@ -405,7 +405,7 @@ export function prAuthorReviewNotification(id: string,
                             title,
                             title_link: reviewUrl(repo, pr, review),
                             text: removeMarkers(linkIssues(b, repo)),
-                            author_name: `@${review.by[0].login}`,
+                            author_name: review.by[0].login,
                             author_icon: avatarUrl(repo, review.by[0].login),
                             author_link: userUrl(repo, review.by[0].login),
                             fallback: `New review on #${pr.number} ${pr.title}`,
@@ -470,7 +470,7 @@ export function buildNotification(build: graphql.NotifyPusherOnBuild.Build,
         text: `${build.buildUrl ? url(build.buildUrl, label) : label} of your commit to ${url(repoUrl(repo), repoSlug(repo))} failed`,
         attachments: [
             {
-                author_name: `@${commit.committer.login}`,
+                author_name: commit.committer.login,
                 author_link: userUrl(repo, commit.committer.login),
                 author_icon: avatarUrl(repo, commit.committer.login),
                 text: message,
@@ -512,13 +512,13 @@ export function reviewerNotification(push: graphql.NotifyReviewerOnPush.Push,
             // tslint:disable-next-line:variable-name
             const footer_icon = `https://images.atomist.com/rug/pull-request-${state}.png`;
             // tslint:disable-next-line:max-line-length
-            const text = `${url(userUrl(repo, author), `@${author}`)} added ${count} new ${count > 1 ? "commits" : "commit"} to ${state} pull request ${url(prUrl(repo, pr),
+            const text = `${url(userUrl(repo, author), `${author}`)} added ${count} new ${count > 1 ? "commits" : "commit"} to ${state} pull request ${url(prUrl(repo, pr),
                 bold(`#${pr.number} ${pr.title}`))}`;
             const slackMessage: SlackMessage = {
                 text,
                 attachments: [
                     {
-                        author_name: `@${pr.author.login}`,
+                        author_name: pr.author.login,
                         author_link: userUrl(repo, pr.author.login),
                         author_icon: avatarUrl(repo, pr.author.login),
                         text: removeMarkers(linkIssues(b, repo)),
