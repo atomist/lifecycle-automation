@@ -43,6 +43,7 @@ import {
 import { LifecyclePreferences } from "../preferences";
 import {
     ApproveGoalActionContributor,
+    CancelGoalSetActionContributor,
     DisplayGoalActionContributor,
     ExpandAttachmentsActionContributor,
     PullRequestActionContributor,
@@ -213,10 +214,12 @@ export abstract class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     new ReleaseActionContributor(),
                     new PullRequestActionContributor(),
                     new ApproveGoalActionContributor(),
+                    new CancelGoalSetActionContributor(),
                     new DisplayGoalActionContributor(),
                     new ExpandAttachmentsActionContributor(),
                 ] : [
                     new ApproveGoalActionContributor(),
+                    new CancelGoalSetActionContributor(),
                     new DisplayGoalActionContributor(),
                     new ExpandAttachmentsActionContributor(),
                 ],

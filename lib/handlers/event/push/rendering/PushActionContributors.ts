@@ -397,69 +397,57 @@ export class PullRequestActionContributor extends AbstractIdentifiableContributi
     }
 }
 
-export class ApplicationActionContributor extends AbstractIdentifiableContribution
-    implements SlackActionContributor<Domain> {
+export class CancelGoalSetActionContributor extends AbstractIdentifiableContribution
+    implements SlackActionContributor<GoalSet> {
+
+    public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
-        super(LifecycleActionPreferences.push.cf_application.id);
+        super(LifecycleActionPreferences.push.cancel_goal_set.id);
+    }
+
+    public configure(configuration: LifecycleConfiguration) {
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: any): boolean {
-        return node.name && node.apps && node.apps.some(a => a.data);
+        return node.goals && node.goalSetId;
     }
 
-    public buttonsFor(node: Domain, context: RendererContext): Promise<Action[]> {
-        const actions = [];
+    public async buttonsFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
+        const buttons = [];
 
-        if (context.rendererId === "application") {
-            let appId = null;
-            let started = false;
-            let stopped = true;
+        if (context.rendererId === "goals" && !!goalSet && !!goalSet.goals) {
+            if (goalSet && goalSet.goals) {
+                const goals = lastGoalSet(goalSet.goals).sort((g1, g2) => g1.name.localeCompare(g2.name));
 
-            node.apps.filter(a => a.data).forEach(a => {
-                const data = JSON.parse(a.data);
+                // Add cancel button for in-flight goal sets
+                if (isFullRenderingEnabled(this.renderingStyle, context) && goals.some(g =>
+                    [SdmGoalState.in_process,
+                        SdmGoalState.requested,
+                        SdmGoalState.planned,
+                        SdmGoalState.waiting_for_approval,
+                        SdmGoalState.approved,
+                        SdmGoalState.waiting_for_pre_approval,
+                        SdmGoalState.pre_approved].includes(g.state))) {
 
-                if (data.cloudfoundry) {
-                    const vcapApplication = JSON.parse(data.cloudfoundry);
-                    if (vcapApplication.application_name && !vcapApplication.application_name.endsWith("-old")) {
-                        appId = vcapApplication.application_id;
-                    }
-                }
-                if (a.state === "started" || a.state === "starting" || a.state === "healthy" ||
-                    a.state === "unhealthy") {
-                    started = true;
-                } else if (a.state === "stopping") {
-                    stopped = true;
-                }
-
-            });
-
-            if (appId) {
-                actions.push(buttonForCommand({ text: "Info" }, "CloudFoundryApplicationDetail",
-                    { guid: appId }));
-
-                if (stopped && !started) {
-                    actions.push(buttonForCommand({ text: "Start" }, "StartCloudFoundryApplication",
-                        { guid: appId }));
-                }
-                if (started) {
-                    actions.push(buttonForCommand({
-                        text: "Stop", confirm: {
-                            title: "Stop Application",
-                            dismiss_text: "Cancel",
-                            ok_text: "Proceed",
-                            text: `Do you really want to stop application?`,
+                    buttons.push(buttonForCommand({
+                        text: "Cancel",
+                        confirm: {
+                            title: "Cancel Goal Set",
+                            text: `Do you really want to cancel goal set ${goalSet.goalSetId.slice(0, 7)}?`,
+                            dismiss_text: "No",
+                            ok_text: "Yes",
                         },
-                    }, "StopCloudFoundryApplication", { guid: appId }));
+                    }, "CancelGoalSets", { goalSetId: goalSet.goalSetId }));
                 }
-                actions.push(buttonForCommand({ text: "Scale" }, "ScaleCloudFoundryApplication",
-                    { guid: appId }));
             }
         }
-        return Promise.resolve(actions);
+
+        return Promise.resolve(buttons);
     }
 
-    public menusFor(node: Domain, context: RendererContext): Promise<Action[]> {
+    public menusFor(goalSet: GoalSet, context: RendererContext): Promise<Action[]> {
         return Promise.resolve([]);
     }
 }
@@ -494,27 +482,6 @@ export class ApproveGoalActionContributor extends AbstractIdentifiableContributi
                     .forEach(g => this.createButton(SdmGoalState.pre_approved, "Start", g, buttons));
                 goals.filter(g => g.state === SdmGoalState.waiting_for_approval)
                     .forEach(g => this.createButton(SdmGoalState.approved, "Approve", g, buttons));
-
-                // Add cancel button for in-flight goal sets
-                if (isFullRenderingEnabled(this.renderingStyle, context) && goals.some(g =>
-                    [SdmGoalState.in_process,
-                        SdmGoalState.requested,
-                        SdmGoalState.planned,
-                        SdmGoalState.waiting_for_approval,
-                        SdmGoalState.approved,
-                        SdmGoalState.waiting_for_pre_approval,
-                        SdmGoalState.pre_approved].includes(g.state))) {
-
-                    buttons.push(buttonForCommand({
-                        text: "Cancel",
-                        confirm: {
-                            title: "Cancel Goal Set",
-                            text: `Do you really want to cancel goal set ${goalSet.goalSetId.slice(0, 7)}?`,
-                            dismiss_text: "No",
-                            ok_text: "Yes",
-                        },
-                    }, "CancelGoalSets", { goalSetId: goalSet.goalSetId }));
-                }
             }
         }
 

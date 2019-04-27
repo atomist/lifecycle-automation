@@ -30,6 +30,10 @@ import {
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
+    slackFooter,
+    slackTs,
+} from "@atomist/sdm";
+import {
     Action,
     Attachment,
     bold,
@@ -135,8 +139,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
     private createMessage(preferences: any, emojisEnabled: boolean, compactGoalFormatEnabled: boolean): SlackMessage {
         const msg: SlackMessage = {
             attachments: [{
-                text: `Configure Lifecycle for ${channel(this.channelId)}:`,
-                fallback: `Configure Lifecycle for ${channel(this.channelId)}:`,
+                title: `Configure Lifecycle for channel ${channel(this.channelId)}:`,
+                fallback: `Configure Lifecycle for channel ${channel(this.channelId)}:`,
             }],
         };
 
@@ -181,7 +185,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         }
 
         msg.attachments.push({
-            text: "Configure Lifecycle for Slack Workspace:",
+            title: "Configure Lifecycle for Slack Workspace:",
             fallback: "Configure Lifecycle for Slack Workspace:",
         });
 
@@ -229,8 +233,10 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         msg.attachments.push({
             fallback: "Collapse",
             actions: [
-                buttonForCommand({ text: "Collapse" }, handler),
+                buttonForCommand({ text: "Cancel" }, handler),
             ],
+            footer: slackFooter(),
+            ts: slackTs(),
         });
 
         return msg;
@@ -243,8 +249,10 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         const lifecycleRenderers = LifecycleRendererPreferences[this.lifecycle];
 
         const msg: SlackMessage = {
-            text: `Configure ${bold(`'${lifecycle.name}'`)} actions for ${channel(this.channelId)}:`,
-            attachments: [],
+            attachments: [{
+                title: `Configure '${lifecycle.name}' actions and renderers for channel ${channel(this.channelId)}:`,
+                fallback: `Configure '${lifecycle.name}' actions and renderers for channel ${channel(this.channelId)}:`,
+            }],
         };
 
         for (const type in lifecycleActions) {
@@ -335,6 +343,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
             actions: [
                 buttonForCommand({ text: "Back" }, handler),
             ],
+            footer: slackFooter(),
+            ts: slackTs(),
         };
         msg.attachments.push(backAttachment);
 
