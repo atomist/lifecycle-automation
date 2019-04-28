@@ -420,6 +420,7 @@ export class CancelGoalSetActionContributor extends AbstractIdentifiableContribu
         if (context.rendererId === "goals" && !!goalSet && !!goalSet.goals) {
             if (goalSet && goalSet.goals) {
                 const goals = lastGoalSet(goalSet.goals).sort((g1, g2) => g1.name.localeCompare(g2.name));
+                const push = context.lifecycle.extract("push") as PushFields.Fragment;
 
                 // Add cancel button for in-flight goal sets
                 if (isFullRenderingEnabled(this.renderingStyle, context) && goals.some(g =>
@@ -435,7 +436,8 @@ export class CancelGoalSetActionContributor extends AbstractIdentifiableContribu
                         text: "Cancel",
                         confirm: {
                             title: "Cancel Goal Set",
-                            text: `Do you really want to cancel goal set ${goalSet.goalSetId.slice(0, 7)}?`,
+                            text: `Do you really want to cancel goal set ${goalSet.goalSetId.slice(0, 7)} on commit ${
+                                push.after.sha.slice(0, 7)} of ${push.repo.owner}/${push.repo.name}?`,
                             dismiss_text: "No",
                             ok_text: "Yes",
                         },
