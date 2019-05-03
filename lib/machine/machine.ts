@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import {
     createSoftwareDeliveryMachine,
