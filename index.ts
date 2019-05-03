@@ -347,6 +347,6 @@ export const configuration: any = {
         timeout: 60000,
     },
     cluster: {
-        maxConcurrentPerWorker: 5,
+        maxConcurrentPerWorker: 10,
     },
 };
