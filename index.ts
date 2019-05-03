@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
+import {
+    Configuration,
+    GraphQL,
+} from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
@@ -178,7 +181,7 @@ import { machine } from "./lib/machine/machine";
 
 const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
 
-export const configuration: any = {
+export const configuration: Configuration = {
     commands: [
         // github
         () => new AddGitHubPullRequestAutoMergeLabels(),
@@ -349,4 +352,8 @@ export const configuration: any = {
     cluster: {
         maxConcurrentPerWorker: 10,
     },
+    redact: {
+        log: true,
+        messages: false,
+    }
 };
