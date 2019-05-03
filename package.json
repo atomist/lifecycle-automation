@@ -36,7 +36,6 @@
     "config": "^2.0.1",
     "deepmerge": "^2.0.0",
     "format-date": "^1.0.0",
-    "gc-stats": "^1.2.0",
     "js-yaml": "^3.10.0",
     "lodash": "^4.17.4",
     "moment": "^2.22.0",
@@ -63,6 +62,9 @@
     "tslint": "^5.14.0",
     "typedoc": "^0.14.2",
     "typescript": "^3.3.3"
+  },
+  "optionalDependencies": {
+    "gc-stats": "^1.2.1"
   },
   "directories": {
     "test": "test"
