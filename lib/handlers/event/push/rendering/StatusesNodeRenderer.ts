@@ -383,14 +383,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const lastGoals = lastGoalSet(goalSet.goals);
             const gsid = lastGoals[0].goalSetId;
             const ts = lastGoals.map(g => g.ts);
-            const min = _.min(ts);
+            const min = goalSet.ts;
             const max = _.max(ts);
+            const dur = max - min;
 
             const moment = require("moment");
             // The following require is needed to initialize the format function
             require("moment-duration-format");
 
-            const duration = moment.duration(max - min, "millisecond").format("h[h] m[m] s[s]");
+            const duration = moment.duration(dur < 0 ? 0 : dur, "millisecond").format("h[h] m[m] s[s]");
 
             const creator = _.minBy(
                 _.flatten<SdmGoalsByCommit.Provenance>(
@@ -586,8 +587,9 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
         if (total > 0) {
             const lastGoals = lastGoalSet(goalSet.goals);
             const ts = lastGoals.map(g => g.ts);
-            const min = _.min(ts);
+            const min = goalSet.ts;
             const max = _.max(ts);
+            const dur = max - min;
 
             const creator = _.minBy(
                 _.flatten<SdmGoalsByCommit.Provenance>(lastGoals.map(g => (g.provenance || []))), "ts");
@@ -621,7 +623,7 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                 goalSet: lastGoals[0].goalSet,
                 goalSetId: lastGoals[0].goalSetId,
                 ts: Date.now(),
-                duration: max - min,
+                duration: dur < 0 ? 0 : dur,
                 actions,
                 goals: gs,
                 registration: creator ? `${creator.registration}:${creator.version}` : undefined,
