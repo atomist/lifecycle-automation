@@ -238,7 +238,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             const version = _.get(versionResult, "SdmVersion[0].version");
             let versionString = "";
             if (!!version) {
-                versionString = ` \u00B7 ${codeLine(version)}`;
+                versionString = ` \u00B7 ${version}`;
             }
 
             const lastAttachment = attachments[attachments.length - 1];
