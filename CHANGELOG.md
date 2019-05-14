@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.46...HEAD)
 
+### Added
+
+-   Add SDM version to push lifecycle. [4eb90a4](https://github.com/atomist/lifecycle-automation/commit/4eb90a4debaaf34177d248e1f534dcc9a86a807c)
+
 ## [0.12.46](https://github.com/atomist/lifecycle-automation/compare/0.12.45...0.12.46) - 2019-05-05
 
 ## [0.12.45](https://github.com/atomist/lifecycle-automation/compare/0.12.44...0.12.45) - 2019-05-03
