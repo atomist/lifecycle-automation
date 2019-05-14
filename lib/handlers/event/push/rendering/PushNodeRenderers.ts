@@ -41,6 +41,7 @@ import {
     CommitIssueRelationshipBySha,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
+    SdmVersionByCommit,
 } from "../../../../typings/types";
 import {
     avatarUrl,
@@ -57,10 +58,7 @@ import {
     truncateCommitMessage,
     userUrl,
 } from "../../../../util/helpers";
-import {
-    LifecycleActionPreferences,
-    LifecycleRendererPreferences,
-} from "../../preferences";
+import { LifecycleRendererPreferences } from "../../preferences";
 import { Domain } from "../PushLifecycle";
 import { sortTagsByName } from "./PushActionContributors";
 
@@ -158,8 +156,10 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         return node.after;
     }
 
-    public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
-                  context: RendererContext): Promise<SlackMessage> {
+    public async render(push: graphql.PushToPushLifecycle.Push,
+                        actions: Action[],
+                        msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
         const slug = repo.owner + "/" + repo.name + "/" + push.branch;
         const commits = _.uniqBy(push.commits, c => c.sha).sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
@@ -226,13 +226,28 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         }
 
         if (attachments.length > 0) {
+
+            const versionResult = await context.context.graphClient.query<SdmVersionByCommit.Query, SdmVersionByCommit.Variables>({
+                name: "SdmVersionByCommit",
+                variables: {
+                    sha: [push.after.sha],
+                    branch: [push.branch],
+                },
+                options: QueryNoCacheOptions,
+            });
+            const version = _.get(versionResult, "SdmVersion[0].version");
+            let versionString = "";
+            if (!!version) {
+                versionString = ` \u00B7 ${codeLine(version)}`;
+            }
+
             const lastAttachment = attachments[attachments.length - 1];
             lastAttachment.actions = actions;
             lastAttachment.footer_icon = commitIcon(repo);
             if (!!lastAttachment.footer) {
-                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} \u00B7 ${lastAttachment.footer}`;
+                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} \u00B7 ${lastAttachment.footer}${versionString}`;
             } else {
-                lastAttachment.footer = url(repoUrl(repo), repoSlug(repo));
+                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))}${versionString}`;
             }
             lastAttachment.ts = Math.floor(Date.parse(push.timestamp) / 1000);
         }
@@ -244,7 +259,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         context.set("attachment_count", present + attachments.length);
         msg.attachments = msg.attachments.concat(attachments);
 
-        return Promise.resolve(msg);
+        return msg;
     }
 
     private renderCommitMessage(commitNode: graphql.PushFields.Commits, push: any,
