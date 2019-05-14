@@ -135,6 +135,7 @@ export abstract class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
                 ] : [
                     new CardActionContributorWrapper(new ApproveGoalActionContributor()),
+                    new CardActionContributorWrapper(new CancelGoalSetActionContributor()),
                 ],
                 id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
                 timestamp: Date.now().toString(),
