@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.47...HEAD)
 
+### Fixed
+
+-   Fix display of duration now that we only get one version of the goals. [6afa1df](https://github.com/atomist/lifecycle-automation/commit/6afa1df3d9eff17ce03280b05c4ad0a4c43d668a)
+
 ## [0.12.47](https://github.com/atomist/lifecycle-automation/compare/0.12.46...0.12.47) - 2019-05-14
 
 ### Added
