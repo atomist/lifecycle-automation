@@ -16,18 +16,14 @@
 
 import {
     failure,
-    HandlerContext,
-    HandlerResult,
-    MappedParameter,
     MappedParameters,
-    Parameter,
-    Secret,
     Secrets,
     Success,
-    Tags,
 } from "@atomist/automation-client";
-import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
-import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import {
+    CommandHandlerRegistration,
+    DeclarationType,
+} from "@atomist/sdm";
 import {
     getChatIds,
     loadGitHubIdByChatId,
@@ -39,55 +35,43 @@ import {
 import * as github from "./gitHubApi";
 
 /**
- * Approve GitHub status on commit.
+ * Assign GitHub pull request reviewer.
  */
-@ConfigurableCommandHandler("Assign GitHub pull request reviewer", {
+export const AssignGitHubPullRequestReviewer: CommandHandlerRegistration<{ repo: string, owner: string, apiUrl: string, teamId: string, issue: number, reviewer: string, githubToken: string }> = {
+    name: "AssignGitHubPullRequestReviewer",
+    description: "Assign GitHub pull request reviewer",
+    tags: ["github", "review"],
     intent: ["assign reviewer", "assign github reviewer"],
     autoSubmit: true,
-})
-@Tags("github", "review")
-export class AssignGitHubPullRequestReviewer implements HandleCommand {
+    parameters: {
+        repo: { uri: MappedParameters.GitHubRepository, declarationType: DeclarationType.Mapped },
+        owner: { uri: MappedParameters.GitHubOwner, declarationType: DeclarationType.Mapped },
+        apiUrl: { uri: MappedParameters.GitHubApiUrl, declarationType: DeclarationType.Mapped },
+        githubToken: { uri: Secrets.userToken("repo"), declarationType: DeclarationType.Secret },
+        teamId: { uri: MappedParameters.SlackTeam, declarationType: DeclarationType.Mapped },
+        issue: {
+            displayName: "Pull Request Number",
+            description: "the number of the pull request number to merge, with no leading `#`",
+            pattern: /^.*$/,
+            validInput: "an open GitHub pull request number",
+            minLength: 1,
+            maxLength: 10,
+            required: true,
+        },
 
-    @MappedParameter(MappedParameters.GitHubRepository)
-    public repo: string;
-
-    @MappedParameter(MappedParameters.GitHubOwner)
-    public owner: string;
-
-    @MappedParameter(MappedParameters.SlackTeam, false)
-    public teamId: string;
-
-    @Parameter({
-        displayName: "Pull Request Number",
-        description: "the number of the pull request number to merge, with no leading `#`",
-        pattern: /^.*$/,
-        validInput: "an open GitHub pull request number",
-        minLength: 1,
-        maxLength: 10,
-        required: true,
-    })
-    public issue: number;
-
-    @Parameter({
-        displayName: "User name(s) of reviewer",
-        description: "the name(s) of reviewer to be assigned to Pull Request. Can be a Slack @-mention",
-        pattern: /^.*$/,
-        minLength: 2,
-        validInput: "a valid GitHub or Slack user name",
-        required: true,
-    })
-    public reviewer: string;
-
-    @MappedParameter(MappedParameters.GitHubApiUrl)
-    public apiUrl: string;
-
-    @Secret(Secrets.userToken("repo"))
-    public githubToken: string;
-
-    public handle(ctx: HandlerContext): Promise<HandlerResult> {
+        reviewer: {
+            displayName: "User name(s) of reviewer",
+            description: "the name(s) of reviewer to be assigned to Pull Request. Can be a Slack @-mention",
+            pattern: /^.*$/,
+            minLength: 2,
+            validInput: "a valid GitHub or Slack user name",
+            required: true,
+        },
+    },
+    listener: async ci => {
 
         // Clean up the reviewer parameter
-        const reviewers = this.reviewer.split(" ").map(r => {
+        const reviewers = ci.parameters.reviewer.split(" ").map(r => {
             r = r.trim();
             const gitHubId = getChatIds(r);
             if (gitHubId && gitHubId.length === 1) {
@@ -97,43 +81,43 @@ export class AssignGitHubPullRequestReviewer implements HandleCommand {
         });
 
         return Promise.all(reviewers.map(r => {
-                return loadGitHubIdByChatId(r, this.teamId, ctx)
-                    .then(chatId => {
-                        if (chatId) {
-                            return chatId;
-                        } else {
-                            return r;
-                        }
-                    });
-                }))
-                .then(chatIds => {
-                    return github.api(this.githubToken, this.apiUrl).pullRequests.createReviewRequest({
-                        owner: this.owner,
-                        repo: this.repo,
-                        number: this.issue,
-                        reviewers: chatIds.filter(c => c != null),
-                    });
-                })
-                .then(() => Success)
-                .catch(err => {
-                    if (err.message) {
-                        const body = JSON.parse(err.message);
-                        if (body.message.indexOf("Review cannot be requested from pull request author.") >= 0) {
-                            return ctx.messageClient
-                                .respond(warning("Review Pull Request",
-                                    "Review cannot be requested from pull request author.", ctx))
-                                .then(() => Success, failure);
-                        } else if (body.message.indexOf("Reviews may only be requested from collaborators") >= 0) {
-                            return ctx.messageClient
-                                .respond(warning("Review Pull Request",
-                                    "Reviews may only be requested from collaborators.", ctx))
-                                .then(() => Success, failure);
-                        } else {
-                            return ctx.messageClient.respond(error("Review Pull Request", body.message, ctx))
-                                .then(() => Success, failure);
-                        }
+            return loadGitHubIdByChatId(r, ci.parameters.teamId, ci.context)
+                .then(chatId => {
+                    if (chatId) {
+                        return chatId;
+                    } else {
+                        return r;
                     }
-                    return failure(err);
                 });
-    }
-}
+        }))
+            .then(chatIds => {
+                return github.api(ci.parameters.githubToken, ci.parameters.apiUrl).pullRequests.createReviewRequest({
+                    owner: ci.parameters.owner,
+                    repo: ci.parameters.repo,
+                    number: ci.parameters.issue,
+                    reviewers: chatIds.filter(c => c != undefined),
+                });
+            })
+            .then(() => Success)
+            .catch(err => {
+                if (err.message) {
+                    const body = JSON.parse(err.message);
+                    if (body.message.indexOf("Review cannot be requested from pull request author.") >= 0) {
+                        return ci.context.messageClient
+                            .respond(warning("Review Pull Request",
+                                "Review cannot be requested from pull request author.", ci.context))
+                            .then(() => Success, failure);
+                    } else if (body.message.indexOf("Reviews may only be requested from collaborators") >= 0) {
+                        return ci.context.messageClient
+                            .respond(warning("Review Pull Request",
+                                "Reviews may only be requested from collaborators.", ci.context))
+                            .then(() => Success, failure);
+                    } else {
+                        return ci.context.messageClient.respond(error("Review Pull Request", body.message, ci.context))
+                            .then(() => Success, failure);
+                    }
+                }
+                return failure(err);
+            });
+    },
+};
