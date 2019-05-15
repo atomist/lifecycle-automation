@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.48...HEAD)
 
+### Fixed
+
+-   Fix rendering of duration from goalSet. [2872cfd](https://github.com/atomist/lifecycle-automation/commit/2872cfd84d75aa0f1a1d83dcd45fcc4926c8048c)
+
 ## [0.12.48](https://github.com/atomist/lifecycle-automation/compare/0.12.47...0.12.48) - 2019-05-14
 
 ### Fixed
