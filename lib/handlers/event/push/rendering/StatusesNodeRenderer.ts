@@ -383,7 +383,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const lastGoals = lastGoalSet(goalSet.goals);
             const gsid = lastGoals[0].goalSetId;
             const ts = lastGoals.map(g => g.ts);
-            const min = goalSet.ts;
+            const min = _.get((push.goalSets || []).find(gs => gs.goalSetId === gsid), "ts", 0);
             const max = _.max(ts);
             const dur = max - min;
 
@@ -587,7 +587,9 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
         if (total > 0) {
             const lastGoals = lastGoalSet(goalSet.goals);
             const ts = lastGoals.map(g => g.ts);
-            const min = goalSet.ts;
+            const gsid = lastGoals[0].goalSetId;
+            const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+            const min = _.get((push.goalSets || []).find(gs => gs.goalSetId === gsid), "ts", 0);
             const max = _.max(ts);
             const dur = max - min;
 
