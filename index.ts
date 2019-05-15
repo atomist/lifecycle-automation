@@ -23,7 +23,6 @@ import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
 import { configureSdm } from "@atomist/sdm-core";
 import { AddGitHubPullRequestAutoMergeLabels } from "./lib/handlers/command/github/AddGitHubPullRequestAutoMergeLabels";
-import { ApproveGitHubCommit } from "./lib/handlers/command/github/ApproveGitHubCommit";
 import { AssignGitHubPullRequestReviewer } from "./lib/handlers/command/github/AssignGitHubPullRequestReviewer";
 import { AssignToMeGitHubIssue } from "./lib/handlers/command/github/AssignToMeGitHubIssue";
 import { CloseGitHubIssue } from "./lib/handlers/command/github/CloseGitHubIssue";
@@ -87,7 +86,6 @@ export const configuration: Configuration = {
     commands: [
         // github
         () => new AddGitHubPullRequestAutoMergeLabels(),
-        () => new ApproveGitHubCommit(),
         () => new AssignGitHubPullRequestReviewer(),
         () => new AssignToMeGitHubIssue(),
         () => new CloseGitHubIssue(),

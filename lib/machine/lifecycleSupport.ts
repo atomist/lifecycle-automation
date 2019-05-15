@@ -476,6 +476,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
 
             sdm.addEvent(pullRequestToReviewLifecycle(optsToUse.review.chat));
             sdm.addEvent(reviewToReviewLifecycle(optsToUse.review.chat));
+            
         },
     };
 }

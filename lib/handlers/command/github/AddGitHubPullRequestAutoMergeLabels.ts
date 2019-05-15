@@ -26,10 +26,6 @@ import {
 } from "@atomist/automation-client";
 import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
-import {
-    CommandHandlerRegistration,
-    DeclarationType,
-} from "@atomist/sdm";
 import { bold } from "@atomist/slack-messages";
 import * as Github from "@octokit/rest";
 import { success } from "../../../util/messages";
@@ -44,27 +40,34 @@ import * as github from "./gitHubApi";
 /**
  * Add Pull Request auto merge labels.
  */
-export const AddGitHubPullRequestAutoMergeLabels: CommandHandlerRegistration<{ repo: string, owner: string, apiUrl: string, githubToken: string }> = {
-    name: "AddGitHubPullRequestAutoMergeLabels",
-    description: "Add Pull Request auto merge labels",
-    tags: ["github", "pr", "auto-merge"],
+@ConfigurableCommandHandler("Add Pull Request auto merge labels", {
     intent: ["add auto merge labels"],
     autoSubmit: true,
-    parameters: {
-        repo: { uri: MappedParameters.GitHubRepository, declarationType: DeclarationType.Mapped },
-        owner: { uri: MappedParameters.GitHubOwner, declarationType: DeclarationType.Mapped },
-        apiUrl: { uri: MappedParameters.GitHubApiUrl, declarationType: DeclarationType.Mapped },
-        githubToken: { uri: Secrets.userToken("repo"), declarationType: DeclarationType.Secret },
-    },
-    listener: async ci => {
-        await addAutoMergeLabels(ci.parameters.owner, ci.parameters.repo, ci.parameters.githubToken, ci.parameters.apiUrl);
+})
+@Tags("github", "pr", "auto-merge")
+export class AddGitHubPullRequestAutoMergeLabels implements HandleCommand {
 
-        await ci.context.messageClient.respond(success(
+    @MappedParameter(MappedParameters.GitHubRepository)
+    public repo: string;
+
+    @MappedParameter(MappedParameters.GitHubOwner)
+    public owner: string;
+
+    @MappedParameter(MappedParameters.GitHubApiUrl)
+    public apiUrl: string;
+
+    @Secret(Secrets.userToken("repo"))
+    public githubToken: string;
+
+    public async handle(ctx: HandlerContext): Promise<HandlerResult> {
+        await addAutoMergeLabels(this.owner, this.repo, this.githubToken, this.apiUrl);
+
+        await ctx.messageClient.respond(success(
             "Auto Merge",
-            `Successfully added auto merge labels to ${bold(`${ci.parameters.owner}/${ci.parameters.repo}`)}`));
+            `Successfully added auto merge labels to ${bold(`${this.owner}/${this.repo}`)}`));
         return Success;
-    },
-};
+    }
+}
 
 export async function addAutoMergeLabels(owner: string,
                                          repo: string,
@@ -77,7 +80,7 @@ export async function addAutoMergeLabels(owner: string,
 
     AutoMergeMethods.forEach(
         async mm =>
-            addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", owner, repo, api));
+            await addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", owner, repo, api));
 
     return Success;
 }
