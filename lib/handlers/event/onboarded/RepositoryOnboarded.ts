@@ -27,8 +27,8 @@ import {
     LifecycleParameters,
     LifecycleParametersDefinition,
 } from "../../../lifecycle/Lifecycle";
+import { DefaultGitHubLifecycleOptions } from "../../../machine/githubLifecycleSupport";
 import {
-    DefaultLifecycleOptions,
     LifecycleOptions,
 } from "../../../machine/lifecycleSupport";
 import {
@@ -86,7 +86,7 @@ function processCommit(commit: LastCommitOnBranch.Commit,
         timestamp: commit.timestamp,
     };
 
-    return pushToPushCardLifecycle(DefaultLifecycleOptions.push.web).listener({
+    return pushToPushCardLifecycle(DefaultGitHubLifecycleOptions.push.web).listener({
             data: {
                 Push: [push],
             },

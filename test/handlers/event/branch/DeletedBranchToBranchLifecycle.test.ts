@@ -29,7 +29,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { deletedBranchToBranchLifecycle } from "../../../../lib/handlers/event/branch/DeletedBranchToBranchLifecycle";
-import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
+import { DefaultGitHubLifecycleOptions } from "../../../../lib/machine/githubLifecycleSupport";
 
 describe("DeletedBranchToBranchLifecycle", () => {
 
@@ -125,7 +125,7 @@ describe("DeletedBranchToBranchLifecycle", () => {
         const ctx: any = {
             messageClient: new DefaultSlackMessageClient(new MockMessageClient(), null),
         };
-        const handler = deletedBranchToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
+        const handler = deletedBranchToBranchLifecycle(DefaultGitHubLifecycleOptions.branch.chat).listener;
 
         handler(JSON.parse(payload) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {

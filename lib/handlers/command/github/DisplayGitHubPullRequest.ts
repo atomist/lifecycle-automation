@@ -30,7 +30,7 @@ import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import { Lifecycle } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
-import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
+import { DefaultGitHubLifecycleOptions } from "../../../machine/githubLifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { PullRequestLifecycleHandler } from "../../event/pullrequest/PullRequestLifecycle";
 import { pullRequestToPullRequestLifecycle } from "../../event/pullrequest/PullRequestToPullRequestLifecycle";
@@ -75,7 +75,7 @@ export class DisplayGitHubPullRequest implements HandleCommand {
                 const prs: graphql.PullRequest.PullRequest[] =
                     _.get(result, "ChatTeam[0].team.orgs[0].repo[0].pullRequest");
                 const handler = pullRequestToPullRequestLifecycle(
-                    DefaultLifecycleOptions.pullRequest.chat,
+                    DefaultGitHubLifecycleOptions.pullRequest.chat,
                     () => new ResponsePullRequestToPullRequestLifecycle()).listener;
 
                 // Hopefully we can find the pull request in Neo
@@ -97,7 +97,7 @@ class ResponsePullRequestToPullRequestLifecycle
         super(e => [e.data.PullRequest[0], e.data.PullRequest[0].repo, Date.now().toString(), false],
             e => chatTeamsToPreferences(
                 _.get(e, "data.PullRequest[0].repo.org.team.chatTeams")),
-            DefaultLifecycleOptions.pullRequest.chat);
+            DefaultGitHubLifecycleOptions.pullRequest.chat);
     }
 
     protected processLifecycle(lifecycle: Lifecycle): Lifecycle {

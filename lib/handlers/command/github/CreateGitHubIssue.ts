@@ -28,7 +28,7 @@ import {
 import { CommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
-import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
+import { DefaultGitHubLifecycleOptions } from "../../../machine/githubLifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { replaceChatIdWithGitHubId } from "../../../util/helpers";
 import { issueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
@@ -166,7 +166,7 @@ export class CreateGitHubIssue implements HandleCommand {
                         },
                     };
 
-                    const handler = issueToIssueLifecycle(DefaultLifecycleOptions.issue.chat).listener;
+                    const handler = issueToIssueLifecycle(DefaultGitHubLifecycleOptions.issue.chat).listener;
                     return handler(
                         {
                             data: { Issue: [issue] as any },

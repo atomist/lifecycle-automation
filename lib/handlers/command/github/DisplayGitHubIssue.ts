@@ -30,7 +30,7 @@ import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as _ from "lodash";
 import { Lifecycle } from "../../../lifecycle/Lifecycle";
 import { chatTeamsToPreferences } from "../../../lifecycle/util";
-import { DefaultLifecycleOptions } from "../../../machine/lifecycleSupport";
+import { DefaultGitHubLifecycleOptions } from "../../../machine/githubLifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { IssueLifecycleHandler } from "../../event/issue/IssueLifecycle";
 import { issueToIssueLifecycle } from "../../event/issue/IssueToIssueLifecycle";
@@ -80,7 +80,7 @@ export class DisplayGitHubIssue implements HandleCommand {
             .then(result => {
                 const issues: graphql.Issue.Issue[] =
                     _.cloneDeep(_.get(result, "ChatTeam[0].team.orgs[0].repo[0].issue"));
-                const handler = issueToIssueLifecycle(DefaultLifecycleOptions.issue.chat,
+                const handler = issueToIssueLifecycle(DefaultGitHubLifecycleOptions.issue.chat,
                     () => new ResponseIssueToIssueLifecycle(this.showMore)).listener;
 
                 const channels = [{
@@ -152,7 +152,7 @@ class ResponseIssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueT
                 return [issue, repo, Date.now().toString()];
             },
             e => chatTeamsToPreferences(_.get(e, "data.Issue[0].repo.org.team.chatTeams")),
-            DefaultLifecycleOptions.issue.chat);
+            DefaultGitHubLifecycleOptions.issue.chat);
     }
 
     protected processLifecycle(lifecycle: Lifecycle, store: Map<string, any>): Lifecycle {

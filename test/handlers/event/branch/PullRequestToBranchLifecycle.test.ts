@@ -26,7 +26,7 @@ import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
 import { pullRequestToBranchLifecycle } from "../../../../lib/handlers/event/branch/PullRequestToBranchLifecycle";
-import { DefaultLifecycleOptions } from "../../../../lib/machine/lifecycleSupport";
+import { DefaultGitHubLifecycleOptions } from "../../../../lib/machine/githubLifecycleSupport";
 
 describe("PullRequestToBranchLifecycle", () => {
 
@@ -174,7 +174,7 @@ describe("PullRequestToBranchLifecycle", () => {
                 team_name: "atomista",
             },
         };
-        const handler = pullRequestToBranchLifecycle(DefaultLifecycleOptions.branch.chat).listener;
+        const handler = pullRequestToBranchLifecycle(DefaultGitHubLifecycleOptions.branch.chat).listener;
 
         handler(JSON.parse(payload) as EventFired<any>, ctx as HandlerContext, {})
             .then(result => {

@@ -15,6 +15,8 @@
  */
 
 import {
+    adaptHandleCommand,
+    CommandHandlerRegistration,
     ExtensionPack,
     metadata,
 } from "@atomist/sdm";
@@ -23,10 +25,27 @@ import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages";
+import * as _ from "lodash";
+import { ConfigureDirectMessageUserPreferences } from "../handlers/command/preferences/ConfigureDirectMessageUserPreferences";
+import { ConfigureLifecyclePreferences } from "../handlers/command/preferences/ConfigureLifecyclePreferences";
+import { SetTeamPreference } from "../handlers/command/preferences/SetTeamPreference";
+import { SetUserPreference } from "../handlers/command/preferences/SetUserPreference";
+import { UpdateSdmGoalDisplayState } from "../handlers/command/sdm/UpdateSdmGoalDisplayState";
+import { UpdateSdmGoalState } from "../handlers/command/sdm/UpdateSdmGoalState";
+import { AddBotToChannel } from "../handlers/command/slack/AddBotToChannel";
+import { AssociateRepo } from "../handlers/command/slack/AssociateRepo";
+import { cancelConversation } from "../handlers/command/slack/cancel";
+import { CreateChannel } from "../handlers/command/slack/CreateChannel";
+import { LinkOwnerRepo } from "../handlers/command/slack/LinkOwnerRepo";
+import { LinkRepo } from "../handlers/command/slack/LinkRepo";
+import { ListRepoLinks } from "../handlers/command/slack/ListRepoLinks";
+import { NoLinkRepo } from "../handlers/command/slack/NoLinkRepo";
+import { ToggleCustomEmojiEnablement } from "../handlers/command/slack/ToggleCustomEmojiEnablement";
+import { ToggleDisplayFormat } from "../handlers/command/slack/ToggleDisplayFormat";
+import { UnlinkRepo } from "../handlers/command/slack/UnlinkRepo";
 import { branchToBranchLifecycle } from "../handlers/event/branch/BranchToBranchLifecycle";
 import { deletedBranchToBranchLifecycle } from "../handlers/event/branch/DeletedBranchToBranchLifecycle";
 import { pullRequestToBranchLifecycle } from "../handlers/event/branch/PullRequestToBranchLifecycle";
-import { RaisePrActionContributor } from "../handlers/event/branch/rendering/BranchActionContributors";
 import { BranchNodeRenderer } from "../handlers/event/branch/rendering/BranchNodeRenderers";
 import { notifyPusherOnBuild } from "../handlers/event/build/NotifyPusherOnBuild";
 import { botJoinedChannel } from "../handlers/event/channellink/BotJoinedChannel";
@@ -37,7 +56,6 @@ import { issueToIssueCommentLifecycle } from "../handlers/event/comment/IssueToI
 import { notifyMentionedOnIssueComment } from "../handlers/event/comment/NotifyMentionedOnIssueComment";
 import { notifyMentionedOnPullRequestComment } from "../handlers/event/comment/NotifyMentionedOnPullRequestComment";
 import { pullRequestToPullRequestCommentLifecycle } from "../handlers/event/comment/PullRequestToPullRequestCommentLifecycle";
-import * as ca from "../handlers/event/comment/rendering/CommentActionContributors";
 import * as cr from "../handlers/event/comment/rendering/CommentNodeRenderers";
 import { issueRelationshipOnCommit } from "../handlers/event/commit/IssueRelationshipOnCommit";
 import { commentOnRelatedIssueClosed } from "../handlers/event/issue/CommentOnRelatedIssueClosed";
@@ -47,7 +65,6 @@ import {
     issueToIssueLifecycle,
 } from "../handlers/event/issue/IssueToIssueLifecycle";
 import { notifyMentionedOnIssue } from "../handlers/event/issue/NotifyMentionedOnIssue";
-import * as ia from "../handlers/event/issue/rendering/IssueActionContributors";
 import * as icr from "../handlers/event/issue/rendering/IssueCardNodeRenderers";
 import * as ir from "../handlers/event/issue/rendering/IssueNodeRenderers";
 import { deploymentOnK8Pod } from "../handlers/event/k8container/DeploymentOnK8Pod";
@@ -73,7 +90,6 @@ import {
     pullRequestToPullRequestCardLifecycle,
     pullRequestToPullRequestLifecycle,
 } from "../handlers/event/pullrequest/PullRequestToPullRequestLifecycle";
-import * as pra from "../handlers/event/pullrequest/rendering/PullRequestActionContributors";
 import * as prc from "../handlers/event/pullrequest/rendering/PullRequestCardNodeRenderers";
 import * as prr from "../handlers/event/pullrequest/rendering/PullRequestNodeRenderers";
 import {
@@ -110,7 +126,6 @@ import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
 } from "../handlers/event/push/ReleaseToPushLifecycle";
-import * as pa from "../handlers/event/push/rendering/PushActionContributors";
 import * as pc from "../handlers/event/push/rendering/PushCardNodeRenderers";
 import * as pr from "../handlers/event/push/rendering/PushNodeRenderers";
 import * as sr from "../handlers/event/push/rendering/StatusesNodeRenderer";
@@ -130,7 +145,6 @@ import {
 import { WorkflowNodeRenderer } from "../handlers/event/push/workflow/WorkflowNodeRenderer";
 import { notifyAuthorOnReview } from "../handlers/event/review/NotifyAuthorOnReview";
 import { pullRequestToReviewLifecycle } from "../handlers/event/review/PullRequestToReviewLifecycle";
-import * as rra from "../handlers/event/review/rendering/ReviewActionContributors";
 import * as rr from "../handlers/event/review/rendering/ReviewNodeRenderers";
 import { reviewToReviewLifecycle } from "../handlers/event/review/ReviewToReviewLifecycle";
 import {
@@ -139,7 +153,6 @@ import {
 } from "../lifecycle/card";
 import {
     ActionContributor,
-    CardActionContributorWrapper,
     NodeRenderer,
 } from "../lifecycle/Lifecycle";
 import { AttachImagesNodeRenderer } from "../lifecycle/rendering/AttachImagesNodeRenderer";
@@ -184,18 +197,16 @@ export interface LifecycleOptions {
     };
     review?: {
         chat?: Contributions<ReviewToReviewLifecycle.Repo, SlackMessage, Action>;
-    }
+    },
+    commands?: CommandHandlerRegistration[];
 }
 
-export const DefaultLifecycleOptions: LifecycleOptions = {
+export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
     branch: {
         chat: {
             renderers: () => [
                 new BranchNodeRenderer(),
             ],
-            actions: repo => !repo.org.provider.private ? [
-                new RaisePrActionContributor(),
-            ] : [],
         },
     },
     comment: {
@@ -213,14 +224,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                         return false;
                     }
                 })],
-            actions: repo => !repo.org.provider.private ? [
-                new ca.AssignActionContributor(),
-                new ca.CommentActionContributor(),
-                new ca.LabelActionContributor(),
-                new ca.ReactionActionContributor(),
-                new ca.CloseActionContributor(),
-                new ca.DetailsActionContributor(),
-            ] : [],
         },
     },
     issue: {
@@ -230,18 +233,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new ir.MoreNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
                 new AttachImagesNodeRenderer(node => node.state === "open")],
-            actions: repo => !repo.org.provider.private ? [
-                new ia.CommentActionContributor(),
-                new ia.LabelActionContributor(),
-                new ia.ReactionActionContributor(),
-                new ia.AssignToMeActionContributor(),
-                new ia.AssignActionContributor(),
-                new ia.MoveActionContributor(),
-                new ia.RelatedActionContributor(),
-                new ia.ReopenActionContributor(),
-                new ia.CloseActionContributor(),
-                new ia.DisplayMoreActionContributor(),
-            ] : [],
         },
         web: {
             renderers: () => [
@@ -251,15 +242,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new icr.ReferencedIssueCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => node.body != null),
             ],
-            actions: repo => !repo.org.provider.private ? [
-                new CardActionContributorWrapper(new ia.CommentActionContributor()),
-                new CardActionContributorWrapper(new ia.ReactionActionContributor()),
-                new CardActionContributorWrapper(new ia.LabelActionContributor()),
-                new CardActionContributorWrapper(new ia.AssignToMeActionContributor("issue")),
-                new CardActionContributorWrapper(new ia.AssignActionContributor("issue")),
-                new CardActionContributorWrapper(new ia.CloseActionContributor()),
-                new CardActionContributorWrapper(new ia.ReopenActionContributor()),
-            ] : [],
         },
     },
     pullRequest: {
@@ -272,15 +254,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new prr.ReviewNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
                 new AttachImagesNodeRenderer(node => node.state === "open")],
-            actions: repo => !repo.org.provider.private ? [
-                new pra.MergeActionContributor(),
-                new pra.AssignReviewerActionContributor(),
-                new pra.AutoMergeActionContributor(),
-                new pra.CommentActionContributor(),
-                new pra.ThumbsUpActionContributor(),
-                new pra.ApproveActionContributor(),
-                new pra.DeleteActionContributor(),
-            ] : [],
         },
         web: {
             renderers: () => [
@@ -291,15 +264,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new prc.ReviewCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => node.baseBranchName != null),
             ],
-            actions: repo => !repo.org.provider.private ? [
-                new CardActionContributorWrapper(new pra.MergeActionContributor()),
-                new CardActionContributorWrapper(new pra.AssignReviewerActionContributor()),
-                new CardActionContributorWrapper(new pra.AutoMergeActionContributor()),
-                new CardActionContributorWrapper(new pra.CommentActionContributor()),
-                new CardActionContributorWrapper(new pra.ThumbsUpActionContributor()),
-                new CardActionContributorWrapper(new pra.ApproveActionContributor()),
-                new CardActionContributorWrapper(new pra.DeleteActionContributor()),
-            ] : [],
         },
     },
     push: {
@@ -320,21 +284,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new pr.BlackDuckFingerprintNodeRenderer(),
                 new pr.ExpandAttachmentsNodeRenderer(),
                 new pr.ExpandNodeRenderer()],
-            actions: push => !push.repo.org.provider.private ? [
-                new pa.TagPushActionContributor(),
-                new pa.TagTagActionContributor(),
-                new pa.ReleaseActionContributor(),
-                new pa.PullRequestActionContributor(),
-                new pa.ApproveGoalActionContributor(),
-                new pa.CancelGoalSetActionContributor(),
-                new pa.DisplayGoalActionContributor(),
-                new pa.ExpandAttachmentsActionContributor(),
-            ] : [
-                new pa.ApproveGoalActionContributor(),
-                new pa.CancelGoalSetActionContributor(),
-                new pa.DisplayGoalActionContributor(),
-                new pa.ExpandAttachmentsActionContributor(),
-            ],
         },
         web: {
             renderers: () => [
@@ -351,17 +300,6 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
                 new pc.K8PodCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => !!node.after),
             ],
-            actions: push => !push.repo.org.provider.private ? [
-                new CardActionContributorWrapper(new pa.TagPushActionContributor()),
-                new CardActionContributorWrapper(new pa.TagTagActionContributor()),
-                new CardActionContributorWrapper(new pa.ReleaseActionContributor()),
-                new CardActionContributorWrapper(new pa.PullRequestActionContributor()),
-                new CardActionContributorWrapper(new pa.ApproveGoalActionContributor()),
-                new CardActionContributorWrapper(new pa.CancelGoalSetActionContributor()),
-            ] : [
-                new CardActionContributorWrapper(new pa.ApproveGoalActionContributor()),
-                new CardActionContributorWrapper(new pa.CancelGoalSetActionContributor()),
-            ],
         },
     },
     review: {
@@ -369,22 +307,16 @@ export const DefaultLifecycleOptions: LifecycleOptions = {
             renderers: () => [
                 new rr.ReviewNodeRenderer(),
                 new rr.ReviewDetailNodeRenderer()],
-            actions: repo => !repo.org.provider.private ? [
-                new rra.CommentActionContributor(),
-            ] : [],
         },
     },
 };
 
 export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack {
     return {
-        ...metadata(),
+        ...metadata("lifecycle"),
         configure: sdm => {
 
-            const optsToUse: LifecycleOptions = {
-                ...DefaultLifecycleOptions,
-                ...options,
-            };
+            const optsToUse: LifecycleOptions = _.merge(DefaultLifecycleRenderingOptions, options);
 
             // Build
             sdm.addEvent(notifyPusherOnBuild());
@@ -469,14 +401,38 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
 
-            sdm.addCommand(cancelGoalSetsCommand(sdm));
-
             // Review
             sdm.addEvent(notifyAuthorOnReview());
 
             sdm.addEvent(pullRequestToReviewLifecycle(optsToUse.review.chat));
             sdm.addEvent(reviewToReviewLifecycle(optsToUse.review.chat));
-            
+
+            // Preferences
+            sdm.addCommand(adaptHandleCommand(ConfigureDirectMessageUserPreferences));
+            sdm.addCommand(adaptHandleCommand(ConfigureLifecyclePreferences));
+            sdm.addCommand(adaptHandleCommand(SetTeamPreference));
+            sdm.addCommand(adaptHandleCommand(SetUserPreference));
+
+            // Sdm
+            sdm.addCommand(adaptHandleCommand(UpdateSdmGoalState));
+            sdm.addCommand(adaptHandleCommand(UpdateSdmGoalDisplayState));
+            sdm.addCommand(cancelGoalSetsCommand(sdm));
+
+            // Slack
+            sdm.addCommand(adaptHandleCommand(AddBotToChannel));
+            sdm.addCommand(adaptHandleCommand(AssociateRepo));
+            sdm.addCommand(adaptHandleCommand(() => cancelConversation()));
+            sdm.addCommand(adaptHandleCommand(CreateChannel));
+            sdm.addCommand(adaptHandleCommand(LinkOwnerRepo));
+            sdm.addCommand(adaptHandleCommand(LinkRepo));
+            sdm.addCommand(adaptHandleCommand(ListRepoLinks));
+            sdm.addCommand(adaptHandleCommand(NoLinkRepo));
+            sdm.addCommand(adaptHandleCommand(ToggleCustomEmojiEnablement));
+            sdm.addCommand(adaptHandleCommand(ToggleDisplayFormat));
+            sdm.addCommand(adaptHandleCommand(UnlinkRepo));
+
+            // Install contributed commands
+            (optsToUse.commands || []).forEach(sdm.addCommand);
         },
     };
 }
