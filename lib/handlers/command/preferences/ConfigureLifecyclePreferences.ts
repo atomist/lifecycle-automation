@@ -353,7 +353,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     private isLifecycleEnabled(preferences: any, type: string): boolean {
         if (preferences[this.channelName]) {
-            if (preferences[this.channelName][type] != null) {
+            if (preferences[this.channelName][type] != undefined) {
                 return preferences[this.channelName][type] as boolean === true;
             }
         }
@@ -362,8 +362,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     private isLifecycleActionEnabled(preferences: any, type: string): boolean {
         if (preferences[this.channelName] && preferences[this.channelName][this.lifecycle]) {
-            if (preferences[this.channelName][this.lifecycle] != null
-                && preferences[this.channelName][this.lifecycle][type] != null) {
+            if (preferences[this.channelName][this.lifecycle] != undefined
+                && preferences[this.channelName][this.lifecycle][type] != undefined) {
                 return preferences[this.channelName][this.lifecycle][type] as boolean === true;
             }
         }
@@ -372,8 +372,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     private isLifecycleRendererEnabled(preferences: any, type: string): boolean {
         if (preferences[this.channelName] && preferences[this.channelName][this.lifecycle]) {
-            if (preferences[this.channelName][this.lifecycle] != null
-                && preferences[this.channelName][this.lifecycle][type] != null) {
+            if (preferences[this.channelName][this.lifecycle] != undefined
+                && preferences[this.channelName][this.lifecycle][type] != undefined) {
                 return preferences[this.channelName][this.lifecycle][type] as boolean === true;
             }
         }

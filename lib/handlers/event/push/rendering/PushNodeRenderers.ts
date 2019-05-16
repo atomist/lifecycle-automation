@@ -171,7 +171,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         for (const commit of commits) {
             const ca = getAuthor(commit);
 
-            if (author == null || author !== ca) {
+            if (author == undefined || author !== ca) {
                 commitsByAuthor = {
                     author: ca,
                     avatar: commit.author ? commit.author.avatar : undefined,
@@ -294,7 +294,7 @@ export class BuildNodeRenderer extends AbstractIdentifiableContribution
         const [message, color] = renderDecorator(build, push.builds, attachment.text, this.emojiStyle);
         attachment.color = color;
         attachment.text = message;
-        if (attachment.actions != null) {
+        if (attachment.actions != undefined) {
             attachment.actions = attachment.actions.concat(actions);
         } else {
             attachment.actions = actions;

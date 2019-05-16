@@ -80,14 +80,14 @@ export function shortenUrls(message: SlackMessage | CardMessage,
 
 function markShortened(message: any): SlackMessage {
     if (cluster.isWorker) {
-        (message as any).__shortened = true;
+        (message).__shortened = true;
     }
     return message;
 }
 
 function isShortened(message: any): boolean {
-    if ((message as any).__shortened === true) {
-        delete (message as any).__shortened;
+    if ((message).__shortened === true) {
+        delete (message).__shortened;
         return true;
     } else {
         return false;

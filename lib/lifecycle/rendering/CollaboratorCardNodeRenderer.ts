@@ -32,7 +32,7 @@ import {
 export class CollaboratorCardNodeRenderer extends AbstractIdentifiableContribution
     implements CardNodeRenderer<any> {
 
-    constructor(private callback: (node: any) => boolean = () => true, private keys: string[] = ["login"]) {
+    constructor(private readonly callback: (node: any) => boolean = () => true, private readonly keys: string[] = ["login"]) {
         super("collaborator");
     }
 

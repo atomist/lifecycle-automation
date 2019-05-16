@@ -93,7 +93,7 @@ export function botJoinedChannel(): EventHandlerRegistration<BotJoinedChannel.Su
                     `To see some options, try \`@${botName} help\``;
 
                 if (j.channel.repos && j.channel.repos.length > 0) {
-                    const linkedRepoNames = j.channel.repos.map(r => repoSlackLink(r));
+                    const linkedRepoNames = j.channel.repos.map(repoSlackLink);
                     const msg = `${helloText}
 I will post GitHub notifications about ${linkedRepoNames.join(", ")} here.`;
                     return ctx.messageClient.send(

@@ -33,8 +33,8 @@ export class RaisePrActionContributor extends AbstractIdentifiableContribution
     }
 
     public supports(node: any): boolean {
-        return node.commit != null
-            && (node.pullRequests == null || (node.pullRequests && node.pullRequests.length === 0));
+        return node.commit != undefined
+            && (node.pullRequests == undefined || (node.pullRequests && node.pullRequests.length === 0));
     }
 
     public buttonsFor(node: graphql.BranchToBranchLifecycle.Branch, context: RendererContext): Promise<Action[]> {

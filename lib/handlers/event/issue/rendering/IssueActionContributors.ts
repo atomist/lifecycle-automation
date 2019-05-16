@@ -62,7 +62,7 @@ export abstract class AbstractIssueActionContributor extends AbstractIdentifiabl
 
         if (context.rendererId === "issue") {
             const button = this.createButton(issue, repo, context);
-            if (button != null) {
+            if (button != undefined) {
                 return button;
             }
         }
@@ -74,7 +74,7 @@ export abstract class AbstractIssueActionContributor extends AbstractIdentifiabl
 
         if (context.rendererId === "issue") {
             const menu = this.createMenu(issue, repo, context);
-            if (menu != null) {
+            if (menu != undefined) {
                 return menu;
             }
         }
@@ -143,7 +143,7 @@ export class DisplayMoreActionContributor extends AbstractIdentifiableContributi
 export class AssignToMeActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.IssueToIssueLifecycle.Issue> {
 
-    constructor(private rendererId = "more") {
+    constructor(private readonly rendererId = "more") {
         super(LifecycleActionPreferences.issue.assigntome.id);
     }
 
@@ -175,7 +175,7 @@ export class AssignToMeActionContributor extends AbstractIdentifiableContributio
 export class MoveActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.IssueToIssueLifecycle.Issue> {
 
-    constructor(private rendererId = "more") {
+    constructor(private readonly rendererId = "more") {
         super(LifecycleActionPreferences.issue.move.id);
     }
 
@@ -213,7 +213,7 @@ export class MoveActionContributor extends AbstractIdentifiableContribution
 export class RelatedActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.IssueToIssueLifecycle.Issue> {
 
-    constructor(private rendererId = "more") {
+    constructor(private readonly rendererId = "more") {
         super(LifecycleActionPreferences.issue.related.id);
     }
 
@@ -261,7 +261,7 @@ export class RelatedActionContributor extends AbstractIdentifiableContribution
 export class AssignActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<graphql.IssueToIssueLifecycle.Issue> {
 
-    constructor(private rendererId = "more") {
+    constructor(private readonly rendererId = "more") {
         super(LifecycleActionPreferences.issue.assign.id);
     }
 
@@ -342,7 +342,7 @@ export class LabelActionContributor extends AbstractIdentifiableContribution
 
         if (context.rendererId === "issue") {
             let options = [];
-            if (repo.labels != null && repo.labels.length > 0) {
+            if (repo.labels != undefined && repo.labels.length > 0) {
                 const labels = [...repo.labels];
                 labels.sort((l1, l2) => l1.name.localeCompare(l2.name))
                     .forEach(l => options.push({ text: l.name, value: l.name }));
@@ -353,7 +353,7 @@ export class LabelActionContributor extends AbstractIdentifiableContribution
                     { text: "wontfix", value: "wontfix" }];
             }
 
-            const existingLabels = (issue.labels != null ?
+            const existingLabels = (issue.labels != undefined ?
                 issue.labels.sort((l1, l2) => l1.name.localeCompare(l2.name))
                     .map(l => l.name) : []);
             const unusedLabels = options.filter(l => existingLabels.indexOf(l.text) < 0);

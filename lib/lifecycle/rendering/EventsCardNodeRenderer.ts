@@ -34,7 +34,7 @@ import {
 export class EventsCardNodeRenderer extends AbstractIdentifiableContribution
     implements CardNodeRenderer<any> {
 
-    constructor(private callback: (node: any) => boolean = () => true) {
+    constructor(private readonly callback: (node: any) => boolean = () => true) {
         super("events");
     }
 
@@ -110,7 +110,7 @@ export class EventsCardNodeRenderer extends AbstractIdentifiableContribution
         }
 
         let text;
-        if (status.targetUrl != null && status.targetUrl.length > 0) {
+        if (status.targetUrl != undefined && status.targetUrl.length > 0) {
             text = `${url(status.targetUrl, status.description)}`;
         } else {
             text = `${status.description}`;

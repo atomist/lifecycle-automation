@@ -132,7 +132,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.commits != null && pr.commits.length > 0;
+                && pr.commits != undefined && pr.commits.length > 0;
         } else {
             return false;
         }
@@ -150,7 +150,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         for (const commit of commits) {
             const ca = getAuthor(commit);
 
-            if (author == null || author !== ca) {
+            if (author == undefined || author !== ca) {
                 commitsByAuthor = {
                     author: ca,
                     commits: [],
@@ -217,7 +217,7 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.commits != null && pr.commits.length > 0;
+                && pr.commits != undefined && pr.commits.length > 0;
         } else {
             return false;
         }
@@ -228,9 +228,9 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
 
         const repo = context.lifecycle.extract("repo");
         const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
-            .filter(c => c.statuses != null && c.statuses.length > 0);
+            .filter(c => c.statuses != undefined && c.statuses.length > 0);
 
-        if (commits.length > 0 && commits[0].statuses != null) {
+        if (commits.length > 0 && commits[0].statuses != undefined) {
             const commit = commits[0];
 
             const pending = commit.statuses.filter(s => s.state === "pending").length;
@@ -313,7 +313,7 @@ export class ReviewNodeRenderer extends AbstractIdentifiableContribution
         const pending = reviews.length - changesRequested - success;
 
         let summary = this.summarizeReviewCounts(pending, success, changesRequested);
-        if (pr.reviewers != null && pr.reviewers.length > 0) {
+        if (pr.reviewers != undefined && pr.reviewers.length > 0) {
             summary += " \u00B7 " + pr.reviewers.map(r => r.login).join(" \u00B7 ");
         }
 
@@ -404,7 +404,7 @@ export class BuildNodeRenderer extends AbstractIdentifiableContribution
         if (node.builds && node.commits) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.builds != null && pr.builds.length > 0;
+                && pr.builds != undefined && pr.builds.length > 0;
         } else {
             return false;
         }

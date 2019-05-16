@@ -57,7 +57,7 @@ export class ToggleDisplayFormat implements HandleCommand {
         return isCompactStyleEnabled(this.teamId, ctx)
             .then(preferencesState => {
                 const preferences =
-                    _.cloneDeep(preferencesState.preferences) as graphql.ChatTeamPreferences.Preferences;
+                    _.cloneDeep(preferencesState.preferences);
 
                 const enabled: SdmGoalDisplayFormat = preferencesState.enabled ?
                     SdmGoalDisplayFormat.full : SdmGoalDisplayFormat.compact;

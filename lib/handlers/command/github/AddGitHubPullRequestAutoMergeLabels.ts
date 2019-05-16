@@ -80,7 +80,7 @@ export async function addAutoMergeLabels(owner: string,
 
     AutoMergeMethods.forEach(
         async mm =>
-            await addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", owner, repo, api));
+            addLabel(`${AutoMergeMethodLabel}${mm}`, "1C334B", owner, repo, api));
 
     return Success;
 }

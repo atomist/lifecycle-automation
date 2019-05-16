@@ -146,6 +146,6 @@ export class SetTeamPreference implements HandleCommand {
                 };
                 return ctx.messageClient.respond(msg, { id: this.msgId, dashboard: false });
             })
-            .then(() => Success, err => failure(err));
+            .then(() => Success, failure);
     }
 }

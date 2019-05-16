@@ -106,7 +106,7 @@ export class InstallGitHubOrgWebhook implements HandleCommand {
                         success("Organization Webhook", `Successfully installed webhook for ${url(
                         orgHookUrl(this.webUrl, this.owner), codeLine(this.owner))}`)))
                     .then(() => result)
-                    .catch(err => failure(err));
+                    .catch(failure);
             })
             .catch(result => {
                 return ctx.messageClient.respond(handleResponse(result, this.webUrl, this.owner, ctx))
@@ -180,7 +180,7 @@ export class InstallGitHubRepoWebhook implements HandleCommand {
                     ]))
                     .then(results => {
                         if (results[0] && results[1]) {
-                            const chatTeam = results[1] as graphql.ChatTeam.ChatTeam;
+                            const chatTeam = results[1];
                             const alreadyMapped = (chatTeam.channels || []).some(c => (c.repos || [])
                                 .some(r => r.name === this.repo && r.owner === this.owner));
 
@@ -207,7 +207,7 @@ export class InstallGitHubRepoWebhook implements HandleCommand {
                         }
                         return Success;
                     })
-                    .catch(err => failure(err));
+                    .catch(failure);
             })
             .catch(result => {
                 return ctx.messageClient.respond(handleResponse(result, this.webUrl, this.owner, ctx, this.repo))
@@ -273,7 +273,7 @@ function handleResponse(response: any,
                         repo?: string): string | SlackMessage {
     const body = JSON.parse(response.message);
     const errors = body.errors;
-    if (errors != null && errors.length > 0) {
+    if (errors != undefined && errors.length > 0) {
         if (errors[0].message === "Hook already exists on this organization") {
             return warning("Organization Webhook",
                 `Webhook already installed for ${url(orgHookUrl(webUrl, owner, repo),

@@ -33,15 +33,15 @@ import { LifecycleActionPreferences } from "../../preferences";
 export abstract class AbstractCommentActionContributor extends AbstractIdentifiableContribution
     implements SlackActionContributor<any> {
 
-    constructor(private identifier: string, private forIssue: boolean, private forPr: boolean) {
+    constructor(private readonly identifier: string, private readonly forIssue: boolean, private readonly forPr: boolean) {
         super(identifier);
     }
 
     public supports(node: any): boolean {
         if (node.body && (node.issue || node.pullRequest)) {
-            const comment = node as any;
-            return (comment.issue != null && comment.issue.state === "open")
-                || (comment.pullRequest != null && comment.pullRequest.state === "open");
+            const comment = node;
+            return (comment.issue != undefined && comment.issue.state === "open")
+                || (comment.pullRequest != undefined && comment.pullRequest.state === "open");
         } else {
             return false;
         }
@@ -56,13 +56,13 @@ export abstract class AbstractCommentActionContributor extends AbstractIdentifia
         if (context.rendererId === "issue_comment" || context.rendererId === "pullrequest_comment") {
             let button;
 
-            if (this.forIssue && issue != null) {
+            if (this.forIssue && issue != undefined) {
                 button = this.createButton(comment, issue.number, repo, context);
-            } else if (this.forPr && pr != null) {
+            } else if (this.forPr && pr != undefined) {
                 button = this.createButton(comment, pr.number, repo, context);
             }
 
-            if (button != null) {
+            if (button != undefined) {
                 return button;
             }
         }
@@ -78,13 +78,13 @@ export abstract class AbstractCommentActionContributor extends AbstractIdentifia
         if (context.rendererId === "issue_comment" || context.rendererId === "pullrequest_comment") {
             let menu;
 
-            if (this.forIssue && issue != null) {
+            if (this.forIssue && issue != undefined) {
                 menu = this.createMenu(comment, issue.number, issue.labels, repo, context);
-            } else if (this.forPr && pr != null) {
-                menu = this.createMenu(comment, pr.number, (pr as any).labels, repo, context);
+            } else if (this.forPr && pr != undefined) {
+                menu = this.createMenu(comment, pr.number, (pr).labels, repo, context);
             }
 
-            if (menu != null) {
+            if (menu != undefined) {
                 return menu;
             }
         }
@@ -173,7 +173,7 @@ export class LabelActionContributor extends AbstractCommentActionContributor
                          labels: graphql.CommentToIssueCommentLifecycle.Labels[],
                          repo: graphql.CommentToIssueCommentLifecycle.Repo): Promise<Action[]> {
         let options = [];
-        if (repo.labels != null && repo.labels.length > 0) {
+        if (repo.labels != undefined && repo.labels.length > 0) {
             repo.labels.sort((l1, l2) => l1.name.localeCompare(l2.name))
                 .forEach(l => options.push({ text: l.name, value: l.name }));
         } else {
@@ -183,7 +183,7 @@ export class LabelActionContributor extends AbstractCommentActionContributor
                 { text: "wontfix", value: "wontfix" }];
         }
 
-        const existingLabels = (labels != null ? labels.sort(
+        const existingLabels = (labels != undefined ? labels.sort(
             (l1, l2) => l1.name.localeCompare(l2.name)).map(l => l.name) : []);
         const unusedLabels = options.filter(l => existingLabels.indexOf(l.text) < 0);
 

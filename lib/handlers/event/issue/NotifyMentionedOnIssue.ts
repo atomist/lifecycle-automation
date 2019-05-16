@@ -45,7 +45,7 @@ export function notifyMentionedOnIssue(): EventHandlerRegistration<NotifyMention
                 return issueNotification(issue.number.toString(), "New mention in issue",
                     issue.body, issue.openedBy.login, issue, repo, ctx, createActions(issue))
                     .then(_ => {
-                        if (issue.assignees != null) {
+                        if (issue.assignees != undefined) {
                             return Promise.all(issue.assignees.map(a =>
                                 issueAssigneeNotification(issue.number.toString(), "New assignment of issue", issue.body,
                                     a, issue, repo, ctx)));

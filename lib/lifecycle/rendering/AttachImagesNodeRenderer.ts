@@ -28,7 +28,7 @@ import {
 export class AttachImagesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<any> {
 
-    constructor(private callback: (node: any) => boolean = () => true) {
+    constructor(private readonly callback: (node: any) => boolean = () => true) {
         super("attachimages");
     }
 

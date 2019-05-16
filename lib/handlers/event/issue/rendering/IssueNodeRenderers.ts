@@ -71,7 +71,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
             color = "#BC3D33";
             footer_icon = "https://images.atomist.com/rug/issue-closed.png";
             if (node.closedAt === node.updatedAt) {
-                if (node.closedBy != null && node.closedBy.login != null) {
+                if (node.closedBy != undefined && node.closedBy.login != undefined) {
                     pretext = `${url(userUrl(repo, node.closedBy.login),
                         `${node.closedBy.login}`)} closed issue ${title}`;
                 } else {
@@ -89,7 +89,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
         // tslint:disable-next-line:variable-name
         let author_icon;
 
-        if (node.openedBy != null && node.openedBy.login != null) {
+        if (node.openedBy != undefined && node.openedBy.login != undefined) {
             const author = node.openedBy.login;
             author_name = author;
             author_link = userUrl(repo, author);

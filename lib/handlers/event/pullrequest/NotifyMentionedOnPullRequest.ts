@@ -67,5 +67,5 @@ export function notifyMentionedOnPullRequest(): EventHandlerRegistration<NotifyM
                 })
                 .then(() => Success, failure);
         },
-    }
+    };
 }

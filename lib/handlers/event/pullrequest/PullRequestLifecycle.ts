@@ -59,17 +59,17 @@ export class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
-        if (repo != null) {
+        if (repo != undefined) {
             nodes.push(repo);
         }
 
         // PullRequest lifecycle starts with, drum roll, a PullRequest
-        if (pullrequest != null) {
+        if (pullrequest != undefined) {
             nodes.push(pullrequest);
         }
 
         // Verify that there is at least a pullrequest and repo node
-        if (pullrequest == null || repo == null) {
+        if (pullrequest == undefined || repo == undefined) {
             logger.debug(`Lifecycle event is missing pullrequest and/or repo node`);
             return null;
         } else if (pullrequest.merged && !pullrequest.merger) {
@@ -128,17 +128,17 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
-        if (repo != null) {
+        if (repo != undefined) {
             nodes.push(repo);
         }
 
         // PullRequest lifecycle starts with, drum roll, a PullRequest
-        if (pullrequest != null) {
+        if (pullrequest != undefined) {
             nodes.push(pullrequest);
         }
 
         // Verify that there is at least a pullrequest and repo node
-        if (pullrequest == null || repo == null) {
+        if (pullrequest == undefined || repo == undefined) {
             logger.debug(`Lifecycle event is missing pullrequest and/or repo node`);
             return null;
         } else if (pullrequest.merged && !pullrequest.merger) {

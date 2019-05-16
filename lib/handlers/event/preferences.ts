@@ -326,7 +326,7 @@ export const LifecycleRendererPreferences = {
             name: "Overwrite Compact Lifecycle Rendering Format",
             description: "Always display the full Lifecycle Rendering despite the global configuration",
             enabled: false,
-        }
+        },
     },
 
     comment: {

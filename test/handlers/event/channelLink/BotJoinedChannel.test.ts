@@ -269,7 +269,7 @@ describe("BotJoinedChannel", () => {
                 .then(() => {
                     assert(silent);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("should send a mapped repo message", done => {
@@ -344,7 +344,7 @@ describe("BotJoinedChannel", () => {
                 .then(() => {
                     assert(sent);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
         it("should send a GitHub integration suggestion", done => {
@@ -397,7 +397,7 @@ describe("BotJoinedChannel", () => {
                 .then(() => {
                     assert(sent);
                 })
-                .then(() => done(), done);
+                .then(done, done);
         });
 
     });

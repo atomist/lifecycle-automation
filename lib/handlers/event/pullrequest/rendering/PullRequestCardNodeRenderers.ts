@@ -120,7 +120,7 @@ export class CommitCardNodeRenderer extends AbstractIdentifiableContribution
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.commits != null && pr.commits.length > 0;
+                && pr.commits != undefined && pr.commits.length > 0;
         } else {
             return false;
         }
@@ -173,7 +173,7 @@ export class StatusCardNodeRenderer extends AbstractIdentifiableContribution
                   context: RendererContext): Promise<CardMessage> {
         // List all the statuses on the head commit
         const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
-            .filter(c => c.statuses != null && c.statuses.length > 0);
+            .filter(c => c.statuses != undefined && c.statuses.length > 0);
 
         if (commits && commits.length > 0) {
             const statuses = commits[0].statuses;
@@ -192,7 +192,7 @@ export class StatusCardNodeRenderer extends AbstractIdentifiableContribution
                 }
 
                 let text;
-                if (s.targetUrl != null && s.targetUrl.length > 0) {
+                if (s.targetUrl != undefined && s.targetUrl.length > 0) {
                     text = `${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
                 } else {
                     text = `${s.description} \u00B7 ${s.context}`;

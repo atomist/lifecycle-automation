@@ -23,6 +23,7 @@ import {
     success,
 } from "@atomist/automation-client";
 import { EventHandlerRegistration } from "@atomist/sdm";
+import * as _ from "lodash";
 import {
     LifecycleParameters,
     LifecycleParametersDefinition,
@@ -37,7 +38,6 @@ import {
     RepoOnboarded,
 } from "../../../typings/types";
 import { pushToPushCardLifecycle } from "../push/PushToPushLifecycle";
-import * as _ from "lodash";
 
 export function repositoryOnboarded(options: LifecycleOptions)
     : EventHandlerRegistration<RepoOnboarded.Subscription, LifecycleParametersDefinition> {

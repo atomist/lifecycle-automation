@@ -45,7 +45,7 @@ export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<
                 return Promise.resolve(Success);
             }
         },
-    }
+    };
 }
 
 /**

@@ -27,7 +27,7 @@ import {
 
 export class FooterNodeRenderer implements SlackNodeRenderer<any> {
 
-    constructor(private matches: (node: any) => boolean) { }
+    constructor(private readonly matches: (node: any) => boolean) { }
 
     public id() {
         return "footer";
@@ -50,7 +50,7 @@ export class FooterNodeRenderer implements SlackNodeRenderer<any> {
             const feedbackUrl =
                 `https://atomist.typeform.com/to/yvnyOj?message_id=${base64.encode(context.lifecycle.id)}`;
             const feedbackFooter = `${url(feedbackUrl, "Feedback")}`;
-            if (attachment.footer != null) {
+            if (attachment.footer != undefined) {
                 const footer = `${attachment.footer} \u00B7 ${feedbackFooter}`;
                 if (footer.length <= 300) {
                     attachment.footer = footer;
@@ -60,7 +60,7 @@ export class FooterNodeRenderer implements SlackNodeRenderer<any> {
             }
 
             // Make sure markdown is enabled for the footer
-            if (attachment.mrkdwn_in != null) {
+            if (attachment.mrkdwn_in != undefined) {
                 attachment.mrkdwn_in.push("footer");
             } else {
                 attachment.mrkdwn_in = ["footer"];

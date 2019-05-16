@@ -61,7 +61,7 @@ import {
     isCardMessage,
 } from "./card";
 
-export type LifecycleParametersDefinition = { orgToken: string, credentialsResolver?: CredentialsResolver }
+export interface LifecycleParametersDefinition { orgToken: string; credentialsResolver?: CredentialsResolver; }
 
 export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
     orgToken: {
@@ -119,7 +119,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         const preferences = this.extractPreferences(event);
 
         // Bail out if something isn't correctly linked up
-        if (lifecycles == null || lifecycles.length === 0) {
+        if (lifecycles == undefined || lifecycles.length === 0) {
             return Promise.resolve({ code: 0, message: "No lifecycle created" });
         }
 
@@ -230,7 +230,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                                  channels: { teamId: string, channels: string[] },
                                  ctx: HandlerContext): Promise<any> {
         let ts = this.normalizeTimestamp(lifecycle.timestamp);
-        if (ts == null) {
+        if (ts == undefined) {
             ts = Date.now().toString();
         }
 
@@ -326,7 +326,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                           preferences: { [teamId: string]: Preferences[] } = {})
         : Array<{ teamId: string, channels: string[] }> {
 
-        if (lifecycle == null) {
+        if (lifecycle == undefined) {
             return [];
         }
 
@@ -448,7 +448,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     const channelPreferences = preferenceValue[channel];
                     contributions = contributions.filter(c => {
                         const channelPreference = _.get(channelPreferences, `${name}.${c.id()}`);
-                        if (channelPreference != null) {
+                        if (channelPreference != undefined) {
                             return channelPreference === true;
                         }
                         if (preferenceConfiguration && preferenceConfiguration[c.id()]) {
@@ -459,14 +459,14 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     });
                 } else {
                     contributions = contributions.filter(c =>
-                        preferenceConfiguration[c.id()] == null || preferenceConfiguration[c.id()].enabled);
+                        preferenceConfiguration[c.id()] == undefined || preferenceConfiguration[c.id()].enabled);
                 }
             } catch (e) {
                 logger.error(`Failed to parse lifecycle configuration: '${preference.value}'`);
             }
         } else {
             contributions = contributions.filter(c =>
-                preferenceConfiguration[c.id()] == null || preferenceConfiguration[c.id()].enabled);
+                preferenceConfiguration[c.id()] == undefined || preferenceConfiguration[c.id()].enabled);
         }
 
         if (configuration) {
@@ -638,7 +638,7 @@ export class RendererContext {
                 public credentials: ProjectOperationCredentials,
                 public context: HandlerContext,
                 public channels: { teamId: string, channels: string[] },
-                private store: Map<string, any>) {
+                private readonly store: Map<string, any>) {
     }
 
     public set(key: string, value: any) {
@@ -657,7 +657,7 @@ export class RendererContext {
 export abstract class AbstractIdentifiableContribution implements IdentifiableContribution {
 
     // tslint:disable-next-line:variable-name
-    constructor(private _id: string) {
+    constructor(private readonly _id: string) {
     }
 
     public id(): string {
@@ -667,7 +667,7 @@ export abstract class AbstractIdentifiableContribution implements IdentifiableCo
 
 export class CardActionContributorWrapper implements CardActionContributor<any> {
 
-    constructor(private delegate: SlackActionContributor<any>) {
+    constructor(private readonly delegate: SlackActionContributor<any>) {
     }
 
     public supports(node: any, context: RendererContext): boolean {
@@ -702,7 +702,7 @@ export class CardActionContributorWrapper implements CardActionContributor<any> 
                     }
                     return action;
                 });
-                return actions as CardAction[];
+                return actions;
             });
     }
 
@@ -746,7 +746,7 @@ export class CardActionContributorWrapper implements CardActionContributor<any> 
                     }
                     return action;
                 });
-                return actions as CardAction[];
+                return actions;
             });
     }
 

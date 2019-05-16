@@ -58,12 +58,12 @@ export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
                 }
 
                 // PullRequest lifecycle starts with, drum roll, a PullRequest
-                if (review != null) {
+                if (review != undefined) {
                     nodes.push(review);
                 }
 
                 // Verify that there is at least a pullrequest and repo node
-                if (review == null || review.pullRequest == null) {
+                if (review == undefined || review.pullRequest == undefined) {
                     logger.debug(`Lifecycle event is missing review and/or repo node`);
                     return null;
                 }

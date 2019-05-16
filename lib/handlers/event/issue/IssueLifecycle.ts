@@ -59,16 +59,16 @@ export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes: any[] = [];
         const [issue, repo, comment, timestamp] = this.extractNodes(event);
 
-        if (issue != null) {
+        if (issue != undefined) {
             nodes.push(issue);
         }
 
-        if (comment != null) {
+        if (comment != undefined) {
             nodes.push(comment);
         }
 
         // Verify that there is at least a issue and repo node
-        if (issue == null) {
+        if (issue == undefined) {
             logger.debug(`Lifecycle event is missing issue and/or repo node`);
             return null;
         }
@@ -126,12 +126,12 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes: any[] = [];
         const [issue, repo, timestamp] = this.extractNodes(event);
 
-        if (issue != null) {
+        if (issue != undefined) {
             nodes.push(issue);
         }
 
         // Verify that there is at least a issue and repo node
-        if (issue == null) {
+        if (issue == undefined) {
             logger.debug(`Lifecycle event is missing issue and/or repo node`);
             return null;
         }

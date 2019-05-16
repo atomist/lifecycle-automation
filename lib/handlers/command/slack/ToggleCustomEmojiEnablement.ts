@@ -62,7 +62,7 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
         return isCustomEmojisEnabled(this.teamId, ctx)
             .then(preferencesState => {
                 const preferences =
-                    _.cloneDeep(preferencesState.preferences) as graphql.ChatTeamPreferences.Preferences;
+                    _.cloneDeep(preferencesState.preferences);
 
                 const enabled: string = preferencesState.enabled ? "default" : "atomist";
 

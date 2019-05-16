@@ -182,7 +182,7 @@ export interface LifecycleOptions {
     };
     comment?: {
         chat?: Contributions<IssueToIssueCommentLifecycle.Repo, SlackMessage, Action>;
-    },
+    };
     issue?: {
         chat?: Contributions<IssueFields.Repo, SlackMessage, Action>;
         web?: Contributions<IssueFields.Repo, CardMessage, CardAction>;
@@ -190,14 +190,14 @@ export interface LifecycleOptions {
     pullRequest?: {
         chat?: Contributions<PullRequestFields.Repo, SlackMessage, Action>;
         web?: Contributions<PullRequestFields.Repo, CardMessage, CardAction>;
-    }
+    };
     push?: {
         chat?: Contributions<PushToPushLifecycle.Push, SlackMessage, Action>;
         web?: Contributions<PushToPushLifecycle.Push, CardMessage, CardAction>;
     };
     review?: {
         chat?: Contributions<ReviewToReviewLifecycle.Repo, SlackMessage, Action>;
-    },
+    };
     commands?: CommandHandlerRegistration[];
 }
 
@@ -240,7 +240,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new icr.CommentCardNodeRenderer(),
                 new icr.CorrelationsCardNodeRenderer(),
                 new icr.ReferencedIssueCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.body != null),
+                new CollaboratorCardNodeRenderer(node => node.body != undefined),
             ],
         },
     },
@@ -262,7 +262,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new prc.BuildCardNodeRenderer(),
                 new prc.StatusCardNodeRenderer(),
                 new prc.ReviewCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.baseBranchName != null),
+                new CollaboratorCardNodeRenderer(node => node.baseBranchName != undefined),
             ],
         },
     },
@@ -421,7 +421,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             // Slack
             sdm.addCommand(adaptHandleCommand(AddBotToChannel));
             sdm.addCommand(adaptHandleCommand(AssociateRepo));
-            sdm.addCommand(adaptHandleCommand(() => cancelConversation()));
+            sdm.addCommand(adaptHandleCommand(cancelConversation));
             sdm.addCommand(adaptHandleCommand(CreateChannel));
             sdm.addCommand(adaptHandleCommand(LinkOwnerRepo));
             sdm.addCommand(adaptHandleCommand(LinkRepo));

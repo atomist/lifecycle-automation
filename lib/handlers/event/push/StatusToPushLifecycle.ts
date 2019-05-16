@@ -89,4 +89,3 @@ export function statusToPushCardLifecycle(contributions: Contributions)
         },
     };
 }
-

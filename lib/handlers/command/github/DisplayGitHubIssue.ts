@@ -145,7 +145,7 @@ export class DisplayGitHubIssue implements HandleCommand {
 
 class ResponseIssueToIssueLifecycle extends IssueLifecycleHandler<graphql.IssueToIssueLifecycle.Subscription> {
 
-    constructor(private showMore: string) {
+    constructor(private readonly showMore: string) {
         super(e => {
                 const issue = e.data.Issue[0];
                 const repo = e.data.Issue[0].repo;

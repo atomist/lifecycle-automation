@@ -5697,6 +5697,6 @@ describe("goals", () => {
 ]`;
 
     it("handle goals with goalSet", () => {
-        const envs = sortGoals(JSON.parse(goalsForGoalSetTest) as any, JSON.parse(goalSetForGoalSetTest) as any);
+        const envs = sortGoals(JSON.parse(goalsForGoalSetTest), JSON.parse(goalSetForGoalSetTest));
     });
 });

@@ -58,7 +58,7 @@ export class MergeActionContributor extends AbstractIdentifiableContribution
     public supports(node: any): boolean {
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
-            return pr.state === "open" && (pr.reviews == null || !pr.reviews.some(r => r.state !== "approved"));
+            return pr.state === "open" && (pr.reviews == undefined || !pr.reviews.some(r => r.state !== "approved"));
         } else {
             return false;
         }
@@ -72,7 +72,7 @@ export class MergeActionContributor extends AbstractIdentifiableContribution
         if (context.rendererId === "status") {
             const mergeButtons = this.mergePRActions(pr, repo);
 
-            const commits = pr.commits.filter(c => c.statuses != null && c.statuses.length > 0)
+            const commits = pr.commits.filter(c => c.statuses != undefined && c.statuses.length > 0)
                 .sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
             if (commits.length > 0) {
                 const commit = commits[0];
@@ -210,7 +210,7 @@ export class ApproveActionContributor extends AbstractIdentifiableContribution
         } else if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.commits != null && pr.commits.length > 0;
+                && pr.commits != undefined && pr.commits.length > 0;
         } else {
             return false;
         }
@@ -223,9 +223,9 @@ export class ApproveActionContributor extends AbstractIdentifiableContribution
 
         if (context.rendererId === "status") {
             const commits = pr.commits.sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp))
-                .filter(c => c.statuses != null && c.statuses.length > 0);
+                .filter(c => c.statuses != undefined && c.statuses.length > 0);
 
-            if (commits.length > 0 && commits[0].statuses != null) {
+            if (commits.length > 0 && commits[0].statuses != undefined) {
                 const commit = commits[0];
                 commit.statuses.filter(s => s.context === "fingerprint/atomist" && s.state === "failure").forEach(s => {
                     buttons.push(buttonForCommand(
@@ -262,7 +262,7 @@ export class DeleteActionContributor extends AbstractIdentifiableContribution
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "closed"
-                && pr.branch != null
+                && pr.branch != undefined
                 && pr.branch.name !== (pr.repo.defaultBranch || "master");
         } else {
             return false;

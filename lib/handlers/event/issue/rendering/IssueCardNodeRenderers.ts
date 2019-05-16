@@ -84,7 +84,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
         } else if (node.state === "closed") {
             icon = "css://icon-issue-closed";
             if (node.closedAt === node.updatedAt) {
-                if (node.closedBy != null && node.closedBy.login != null) {
+                if (node.closedBy != undefined && node.closedBy.login != undefined) {
                     title = `${url(userUrl(repo, node.closedBy.login),
                         `@${node.closedBy.login}`)} closed issue ${title}`;
                 } else {

@@ -36,7 +36,7 @@ export function circleWorkflowtoStages(
 ): WorkflowStage[] {
 
     const doc = yaml.load(workflow.config);
-    const jobsConfig = (_.find(_.values(doc.workflows), v => v.jobs) as any).jobs;
+    const jobsConfig = (_.find(_.values(doc.workflows), v => v.jobs)).jobs;
     const stages: Stage[] = [];
     jobsConfig.forEach(jc => {
         const name = typeof jc === "string" ? jc : _.head(_.keys(jc));

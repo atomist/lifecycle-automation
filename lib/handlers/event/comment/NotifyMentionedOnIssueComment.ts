@@ -46,7 +46,7 @@ export function notifyMentionedOnIssueComment(): EventHandlerRegistration<Notify
                 return Promise.resolve(Success);
             }
         },
-    }
+    };
 }
 
 /**

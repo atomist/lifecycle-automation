@@ -33,12 +33,12 @@ export function notifyPusherOnBuild(): EventHandlerRegistration<NotifyPusherOnBu
             const build = e.data.Build[0];
             if (build.status === "broken" || build.status === "failed") {
                 try {
-                    await buildNotification(build, build.repo, ctx)
+                    await buildNotification(build, build.repo, ctx);
                 } catch (e) {
                     return Failure;
                 }
             }
-            return Success
+            return Success;
         },
     };
 }

@@ -52,7 +52,7 @@ repository here. To turn this off, type ${codeLine("@atomist repos")} and click 
             await sendLinkMessage(teamId, channelName, linkMsg, msgId, ctx);
             return Success;
         },
-    }
+    };
 }
 
 function sendLinkMessage(teamId: string, channelName: string, linkMsg: string, msgId, ctx: HandlerContext) {

@@ -115,6 +115,6 @@ export class CreateChannel implements HandleCommand {
                         .then(() => Success, failure);
                 }
             })
-            .catch(e => failure(e));
+            .catch(failure);
     }
 }

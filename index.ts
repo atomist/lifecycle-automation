@@ -47,5 +47,5 @@ export const configuration: Configuration = {
     redact: {
         log: true,
         messages: false,
-    }
+    },
 };

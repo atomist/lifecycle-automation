@@ -110,7 +110,7 @@ export class ReleaseActionContributor extends AbstractIdentifiableContribution
         // commits by locating the commit for that particular tag
         // If that commit doesn't have a message set, let's not use it.
         const commits = push.commits.filter(
-            c => (c.tags != null && c.message != null
+            c => (c.tags != undefined && c.message != undefined
                 && c.tags.filter(t => t.name === tag.name).length > 0));
 
         if (commits.length !== 0) {
@@ -347,10 +347,10 @@ export class PullRequestActionContributor extends AbstractIdentifiableContributi
                     const branch = _.get(result, "Repo[0].branches[0]");
 
                     // If there are PRs that already contain this push's after commit, don't show the button
-                    if (branch && branch.pullRequests != null
+                    if (branch && branch.pullRequests != undefined
                         && branch.pullRequests.filter(pr => pr.state === "open").length > 0) {
                         showButton = false;
-                    } else if (branch && branch.pullRequests != null) {
+                    } else if (branch && branch.pullRequests != undefined) {
                         branch.pullRequests.forEach(pr => {
                             if (pr.commits.filter(c => c.sha === node.after.sha).length > 0) {
                                 showButton = false;

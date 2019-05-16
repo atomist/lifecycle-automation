@@ -21,8 +21,8 @@ import {
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import "mocha";
-import { channelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 import assert = require("power-assert");
+import { channelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 import * as graphql from "../../../../lib/typings/types";
 
 describe("ChannelLinkCreated", () => {

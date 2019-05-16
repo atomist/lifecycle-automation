@@ -235,22 +235,22 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
 
     const repo = push.repo;
     const nodes: any[] = [];
-    if (repo != null) {
+    if (repo != undefined) {
         nodes.push(repo);
     }
 
     // Push lifecycle starts with, drum roll, a Push
-    if (push != null) {
+    if (push != undefined) {
         nodes.push(push);
         // Add all Tag nodes
-        if (push.after != null && push.after.tags != null) {
+        if (push.after != undefined && push.after.tags != undefined) {
             sortTagsByName(push.after.tags)
                 .forEach(t => nodes.push(t));
         }
     }
 
     // Add Build nodes
-    if (push.builds != null && push.builds.length > 0) {
+    if (push.builds != undefined && push.builds.length > 0) {
         // Sort the builds in descending order; newest first
         push.builds.sort((b1, b2) => b2.timestamp.localeCompare(b1.timestamp))
             .forEach(b => nodes.push(b));
@@ -296,7 +296,7 @@ function extractDomains(push: graphql.PushToPushLifecycle.Push): Domain[] {
 function matches(pattern: string, target: string): boolean {
     const regexp = new RegExp(pattern, "g");
     const match = regexp.exec(target);
-    return match != null && match.length > 0;
+    return match != undefined && match.length > 0;
 }
 
 function createId(push: graphql.PushToPushLifecycle.Push): string {

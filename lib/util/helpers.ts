@@ -216,7 +216,7 @@ export function reviewUrl(repo: any, pr: any, review: any): string {
 }
 
 export function issueUrl(repo: any, issue: any, comment?: any): string {
-    if (comment == null) {
+    if (comment == undefined) {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/issues/${issue.number}`;
     } else {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/issues/${issue.number}#issuecomment-${comment.gitHubId}`;
@@ -229,16 +229,16 @@ export function labelUrl(repo: any, label: string): string {
 }
 
 export function isGitHubCom(repo: any): boolean {
-    return repo.org != null &&
-        repo.org.provider != null &&
-        repo.org.provider.providerType != null &&
+    return repo.org != undefined &&
+        repo.org.provider != undefined &&
+        repo.org.provider.providerType != undefined &&
         repo.org.provider.providerType === "github_com";
 }
 
 export function isGitHub(repo: any): boolean {
-    return repo.org != null &&
-        repo.org.provider != null &&
-        repo.org.provider.providerType != null &&
+    return repo.org != undefined &&
+        repo.org.provider != undefined &&
+        repo.org.provider.providerType != undefined &&
         (repo.org.provider.providerType === "github_com" || repo.org.provider.providerType === "ghe");
 }
 
@@ -251,23 +251,23 @@ export function isGitlab(repo: any): boolean {
 }
 
 export function isBitBucketCloud(repo: any): boolean {
-    return repo.org != null &&
-        repo.org.provider != null &&
-        repo.org.provider.providerType != null &&
+    return repo.org != undefined &&
+        repo.org.provider != undefined &&
+        repo.org.provider.providerType != undefined &&
         repo.org.provider.providerType === "bitbucket_cloud";
 }
 
 export function isGitlabEnterprise(repo: any): boolean {
-    return repo.org != null &&
-        repo.org.provider != null &&
-        repo.org.provider.providerType != null &&
+    return repo.org != undefined &&
+        repo.org.provider != undefined &&
+        repo.org.provider.providerType != undefined &&
         repo.org.provider.providerType === "gitlab";
 }
 
 export function isBitBucketOnPrem(repo: any): boolean {
-    return repo.org != null &&
-        repo.org.provider != null &&
-        repo.org.provider.providerType != null &&
+    return repo.org != undefined &&
+        repo.org.provider != undefined &&
+        repo.org.provider.providerType != undefined &&
         repo.org.provider.providerType === "bitbucket";
 }
 
@@ -684,7 +684,7 @@ export function replaceChatIdWithGitHubId(body: string = "", teamId: string, ctx
         return Promise.resolve(body);
     }
     const matches = getChatIds(body);
-    if (matches != null) {
+    if (matches != undefined) {
         return Promise.all(matches.map(m => {
             return ctx.graphClient.query<graphql.ChatId.Query, graphql.ChatId.Variables>({
                 name: "chatId",
@@ -729,7 +729,7 @@ export function getChatIds(str: string): string[] {
 }
 
 export function repoAndChannelFooter(repo: any): string {
-    const channels = (repo.channels != null && repo.channels.length > 0 ? " \u00B7 " + repo.channels.map(c =>
+    const channels = (repo.channels != undefined && repo.channels.length > 0 ? " \u00B7 " + repo.channels.map(c =>
         slack.channel(c.channelId, c.name)).join(" ") : "");
     return `${slack.url(repoUrl(repo), repoSlug(repo))}${channels}`;
 }
@@ -741,7 +741,7 @@ export function repoAndChannelFooter(repo: any): string {
  * @returns {boolean}
  */
 export function isAssigner(assignable: any, assigneeLogin: string): boolean {
-    return assignable.lastAssignedBy != null ? assignable.lastAssignedBy.login === assigneeLogin : false;
+    return assignable.lastAssignedBy != undefined ? assignable.lastAssignedBy.login === assigneeLogin : false;
 }
 
 export function isDmDisabled(chatId: ChatId, type?: string): boolean {
@@ -762,10 +762,10 @@ export function isDmDisabled(chatId: ChatId, type?: string): boolean {
 export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignees: any[]): string {
 
     let footer = slack.url(repoUrl(repo), `${repo.owner}/${repo.name}`);
-    if (labels != null && labels.length > 0) {
+    if (labels != undefined && labels.length > 0) {
         footer += " \u00B7 " + labels.map(l => l.name).join(" \u00B7 ");
     }
-    if (assignees != null && assignees.length > 0) {
+    if (assignees != undefined && assignees.length > 0) {
         footer += " \u00B7 " + assignees.map(a => a.login).join(" \u00B7 ");
     }
     return footer;

@@ -111,7 +111,7 @@ export class AssignGitHubPullRequestReviewer implements HandleCommand {
                         owner: this.owner,
                         repo: this.repo,
                         number: this.issue,
-                        reviewers: chatIds.filter(c => c != null),
+                        reviewers: chatIds.filter(c => c != undefined),
                     });
                 })
                 .then(() => Success)

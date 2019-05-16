@@ -50,31 +50,31 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
     protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
         const [comments, issue, pullRequest, repo, updateOnly] = this.extractNodes(event);
 
-        if (comments != null) {
+        if (comments != undefined) {
             return comments.map(comment => {
                 const nodes = [];
 
-                if (repo != null) {
+                if (repo != undefined) {
                     nodes.push(repo);
                 }
 
-                if (issue != null) {
+                if (issue != undefined) {
                     nodes.push(issue);
                 }
 
-                if (pullRequest != null) {
+                if (pullRequest != undefined) {
                     nodes.push(pullRequest);
                 }
 
                 nodes.push(comment);
 
                 // Verify that there is at least a comment and repo node
-                if (comment == null || repo == null) {
+                if (comment == undefined || repo == undefined) {
                     logger.debug(`Lifecycle event is missing comment and/or repo node`);
                     return null;
                 }
 
-                const id = issue != null ? issue.number : pullRequest.number;
+                const id = issue != undefined ? issue.number : pullRequest.number;
 
                 const configuration: Lifecycle = {
                     name: LifecyclePreferences.comment.id,

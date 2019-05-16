@@ -55,7 +55,7 @@ export function deploymentOnK8Pod(): EventHandlerRegistration<DeploymentOnK8Pod.
             }
 
             return Success;
-        }
+        },
     };
 
 }

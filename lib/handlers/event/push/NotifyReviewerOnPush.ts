@@ -43,7 +43,7 @@ export function notifyReviewerOnPush(): EventHandlerRegistration<NotifyReviewerO
 
             if (push.commits) {
                 const commitWithPr = push.commits.find(
-                    c => c.pullRequests != null && c.pullRequests.length > 0);
+                    c => c.pullRequests != undefined && c.pullRequests.length > 0);
                 if (commitWithPr) {
                     const pr = commitWithPr.pullRequests[0];
 
