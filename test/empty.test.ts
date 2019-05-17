@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { HandlerContext } from "@atomist/automation-client";
-import * as cf from "cf-nodejs-client";
-import { AbstractCloudFoundryApplicationCommand } from "./AbstractCloudFoundryApplicationCommand";
-
-export abstract class AbstractCloudFoundryApplicationUpdateCommand extends AbstractCloudFoundryApplicationCommand {
-
-    protected doWithApp(apps: cf.Apps, ctx: HandlerContext): Promise<any> {
-        return apps.update(this.guid, this.updateApp());
-    }
-
-    protected abstract updateApp(): any;
-}

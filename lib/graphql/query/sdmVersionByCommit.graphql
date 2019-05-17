@@ -1,6 +1,0 @@
-query SdmVersionByCommit($sha: [String!]!, $branch: [String!]!) {
-    SdmVersion(sha: $sha, branch: $branch) {
-        version
-    }
-}
-
