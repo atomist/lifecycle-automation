@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/0.12.49...HEAD)
 
+### Changed
+
+-   All lifecycles migrated to use SDM ext packs. [#288](https://github.com/atomist/lifecycle-automation/issues/288)
+
 ## [0.12.49](https://github.com/atomist/lifecycle-automation/compare/0.12.48...0.12.49) - 2019-05-15
 
 ### Fixed
