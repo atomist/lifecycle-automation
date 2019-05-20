@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    Configuration,
-    GraphQL,
-} from "@atomist/automation-client";
+import { Configuration } from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
