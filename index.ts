@@ -29,8 +29,6 @@ import {
 } from "@atomist/sdm-pack-rcca-github";
 import * as _ from "lodash";
 
-const notLocal = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "testing";
-
 export const configuration = configure(async sdm => {
 
     sdm.addExtensionPacks(
@@ -39,12 +37,6 @@ export const configuration = configure(async sdm => {
         githubConvergeSupport({
             events: { repoGenerated: true },
         }));
-
-    if (notLocal) {
-        sdm.addIngester(GraphQL.ingester({ path: "./lib/graphql/ingester/commitIssueRelationship" }))
-            .addIngester(GraphQL.ingester({ path: "./lib/graphql/ingester/deployment" }))
-            .addIngester(GraphQL.ingester({ path: "./lib/graphql/ingester/issueRelationship" }));
-    }
 
     const cfg: Configuration = {
         ws: {
