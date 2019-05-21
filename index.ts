@@ -18,6 +18,11 @@ import { Configuration } from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { configureRaven } from "@atomist/automation-client-ext-raven";
+import {
+    CachingProjectLoader,
+    GitHubLazyProjectLoader,
+    SoftwareDeliveryMachineConfiguration,
+} from "@atomist/sdm";
 import { configure } from "@atomist/sdm-core";
 import { githubLifecycleSupport } from "@atomist/sdm-pack-lifecycle-github";
 import {
@@ -37,7 +42,7 @@ export const configuration = configure(async sdm => {
             events: { repoGenerated: true },
         }));
 
-    const cfg: Configuration = {
+    const cfg: Configuration & SoftwareDeliveryMachineConfiguration = {
         ws: {
             timeout: 60000,
         },
@@ -47,6 +52,9 @@ export const configuration = configure(async sdm => {
         redact: {
             log: true,
             messages: false,
+        },
+        sdm: {
+            projectLoader: new GitHubLazyProjectLoader(new CachingProjectLoader()),
         },
     };
 
