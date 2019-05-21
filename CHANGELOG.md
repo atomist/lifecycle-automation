@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/1.0.1...HEAD)
 
+### Added
+
+-   Add support for PR default labels. [fbc4761](https://github.com/atomist/lifecycle-automation/commit/fbc47611f7828cbd43dda3214f00b757fa460d88)
+
 ## [1.0.1](https://github.com/atomist/lifecycle-automation/compare/1.0.0...1.0.1) - 2019-05-21
 
 ## [1.0.0](https://github.com/atomist/lifecycle-automation/compare/0.12.49...1.0.0) - 2019-05-21
