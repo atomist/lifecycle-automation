@@ -22,13 +22,13 @@
     "github"
   ],
   "dependencies": {
-    "@atomist/automation-client": "1.5.0-master.20190515195848",
+    "@atomist/automation-client": "1.5.0-master.20190520153523",
     "@atomist/automation-client-ext-dashboard": "1.1.0-master.20190411083753",
     "@atomist/automation-client-ext-humio": "^0.1.0-master.20190319215111",
     "@atomist/automation-client-ext-raven": "^1.0.2",
-    "@atomist/sdm": "1.5.0-master.20190516103533",
+    "@atomist/sdm": "1.5.0-master.20190520195042",
     "@atomist/sdm-core": "1.5.0-master.20190517230436",
-    "@atomist/sdm-pack-lifecycle": "0.1.0-master.20190517224732",
+    "@atomist/sdm-pack-lifecycle": "0.1.0-master.20190521064639",
     "@atomist/sdm-pack-lifecycle-github": "0.1.0-master.20190517222957",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190505141215",
     "@atomist/slack-messages": "^1.1.0",
