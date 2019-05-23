@@ -34,7 +34,6 @@ import * as _ from "lodash";
 
 export const configuration = configure(async sdm => {
 
-
     sdm.addExtensionPacks(
         githubLifecycleSupport(),
         githubAutoMergeSupport(),
