@@ -22,35 +22,35 @@
     "github"
   ],
   "dependencies": {
-    "@atomist/automation-client": "^1.5.0",
+    "@atomist/automation-client": "^1.5.3",
     "@atomist/automation-client-ext-dashboard": "1.1.0-master.20190411083753",
     "@atomist/automation-client-ext-humio": "0.2.0-master.20190522100323",
     "@atomist/automation-client-ext-raven": "^1.0.2",
-    "@atomist/sdm": "^1.5.0",
-    "@atomist/sdm-core": "^1.5.0",
-    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190528164935",
-    "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190527225241",
+    "@atomist/sdm": "^1.5.1",
+    "@atomist/sdm-core": "^1.5.2",
+    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190606221642",
+    "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190606215659",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190527225341",
     "@atomist/slack-messages": "^1.1.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.6",
-    "@types/node": "^12.0.2",
+    "@types/node": "^12.0.6",
     "@types/power-assert": "^1.5.0",
     "copyfiles": "^2.1.0",
     "espower-typescript": "^9.0.2",
     "mocha": "^6.1.4",
-    "nodemon": "^1.19.0",
+    "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "power-assert": "^1.6.1",
-    "prettier": "^1.17.1",
+    "prettier": "^1.18.0",
     "rimraf": "^2.6.3",
     "supervisor": "^0.12.0",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
+    "ts-node": "^8.2.0",
+    "tslint": "^5.17.0",
     "typedoc": "^0.14.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.1"
   },
   "optionalDependencies": {
     "gc-stats": "^1.2.1"
