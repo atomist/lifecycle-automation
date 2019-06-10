@@ -1,4 +1,4 @@
-{ 
+{
   "name": "@atomist/lifecycle-automation",
   "description": "Atomist automations displaying development and operations lifecycle messages in chat",
   "version": "1.1.10",
@@ -26,8 +26,8 @@
     "@atomist/automation-client-ext-dashboard": "1.1.0-master.20190411083753",
     "@atomist/automation-client-ext-humio": "0.2.0-master.20190522100323",
     "@atomist/automation-client-ext-raven": "^1.0.2",
-    "@atomist/sdm": "^1.5.1",
-    "@atomist/sdm-core": "^1.5.2",
+    "@atomist/sdm": "1.5.2-master.20190606192339",
+    "@atomist/sdm-core": "1.5.3-master.20190609112127",
     "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190607000012",
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190606215659",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190527225341",
