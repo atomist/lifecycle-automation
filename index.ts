@@ -47,7 +47,7 @@ export const configuration = configure(async sdm => {
             timeout: 60000,
         },
         cluster: {
-            maxConcurrentPerWorker: 10,
+            maxConcurrentPerWorker: 15,
         },
         redact: {
             log: true,
