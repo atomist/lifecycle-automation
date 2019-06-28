@@ -22,7 +22,7 @@
     "github"
   ],
   "dependencies": {
-    "@atomist/automation-client": "1.5.4-master.20190626214344",
+    "@atomist/automation-client": "1.5.4-master.20190628061747",
     "@atomist/automation-client-ext-dashboard": "1.1.0-master.20190411083753",
     "@atomist/automation-client-ext-humio": "0.2.0-master.20190522100323",
     "@atomist/automation-client-ext-raven": "^1.0.2",
