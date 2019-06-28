@@ -28,7 +28,7 @@
     "@atomist/automation-client-ext-raven": "^1.0.2",
     "@atomist/sdm": "1.5.2-master.20190616203852",
     "@atomist/sdm-core": "1.5.3-master.20190626135542",
-    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190626212723",
+    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190628110902",
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190611160249",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190620153325",
     "@atomist/slack-messages": "^1.1.0",
