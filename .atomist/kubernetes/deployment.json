@@ -82,7 +82,7 @@
             }
           }
         ],
-        "terminationGracePeriodSeconds": 600
+        "terminationGracePeriodSeconds": 35
       }
     }
   }
