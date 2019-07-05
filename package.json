@@ -27,10 +27,10 @@
     "@atomist/automation-client-ext-humio": "0.2.0-master.20190522100323",
     "@atomist/automation-client-ext-raven": "^1.0.2",
     "@atomist/sdm": "1.6.0-master.20190702114952",
-    "@atomist/sdm-core": "1.6.0-master.20190702120023",
-    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190628110902",
+    "@atomist/sdm-core": "1.6.0-master.20190703072440",
+    "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190704153805",
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190611160249",
-    "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190705065138",
+    "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190705071948",
     "@atomist/slack-messages": "^1.1.0",
     "lodash": "^4.17.11"
   },
