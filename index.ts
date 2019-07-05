@@ -47,7 +47,7 @@ export const configuration = configure(async sdm => {
             timeout: 60000,
             termination: {
                 gracePeriod: 1000 * 30, // 30s termination period
-            }
+            },
         },
         cluster: {
             maxConcurrentPerWorker: 15,
