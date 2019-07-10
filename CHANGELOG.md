@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/lifecycle-automation/compare/1.1.24...HEAD)
 
+### Changed
+
+-   Update deps. [ffd6457](https://github.com/atomist/lifecycle-automation/commit/ffd6457b0c3e560a835b0db12e13ed1f4e690790)
+
 ## [1.1.24](https://github.com/atomist/lifecycle-automation/compare/1.1.23...1.1.24) - 2019-07-05
 
 ## [1.1.23](https://github.com/atomist/lifecycle-automation/compare/1.1.22...1.1.23) - 2019-07-04
