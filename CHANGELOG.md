@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 -   Update deps. [ffd6457](https://github.com/atomist/lifecycle-automation/commit/ffd6457b0c3e560a835b0db12e13ed1f4e690790)
+-   Update automation-client, sdm, sdm-core and rcca pack. [b3b2981](https://github.com/atomist/lifecycle-automation/commit/b3b2981cc9b7bf22fc9b00e19b2ece9bc11d6ddd)
 
 ## [1.1.24](https://github.com/atomist/lifecycle-automation/compare/1.1.23...1.1.24) - 2019-07-05
 
