@@ -30,7 +30,7 @@
     "@atomist/sdm-core": "^1.6.1",
     "@atomist/sdm-pack-lifecycle": "0.2.0-master.20190827230517",
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190709203335",
-    "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190828103201",
+    "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190828111652",
     "@atomist/slack-messages": "^1.1.1",
     "lodash": "^4.17.13"
   },
