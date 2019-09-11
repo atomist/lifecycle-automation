@@ -38,9 +38,9 @@ export const configuration = configure(async sdm => {
         githubLifecycleSupport(),
         githubAutoMergeSupport(),
         githubLabelSupport(),
-        /*githubConvergeSupport({
+        githubConvergeSupport({
             events: { repoGenerated: true },
-        })*/);
+        }));
 
     const cfg: Configuration & SoftwareDeliveryMachineConfiguration = {
         ws: {
