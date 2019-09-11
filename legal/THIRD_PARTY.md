@@ -23,7 +23,7 @@ This page details all runtime OSS dependencies of `@atomist/lifecycle-automation
 |[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|74|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|725|
+|[MIT](#mit)|727|
 |[PSF](#psf)|2|
 |[UNKNOWN](#unknown)|1|
 |[Unlicense](#unlicense)|2|
@@ -45,8 +45,8 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 |`@atomist/automation-client-ext-raven`|`1.0.3`|Atomist|[https://github.com/atomist/automation-client-ext-raven](https://github.com/atomist/automation-client-ext-raven)|
 |`@atomist/sdm-core`|`1.7.0`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
 |`@atomist/sdm-pack-lifecycle-github`|`0.2.0-master.20190904080913`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle-github](https://github.com/atomist/sdm-pack-lifecycle-github)|
-|`@atomist/sdm-pack-lifecycle`|`0.2.0-master.20190904064045`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle](https://github.com/atomist/sdm-pack-lifecycle)|
-|`@atomist/sdm-pack-rcca-github`|`0.2.0-master.20190904081559`|Atomist|[https://github.com/atomist/sdm-pack-rcca-github](https://github.com/atomist/sdm-pack-rcca-github)|
+|`@atomist/sdm-pack-lifecycle`|`0.2.0-compliance-data.20190911152937`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle](https://github.com/atomist/sdm-pack-lifecycle)|
+|`@atomist/sdm-pack-rcca-github`|`0.2.0-master.20190910080145`|Atomist|[https://github.com/atomist/sdm-pack-rcca-github](https://github.com/atomist/sdm-pack-rcca-github)|
 |`@atomist/sdm`|`1.7.0`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
 |`@atomist/slack-messages`|`1.1.1`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`@kubernetes/client-node`|`0.10.2`|Kubernetes Authors|[https://github.com/kubernetes-client/javascript](https://github.com/kubernetes-client/javascript)|
@@ -323,6 +323,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@types/passport-http-bearer`|`1.0.33`||[https://github.com/DefinitelyTyped/DefinitelyTyped.git](https://github.com/DefinitelyTyped/DefinitelyTyped.git)|
 |`@types/passport-http`|`0.3.8`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/passport`|`1.0.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/pluralize`|`0.0.29`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/power-assert-formatter`|`1.4.28`|vvakame|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/power-assert`|`1.5.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/promise-retry`|`1.1.3`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -807,6 +808,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`picomatch`|`2.0.7`|Jon Schlinkert|[https://github.com/micromatch/picomatch](https://github.com/micromatch/picomatch)|
 |`pify`|`3.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/pify](https://github.com/sindresorhus/pify)|
 |`pify`|`4.0.1`|Sindre Sorhus|[https://github.com/sindresorhus/pify](https://github.com/sindresorhus/pify)|
+|`pluralize`|`8.0.0`|Blake Embrey|[https://github.com/blakeembrey/pluralize](https://github.com/blakeembrey/pluralize)|
 |`portfinder`|`1.0.24`|Charlie Robbins|[https://github.com/indexzero/node-portfinder](https://github.com/indexzero/node-portfinder)|
 |`power-assert-context-formatter`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
 |`power-assert-context-reducer-ast`|`1.2.0`|Takuto Wada|[https://github.com/twada/power-assert-runtime](https://github.com/twada/power-assert-runtime)|
