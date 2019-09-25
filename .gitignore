@@ -6,6 +6,7 @@
 .npmrc
 node_modules/
 *.d.ts
+*.d.ts.map
 *.js
 *.js.map
 *.log
@@ -16,5 +17,3 @@ node_modules/
 /doc/
 /log/
 git-info.json
-
-/config/development.json
