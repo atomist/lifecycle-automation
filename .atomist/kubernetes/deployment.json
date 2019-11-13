@@ -58,7 +58,7 @@
             "resources": {
               "limits": {
                 "cpu": "2000m",
-                "memory": "1000Mi"
+                "memory": "1500Mi"
               },
               "requests": {
                 "cpu": "100m",
