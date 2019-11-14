@@ -17,7 +17,6 @@
 import { Configuration } from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
-import { configureRaven } from "@atomist/automation-client-ext-raven";
 import {
     CachingProjectLoader,
     GitHubLazyProjectLoader,
@@ -67,7 +66,6 @@ export const configuration = configure(async sdm => {
     name: "Lifecycle Software Delivery Machine",
     postProcessors: [
         configureDashboardNotifications,
-        configureRaven,
         configureHumio,
     ],
 });
