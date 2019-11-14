@@ -22,7 +22,7 @@
     "lifecycle"
   ],
   "dependencies": {
-    "@atomist/automation-client": "1.8.0-master.20191113095747",
+    "@atomist/automation-client": "1.8.0-dynamic-goals.20191114172242",
     "@atomist/automation-client-ext-dashboard": "^1.1.0",
     "@atomist/automation-client-ext-humio": "^0.2.1",
     "@atomist/automation-client-ext-raven": "^1.0.3",
