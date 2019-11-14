@@ -54,7 +54,8 @@
     "typescript": "^3.6.4"
   },
   "optionalDependencies": {
-    "gc-stats": "^1.4.0"
+    "gc-stats": "^1.4.0",
+    "mtrace": "^1.0.6"
   },
   "directories": {
     "test": "test"
