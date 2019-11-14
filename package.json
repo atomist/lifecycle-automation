@@ -32,6 +32,7 @@
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190920063500",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190910080145",
     "@atomist/slack-messages": "^1.1.1",
+    "heapdump": "^0.3.15",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
