@@ -13,7 +13,10 @@ CMD ["/sdm/node_modules/.bin/atm-start"]
 # Install gcore
 RUN apt-get update && apt-get install -y \
         gdb \
+        lldb \
     && rm -rf /var/lib/apt/lists/*
-
+    
 # Enable gcore for now
 RUN echo "kernel.yama.ptrace_scope = 0" >/etc/sysctl.d/10-ptrace.conf
+
+RUN npm install -g llnode
