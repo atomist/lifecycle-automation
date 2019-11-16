@@ -2,7 +2,7 @@ FROM atomist/sdm-base:0.3.0
 
 COPY package.json package-lock.json ./
 
-RUN npm ci \
+RUN npm ci --no-optional \
     && npm cache clean --force
 
 COPY . ./
