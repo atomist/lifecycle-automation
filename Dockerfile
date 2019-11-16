@@ -1,4 +1,4 @@
-FROM atomist/sdm-base:0.3.0
+FROM atomist/sdm-base:0.2.0
 
 COPY package.json package-lock.json ./
 
