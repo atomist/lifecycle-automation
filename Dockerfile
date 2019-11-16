@@ -16,9 +16,6 @@ RUN apt-get update && apt-get install -y \
         gdb \
         lldb \
     && rm -rf /var/lib/apt/lists/*
-    
+
 # Enable gcore for now
 RUN echo "kernel.yama.ptrace_scope = 0" >/etc/sysctl.d/10-ptrace.conf
-
-# Install the llnode debugging tools
-RUN npm install -g llnode
