@@ -1,4 +1,4 @@
-FROM atomist/sdm-base:0.2.0
+FROM atomist/sdm-base:0.4.0-20191118100604
 
 COPY package.json package-lock.json ./
 
@@ -17,5 +17,5 @@ RUN apt-get update && apt-get install -y \
         lldb \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable gcore for now
+# Enable gcore; also requires a pod securityContext to be priviledged
 RUN echo "kernel.yama.ptrace_scope = 0" >/etc/sysctl.d/10-ptrace.conf
