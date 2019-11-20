@@ -22,13 +22,13 @@
     "lifecycle"
   ],
   "dependencies": {
-    "@atomist/automation-client": "1.8.0-dynamic-goals.20191114213427",
+    "@atomist/automation-client": "1.8.0-dynamic-goals.20191119211945",
     "@atomist/automation-client-ext-dashboard": "^1.1.0",
     "@atomist/automation-client-ext-humio": "^0.2.1",
     "@atomist/sdm": "1.8.0-master.20191011095607",
     "@atomist/sdm-core": "1.8.0-master.20191009161512",
     "@atomist/sdm-pack-lifecycle": "0.3.0-master.20191112094406",
-    "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20190920063500",
+    "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20191120023515",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190910080145",
     "@atomist/slack-messages": "^1.1.1",
     "lodash": "^4.17.15"
@@ -47,9 +47,9 @@
     "rimraf": "^3.0.0",
     "supervisor": "^0.12.0",
     "ts-node": "^8.4.1",
-    "tslint": "^5.20.0",
-    "typedoc": "^0.15.0",
-    "typescript": "^3.6.4"
+    "tslint": "^5.20.1",
+    "typedoc": "^0.15.2",
+    "typescript": "^3.7.2"
   },
   "optionalDependencies": {
     "gc-stats": "^1.4.0",
