@@ -27,7 +27,7 @@
     "@atomist/automation-client-ext-humio": "^0.2.1",
     "@atomist/sdm": "1.8.0-master.20191011095607",
     "@atomist/sdm-core": "1.8.0-master.20191009161512",
-    "@atomist/sdm-pack-lifecycle": "0.3.0-master.20191112094406",
+    "@atomist/sdm-pack-lifecycle": "0.3.0-master.20191204150302",
     "@atomist/sdm-pack-lifecycle-github": "0.2.0-master.20191120023515",
     "@atomist/sdm-pack-rcca-github": "0.2.0-master.20190910080145",
     "@atomist/slack-messages": "^1.1.1",
