@@ -24,22 +24,13 @@ import {
 } from "@atomist/sdm";
 import { configure } from "@atomist/sdm-core";
 import { githubLifecycleSupport } from "@atomist/sdm-pack-lifecycle-github";
-import {
-    githubAutoMergeSupport,
-    githubConvergeSupport,
-    githubLabelSupport,
-} from "@atomist/sdm-pack-rcca-github";
 import * as _ from "lodash";
 
 export const configuration = configure(async sdm => {
 
     sdm.addExtensionPacks(
         githubLifecycleSupport(),
-        githubAutoMergeSupport(),
-        githubLabelSupport(),
-        githubConvergeSupport({
-            events: { repoGenerated: true },
-        }));
+    );
 
     const cfg: Configuration & SoftwareDeliveryMachineConfiguration = {
         ws: {
