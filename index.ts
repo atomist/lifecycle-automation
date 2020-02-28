@@ -66,7 +66,7 @@ export const configuration = configure(async sdm => {
 });
 
 class CancelRemovingAutomationMetadataProcessor implements AutomationMetadataProcessor {
-    public process<T extends AutomationMetadata>(metadata: T, configuration: Configuration): T {
+    public process<T extends AutomationMetadata>(metadata: T, cfg: Configuration): T {
         if (isCommandHandlerMetadata(metadata) && metadata.name === "CancelGoalSets") {
             metadata.expose = false;
         }
