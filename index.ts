@@ -17,6 +17,9 @@
 import { Configuration } from "@atomist/automation-client";
 import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
+import { isCommandHandlerMetadata } from "@atomist/automation-client/lib/internal/metadata/metadata";
+import { AutomationMetadataProcessor } from "@atomist/automation-client/lib/spi/env/MetadataProcessor";
+import { AutomationMetadata } from "@atomist/automation-client/src/lib/metadata/automationMetadata";
 import {
     CachingProjectLoader,
     GitHubLazyProjectLoader,
@@ -49,6 +52,7 @@ export const configuration = configure(async sdm => {
         sdm: {
             projectLoader: new GitHubLazyProjectLoader(new CachingProjectLoader()),
         },
+        metadataProcessor: new CancelRemovingAutomationMetadataProcessor(),
     };
 
     _.merge(sdm.configuration, cfg);
@@ -60,3 +64,12 @@ export const configuration = configure(async sdm => {
         configureHumio,
     ],
 });
+
+class CancelRemovingAutomationMetadataProcessor implements AutomationMetadataProcessor {
+    public process<T extends AutomationMetadata>(metadata: T, configuration: Configuration): T {
+        if (isCommandHandlerMetadata(metadata) && metadata.name === "CancelGoalSets") {
+            metadata.expose = false;
+        }
+        return metadata;
+    }
+}
