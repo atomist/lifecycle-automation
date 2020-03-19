@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import { Configuration } from "@atomist/automation-client";
-import { configureDashboardNotifications } from "@atomist/automation-client-ext-dashboard";
 import { configureHumio } from "@atomist/automation-client-ext-humio";
-import {
-    CachingProjectLoader,
-    GitHubLazyProjectLoader,
-    SoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm";
-import { configure } from "@atomist/sdm-core";
+import { Configuration } from "@atomist/automation-client/lib/configuration";
 import { githubLifecycleSupport } from "@atomist/sdm-pack-lifecycle-github";
+import { CachingProjectLoader } from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
+import { GitHubLazyProjectLoader } from "@atomist/sdm/lib/api-helper/project/GitHubLazyProjectLoader";
+import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
+import { configure } from "@atomist/sdm/lib/core/machine/configure";
 import * as _ from "lodash";
 
 export const configuration = configure(async sdm => {
@@ -56,7 +53,6 @@ export const configuration = configure(async sdm => {
 }, {
     name: "Lifecycle Software Delivery Machine",
     postProcessors: [
-        configureDashboardNotifications,
         configureHumio,
     ],
 });
