@@ -26,7 +26,7 @@ This page details all runtime OSS dependencies of `@atomist/lifecycle-automation
 |[ISC](#isc)|61|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
 |[MIT AND Zlib](#mit-and-zlib)|1|
-|[MIT](#mit)|776|
+|[MIT](#mit)|778|
 |[PSF](#psf)|2|
 |[Public Domain](#public-domain)|1|
 |[UNKNOWN](#unknown)|2|
@@ -51,8 +51,8 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
 |`@atomist/automation-client-ext-humio`|`0.3.0-master.20200319072751`|Atomist|[https://github.com/atomist/automation-client-ext-humio](https://github.com/atomist/automation-client-ext-humio)|
-|`@atomist/sdm-pack-lifecycle-github`|`0.3.0-master.20200311175857`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle-github](https://github.com/atomist/sdm-pack-lifecycle-github)|
-|`@atomist/sdm-pack-lifecycle`|`0.3.0-master.20200311174235`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle](https://github.com/atomist/sdm-pack-lifecycle)|
+|`@atomist/sdm-pack-lifecycle-github`|`0.3.0-master.20200505162740`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle-github](https://github.com/atomist/sdm-pack-lifecycle-github)|
+|`@atomist/sdm-pack-lifecycle`|`0.3.0-master.20200505162036`|Atomist|[https://github.com/atomist/sdm-pack-lifecycle](https://github.com/atomist/sdm-pack-lifecycle)|
 |`@atomist/sdm`|`2.0.0-master.20200312140727`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
 |`@atomist/slack-messages`|`1.1.1`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`@google-cloud/common`|`2.4.0`|Google Inc.|[https://github.com/googleapis/nodejs-common](https://github.com/googleapis/nodejs-common)|
@@ -332,6 +332,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`@types/inquirer`|`0.0.43`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/isomorphic-fetch`|`0.0.35`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/js-yaml`|`3.12.2`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/js-yaml`|`3.12.3`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/json-stable-stringify`|`1.0.32`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/json-stringify-safe`|`5.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/jszip`|`3.1.7`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -343,6 +344,7 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 |`@types/node-fetch`|`2.5.5`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node-statsd`|`0.1.2`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node`|`10.17.17`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/node`|`12.12.37`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/node`|`13.9.2`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/passport-http-bearer`|`1.0.34`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/passport-http`|`0.3.8`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
