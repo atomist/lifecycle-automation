@@ -21,7 +21,7 @@
                 "name": "ATOMIST_CONFIG",
                 "valueFrom": {
                   "secretKeyRef": {
-                    "name": "atm-global",
+                    "name": "atm-lifecycle",
                     "key": "config"
                   }
                 }
