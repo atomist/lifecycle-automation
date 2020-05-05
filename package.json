@@ -25,8 +25,8 @@
     "@atomist/automation-client": "2.0.0-master.20200311165330",
     "@atomist/automation-client-ext-humio": "0.3.0-master.20200319072751",
     "@atomist/sdm": "2.0.0-master.20200312140727",
-    "@atomist/sdm-pack-lifecycle": "0.3.0-master.20200311174235",
-    "@atomist/sdm-pack-lifecycle-github": "0.3.0-master.20200311175857",
+    "@atomist/sdm-pack-lifecycle": "0.3.0-master.20200505162036",
+    "@atomist/sdm-pack-lifecycle-github": "0.3.0-master.20200505162740",
     "@atomist/slack-messages": "^1.1.1",
     "lodash": "^4.17.15"
   },
