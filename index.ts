@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { configureHumio } from "@atomist/automation-client-ext-humio";
 import { Configuration } from "@atomist/automation-client/lib/configuration";
 import { githubLifecycleSupport } from "@atomist/sdm-pack-lifecycle-github";
 import { CachingProjectLoader } from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
@@ -52,7 +51,4 @@ export const configuration = configure(async sdm => {
 
 }, {
     name: "Lifecycle Software Delivery Machine",
-    postProcessors: [
-        configureHumio,
-    ],
 });
