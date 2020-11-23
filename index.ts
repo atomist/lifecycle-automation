@@ -49,10 +49,9 @@ export const configuration = configure(async sdm => {
         metadataProcessor: {
             process: (metadata: AutomationMetadata, configuration: Configuration): any => {
                 if (metadata.name === "UpdateOnJobTask") {
-                    return undefined;
-                } else {
-                    return metadata;
+                    metadata.expose = false;
                 }
+                return metadata;
             }
         }
     };
