@@ -1,0 +1,3 @@
+var typedoc = typedoc || {};
+            typedoc.search = typedoc.search || {};
+            typedoc.search.data = {"kinds":{"1":"Module","32":"Variable"},"rows":[{"id":0,"kind":1,"name":"\"index\"","url":"modules/_index_.html","classes":"tsd-kind-module"},{"id":1,"kind":32,"name":"configuration","url":"modules/_index_.html#configuration","classes":"tsd-kind-variable tsd-parent-kind-module","parent":"\"index\""}]};

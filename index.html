@@ -1,0 +1,211 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@atomist/lifecycle-automation</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@atomist/lifecycle-automation</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@atomist/lifecycle-automation</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#atomistlifecycle-automation" id="atomistlifecycle-automation" style="color: inherit; text-decoration: none;">
+					<h1>@atomist/lifecycle-automation</h1>
+				</a>
+				<p><img src="http://badge.atomist.com/T29E48P34/atomist/lifecycle-automation/840020ab-5822-4e4b-865f-51fe70e84eb1" alt="atomist sdm goals"> <a href="https://badge.fury.io/js/%40atomist%2Flifecycle-automation"><img src="https://badge.fury.io/js/%40atomist%2Flifecycle-automation.svg" alt="npm version"></a></p>
+				<p>This project contains lifecycle automations that create beautiful,
+					correlated, and actionable <a href="https://slack.com" title="Slack">Slack</a> messages for issues,
+					pull requests, pushes, builds, and deployments using
+					the <a href="https://github.com/atomist/automation-client-ts" title="@atomist/automation-client Node Module"><code>@atomist/automation-client</code></a> node module to implement a
+				client that connects to the <a href="https://www.atomist.com/">Atomist</a> API.  </p>
+				<p align="center">
+					<img alt="Atomist Bot PR Message" height="324" width="481" src="img/pr.png" />
+				</p>
+				<p>This Atomist API client provides your team with better Slack messages about what is
+					happening in your development and delivery lifecycle by
+				simply adding the Atomist Bot to your Slack team:</p>
+				<p align="center">
+					<a href="https://atm.st/2wiDlUe">
+						<img alt="Add to Slack" height="50" width="174" src="https://platform.slack-edge.com/img/add_to_slack@2x.png" />
+					</a>
+				</p>
+				<p>Once the Atomist Bot is in your Slack team, invite it to a channel
+					where you discuss a repository and link the channel to the repository
+				using the <code>repo</code> command</p>
+				<pre><code>/invite <span class="hljs-meta">@atomist</span>
+<span class="hljs-meta">@atomist</span> repo owner=ORG repo=REPO</code></pre><p>replacing <code>ORG</code> with your GitHub.com organization and <code>REPO</code> with the
+					name of the repo you want to link.  Simply repeat for all the repos
+				and channels you want to link!</p>
+				<a href="#support" id="support" style="color: inherit; text-decoration: none;">
+					<h2>Support</h2>
+				</a>
+				<p>General support questions should be discussed in the <code>#support</code>
+					channel on our community Slack team
+				at <a href="https://slack.com" title="Slack">atomist-community.slack.com</a>.</p>
+				<p>If you find a problem, please create an <a href="https://github.com/atomist/lifecycle-automation/issues">issue</a>[</p>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<p>If you are interested in contributing to the Atomist open source
+					projects, please see our <a href="https://github.com/atomist/welcome/blob/master/CONTRIBUTING.md">contributing guidelines</a> and
+				our <a href="https://github.com/atomist/welcome/blob/master/CODE_OF_CONDUCT.md">code of conduct</a>.</p>
+				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+					<h2>Development</h2>
+				</a>
+				<p>You will need to have <a href="https://nodejs.org/" title="Node.js">Node.js</a> installed.  To verify that the
+				right versions are installed, please run:</p>
+				<pre><code>$ node -v
+v8<span class="hljs-number">.4</span><span class="hljs-number">.0</span>
+$ npm -v
+<span class="hljs-number">5.4</span><span class="hljs-number">.1</span></code></pre>
+				<a href="#build-and-test" id="build-and-test" style="color: inherit; text-decoration: none;">
+					<h3>Build and Test</h3>
+				</a>
+				<table>
+					<thead>
+						<tr>
+							<th>Command</th>
+							<th>Reason</th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td><code>npm install</code></td>
+							<td>to install all the required packages</td>
+						</tr>
+						<tr>
+							<td><code>npm run build</code></td>
+							<td>lint, compile, and test</td>
+						</tr>
+						<tr>
+							<td><code>npm start</code></td>
+							<td>to start the Atomist automation client</td>
+						</tr>
+						<tr>
+							<td><code>npm run autostart</code></td>
+							<td>run the client, refreshing when files change</td>
+						</tr>
+						<tr>
+							<td><code>npm run lint</code></td>
+							<td>to run tslint against the TypeScript</td>
+						</tr>
+						<tr>
+							<td><code>npm run compile</code></td>
+							<td>to compile all TypeScript into JavaScript</td>
+						</tr>
+						<tr>
+							<td><code>npm test</code></td>
+							<td>to run tests and ensure everything is working</td>
+						</tr>
+						<tr>
+							<td><code>npm run autotest</code></td>
+							<td>run tests continuously</td>
+						</tr>
+						<tr>
+							<td><code>npm run clean</code></td>
+							<td>remove stray compiled JavaScript files and build directory</td>
+						</tr>
+				</tbody></table>
+				<a href="#release" id="release" style="color: inherit; text-decoration: none;">
+					<h3>Release</h3>
+				</a>
+				<p>To create a new release of the project, simply push a tag of the form
+					<code>M.N.P</code> where <code>M</code>, <code>N</code>, and <code>P</code> are integers that form the next
+					appropriate <a href="http://semver.org">semantic version</a> for release.  The version in
+					the package.json is replaced by the build and is totally ignored!  For
+				example:</p>
+				<pre><code>$ git <span class="hljs-keyword">tag</span> <span class="hljs-title">-a</span> <span class="hljs-number">1.2</span>.<span class="hljs-number">3</span>
+$ git push --tags</code></pre><p>The Travis CI build (see badge at the top of this page) will publish
+					the NPM module and automatically create a GitHub release using the tag
+					name for the release and the comment provided on the annotated tag as
+				the contents of the release notes.</p>
+				<hr>
+				<p>Created by <a href="https://www.atomist.com/">Atomist</a>.
+				Need Help?  <a href="https://slack.com" title="Slack">Join our Slack team</a>.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
