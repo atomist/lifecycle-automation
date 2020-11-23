@@ -15,6 +15,7 @@
  */
 
 import { Configuration } from "@atomist/automation-client/lib/configuration";
+import { AutomationMetadata } from "@atomist/automation-client/src/lib/metadata/automationMetadata";
 import { githubLifecycleSupport } from "@atomist/sdm-pack-lifecycle-github";
 import { CachingProjectLoader } from "@atomist/sdm/lib/api-helper/project/CachingProjectLoader";
 import { GitHubLazyProjectLoader } from "@atomist/sdm/lib/api-helper/project/GitHubLazyProjectLoader";
@@ -24,11 +25,11 @@ import * as _ from "lodash";
 
 export const configuration = configure(async sdm => {
 
-    sdm.addExtensionPacks(
-        githubLifecycleSupport(),
-    );
+	sdm.addExtensionPacks(
+		githubLifecycleSupport(),
+	);
 
-    const cfg: Configuration & SoftwareDeliveryMachineConfiguration = {
+	const cfg: Configuration & SoftwareDeliveryMachineConfiguration = {
         ws: {
             timeout: 60000,
             termination: {
@@ -45,10 +46,19 @@ export const configuration = configure(async sdm => {
         sdm: {
             projectLoader: new GitHubLazyProjectLoader(new CachingProjectLoader()),
         },
+        metadataProcessor: {
+            process: (metadata: AutomationMetadata, configuration: Configuration): any => {
+                if (metadata.name === "UpdateOnJobTask") {
+                    return undefined;
+                } else {
+                    return metadata;
+                }
+            }
+        }
     };
 
-    _.merge(sdm.configuration, cfg);
+	_.merge(sdm.configuration, cfg);
 
 }, {
-    name: "Lifecycle Software Delivery Machine",
+	name: "Lifecycle Software Delivery Machine",
 });
